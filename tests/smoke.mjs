@@ -96,7 +96,7 @@ try {
     assert.equal(await titulo(), 'Doação combinada!');
   });
 
-  await passo('organização publica uma entrega', async () => {
+  await passo('organização publica uma ação', async () => {
     await page.click('.foot [data-r="v-home"]');
     await aba('Perfil');
     assert.ok(await page.locator('.content .evr').count() >= 1, 'a agenda do perfil deveria mostrar a vaga reservada');
@@ -105,17 +105,36 @@ try {
     await page.click('[data-a="ajuda-salvar"]');
     assert.match(await page.locator('.set-r >> nth=0').innerText(), /dinheiro/, 'as formas de ajudar deveriam ser salvas');
     await page.click('.content [data-a="role"][data-r="org"]');
+    assert.equal(await page.locator('.hstat').count(), 3, 'o painel deveria mostrar os três números');
+    assert.ok(await page.locator('.content .evr').count() >= 1, 'o painel deveria listar as próximas ações');
     await aba('Publicar');
     await page.click('[data-a="ev-publish"]');
+    assert.match(await page.locator('.err-sum').innerText(), /para publicar/);
     assert.ok(await page.locator('.msg-err').count() > 0, 'deveria apontar campos obrigatórios');
+    await page.click('[data-a="ev-add-posto"]');
+    await page.fill('.posto-row >> nth=2 >> input[type=number]', '5');
+    assert.match(await page.locator('#ev-total').innerText(), /17 vagas/, 'o total de vagas deveria somar os postos');
     await page.click('[data-a="fill-ev"]');
+    await page.click('.ck[data-v="Macarrão"]');
+    assert.equal(await page.locator('.ck[aria-checked="true"]').count(), 4);
     await page.click('[data-a="ev-publish"]');
-    assert.match(await page.locator('#toast').innerText(), /Entrega publicada/);
+    assert.match(await page.locator('.notice.g').innerText(), /Ação publicada/);
+    assert.equal(await page.locator('.posto-r').count(), 3);
+  });
+
+  await passo('organização edita o contato', async () => {
+    await page.click('.bar [data-a="back"]');
+    await aba('Perfil');
+    await page.click('[data-a="org-editar"]');
+    await page.fill('#f-orgEdit-tel', '');
+    await page.click('[data-a="org-salvar"]');
+    assert.equal(await page.locator('.msg-err').count(), 1, 'telefone vazio deveria ser apontado');
+    await page.fill('#f-orgEdit-tel', '61999990000');
+    await page.click('[data-a="org-salvar"]');
+    assert.match(await page.locator('.content .info').first().innerText(), /\(61\) 99999-0000/);
   });
 
   await passo('administrador aprova os cadastros pendentes', async () => {
-    await page.click('.bar [data-a="back"]');
-    await aba('Perfil');
     await page.click('.content [data-a="role"][data-r="admin"]');
     await aba('Validações');
     await page.click('[data-a="approve"][data-id="me"]');
@@ -150,6 +169,13 @@ try {
     const linhas = await mini.locator('.seg-amt button').evaluateAll(els => new Set(els.map(e => e.offsetTop)).size);
     assert.equal(linhas, 1, 'os valores sugeridos deveriam caber numa linha');
     assert.equal(await mini.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    await mini.click('.bar [data-a="back"]');
+    await mini.click('.tab:has-text("Perfil")');
+    await mini.click('.content [data-a="role"][data-r="org"]');
+    for (const t of ['Painel', 'Publicar', 'Perfil']) {
+      await mini.click(`.tab:has-text("${t}")`);
+      assert.equal(await mini.locator('.scroll').evaluate(el => el.scrollWidth > el.clientWidth + 1), false, `a aba ${t} da organização não deveria transbordar`);
+    }
     await mini.close();
   });
 

@@ -180,7 +180,7 @@ p{margin:0}
 .inp .trail{display:grid;flex:none}
 .inp .trail.ok{color:var(--ok)}
 .trail-btn{flex:none;width:40px;height:40px;margin-right:-10px;border:0;border-radius:20px;background:none;color:var(--primary);display:grid;place-items:center;cursor:pointer}
-.inp input[type=date]::-webkit-calendar-picker-indicator{display:none}
+.inp input[type=date]::-webkit-calendar-picker-indicator,.inp input[type=time]::-webkit-calendar-picker-indicator{display:none}
 .trail-btn[data-a="open-date"]{color:var(--muted)}
 textarea.ta{width:100%;min-height:104px;padding:14px var(--s-4);border-radius:12px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:16px;color:var(--fg);resize:none;outline:none;line-height:1.5;transition:border-color .15s,box-shadow .15s}
 textarea.ta:focus{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
@@ -636,6 +636,51 @@ body.hero-top::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-a
 .seg button:first-child{border-left:0}
 .seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);font-weight:600;box-shadow:none}
 @media (max-width:359px){ .seg button{font-size:var(--t-xs)} }
+
+/* ---------- telas 24 a 28 do pen.dev: organização ---------- */
+/* painel: nome, status e números dentro do cabeçalho verde */
+.org-b{display:flex;flex-direction:column;gap:var(--s-1)}
+.org-eb{font-size:var(--t-sm);font-weight:600;color:var(--amarelo)}
+.org-n{margin:0;font-family:var(--f-display);font-size:var(--t-xl);font-weight:600;line-height:1.2;color:#FFFFFF;text-wrap:balance}
+.org-st{display:inline-flex;align-items:center;gap:6px;padding-top:var(--s-1);font-size:var(--t-sm);font-weight:500;color:rgba(255,255,255,.8)}
+.org-st svg{flex:none;color:var(--amarelo)}
+.hstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding-top:var(--s-5);border-top:1px solid rgba(255,255,255,.15)}
+.hstat{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hstat+.hstat{padding-left:var(--s-4);border-left:1px solid rgba(255,255,255,.15)}
+.hstat b{font-family:var(--f-display);font-size:28px;font-weight:600;line-height:1.15;color:#FFFFFF}
+.hstat small{font-size:var(--t-sm);line-height:1.35;color:rgba(255,255,255,.7)}
+.sec-link.ic{display:inline-flex;align-items:center;gap:var(--s-1)}
+.sec-meta{flex:none;color:var(--muted);font-size:var(--t-ms);font-weight:500}
+/* publicar ação */
+.scroll>.content.form-top{padding-top:var(--s-6)}
+.posto-row{grid-template-columns:minmax(0,1fr) 72px 44px}
+.posto-row .inp{min-height:52px;padding-inline:var(--s-4)}
+.posto-row .inp input{height:48px}
+.posto-row .icon-btn{width:44px;height:44px;color:var(--muted)}
+.posto-head{grid-template-columns:minmax(0,1fr) 124px;margin-bottom:0;font-weight:400}
+.posto-add{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);padding-top:var(--s-1)}
+.posto-add .link-ic{min-height:40px;gap:6px}
+.posto-add>span{color:var(--muted);font-size:var(--t-sm);font-weight:500}
+.ck-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--s-3)}
+.ck{display:flex;align-items:center;gap:10px;min-height:44px;padding:var(--s-1) 0;background:none;border:0;text-align:left;cursor:pointer;color:var(--fg);font-size:var(--t-ms);font-weight:500;line-height:1.3}
+.ck[aria-checked="true"] .cb{background:var(--primary);border-color:var(--primary)}
+/* detalhe da ação: postos com barra de preenchimento */
+.posto-r{display:flex;flex-direction:column;gap:var(--s-2);padding:var(--s-4) 0}
+.posto-t{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-3)}
+.posto-t b{font-weight:600;min-width:0}
+.posto-t>span{flex:none;color:var(--muted);font-size:var(--t-sm);font-weight:500}
+.posto-t>span.warn{color:var(--accent)}
+.posto-r>small{color:var(--muted);font-size:var(--t-sm)}
+.sec.tight>.hint{margin-top:var(--s-1);margin-bottom:var(--s-1)}
+.info.pad-y{padding:var(--s-4) 0}
+/* perfil da organização */
+.st-ic{display:inline-flex;align-items:center;gap:6px;padding-top:var(--s-1);font-size:var(--t-sm);font-weight:500;color:var(--ok)}
+.st-ic svg{flex:none}
+.st-ic.pend,.org-st.pend{color:var(--accent)}
+.org-st.pend{color:rgba(255,255,255,.8)}
+.prof-about{line-height:1.6}
+@media (max-width:359px){ .hstat+.hstat{padding-left:var(--s-3)} .hstat b{font-size:var(--t-xl)} .ck-grid{grid-template-columns:minmax(0,1fr)} }
+@media (hover:hover) and (pointer:fine){ .ck:hover .cb{border-color:var(--primary)} .posto-row .icon-btn:not([disabled]):hover{color:var(--danger)} }
 
 /* ---------- barras de rolagem escondidas (a rolagem continua funcionando) ---------- */
 html,body,.scroll,.guide,textarea{scrollbar-width:none;-ms-overflow-style:none}
