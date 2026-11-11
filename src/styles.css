@@ -60,7 +60,7 @@ p{margin:0}
 @media (min-width:980px){
   html,body{height:auto;min-height:100%}
   body{background:var(--outer)}
-  .stage{display:grid;grid-template-columns:minmax(0,400px) auto;justify-content:center;align-items:center;gap:64px;min-height:100vh;padding-block:var(--s-6);padding-left:max(var(--s-4),env(safe-area-inset-left,0px));padding-right:max(var(--s-4),env(safe-area-inset-right,0px))}
+  .stage{display:grid;grid-template-columns:minmax(0,480px) auto;justify-content:center;align-items:center;gap:clamp(40px,8vw,120px);min-height:100vh;padding-block:var(--s-6);padding-left:max(var(--s-4),env(safe-area-inset-left,0px));padding-right:max(var(--s-4),env(safe-area-inset-right,0px))}
   .guide{display:flex;flex-direction:column;gap:var(--s-6);max-height:calc(100vh - 48px);overflow:auto;padding-right:var(--s-2)}
   /* Aparelho: a tela fica sempre em 390 × 844 (proporção de um celular atual); em janelas baixas o aparelho inteiro
      diminui por zoom (--k, calculado no app.js) em vez de achatar. */
@@ -481,7 +481,7 @@ body.hero-top::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-a
 .greet-b{display:flex;flex-direction:column;gap:var(--s-1)}
 .home-hero .greet{font-family:var(--f-display);font-size:var(--t-xl);font-weight:600;letter-spacing:-0.005em;line-height:1.2;color:#FFFFFF}
 .greet-s{font-size:var(--t-base);color:rgba(255,255,255,.7)}
-.next{display:flex;flex-direction:column;gap:6px;padding-top:var(--s-5);border-top:1px solid rgba(255,255,255,.15)}
+.hero-c .next{display:flex;flex-direction:column;gap:6px;padding-top:var(--s-5);border-top:1px solid rgba(255,255,255,.15)}
 .next-eb{font-size:var(--t-sm);font-weight:600;color:var(--amarelo)}
 .next-t{font-family:var(--f-display);font-size:21px;font-weight:600;line-height:1.25;color:#FFFFFF}
 .next-m{font-size:var(--t-ms);color:rgba(255,255,255,.7)}
@@ -681,6 +681,72 @@ body.hero-top::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-a
 .prof-about{line-height:1.6}
 @media (max-width:359px){ .hstat+.hstat{padding-left:var(--s-3)} .hstat b{font-size:var(--t-xl)} .ck-grid{grid-template-columns:minmax(0,1fr)} }
 @media (hover:hover) and (pointer:fine){ .ck:hover .cb{border-color:var(--primary)} .posto-row .icon-btn:not([disabled]):hover{color:var(--danger)} }
+
+/* ---------- telas 29 a 36 do pen.dev: administrador, roteiro e cadastro de organização ---------- */
+.scroll>.content.g32{gap:var(--s-7)}
+.evr-meta .evr-spots.pend{color:var(--accent)}
+/* validações: cadastros em linhas separadas por fio */
+.vals>.val{display:flex;flex-direction:column;gap:var(--s-4);padding:var(--s-5) 0;border-bottom:1px solid var(--line)}
+.vals>.val:first-child{padding-top:var(--s-1)}
+.val .person{grid-template-columns:44px minmax(0,1fr);gap:var(--s-4)}
+.val .avatar{width:44px;height:44px;cursor:default;color:var(--primary)}
+.val .person b{font-family:var(--f-display);font-size:var(--t-md);font-weight:600}
+.val .you{font-family:var(--f-body);font-size:var(--t-sm);font-weight:400;color:var(--muted)}
+.val .person small{font-size:var(--t-sm)}
+.val .quote{font-size:var(--t-base);line-height:1.5;padding-left:var(--s-3)}
+.kv-ls{display:flex;flex-direction:column;gap:var(--s-3)}
+.kv-l{display:flex;flex-direction:column;gap:2px}
+.kv-l small{color:var(--muted);font-size:var(--t-xs)}
+.val-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-3)}
+.btn-md{min-height:44px;font-size:16px;border-radius:12px;padding:0 var(--s-3)}
+.val-btns .btn-cancel{color:var(--fg)}
+.val-done{display:flex;align-items:center;gap:10px;padding:var(--s-3) 14px;border-radius:12px;background:var(--soft-g);font-size:var(--t-ms);line-height:1.4}
+.val-done>svg{flex:none;color:var(--ok)}
+.val-done>span{flex:1;min-width:0}
+.val-done.no{background:var(--danger-soft)}
+.val-done.no>svg{color:var(--danger)}
+.val-done .sec-link{font-weight:600}
+/* perfil do administrador: números entre fios */
+.pstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:var(--s-4) 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pstat{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pstat+.pstat{padding-left:var(--s-4);border-left:1px solid var(--line)}
+.pstat b{font-family:var(--f-display);font-size:28px;font-weight:600;line-height:1.15}
+.pstat b.warn{color:var(--accent)}
+.pstat small{color:var(--muted);font-size:var(--t-sm);line-height:1.35}
+.prof .avatar.lg svg{color:var(--primary)}
+/* cadastro de organização: blocos separados por fio */
+.fsec{display:flex;flex-direction:column;gap:var(--s-5);padding-top:var(--s-6);border-top:1px solid var(--line)}
+.fsec>.h-md{margin-bottom:calc(var(--s-1) * -1)}
+/* roteiro */
+.st-grp{display:flex;flex-direction:column;gap:var(--s-2)}
+.st-gh{display:flex;align-items:center;gap:var(--s-3)}
+.st-gh .h-md{flex:1;min-width:0}
+.mos.sm{width:22px;height:22px;border-radius:6px;font-size:var(--t-xs)}
+.mos.W{background:var(--line);color:var(--muted);box-shadow:none}
+.rule-list>.story{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:var(--s-4) 0;border-top:0}
+.story-t{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--s-3);width:100%}
+.story-t b{font-weight:600;line-height:1.35}
+.story p{color:var(--muted);font-size:var(--t-ms);line-height:1.5}
+.story>small{color:var(--muted-2);font-size:var(--t-sm)}
+.story .link-ic{padding-top:var(--s-1);font-weight:500}
+.flag{display:inline-grid;flex:none;color:var(--ink-y);vertical-align:-2px}
+.note-r.flagged svg{color:var(--ink-y)}
+/* painel do computador */
+.guide{gap:var(--s-6)}
+.g-brand{display:flex;flex-direction:column;gap:var(--s-1);padding-bottom:var(--s-6);border-bottom:1px solid var(--line)}
+.g-brand .logo{font-size:84px;color:var(--verde);margin-bottom:var(--s-1)}
+.g-brand .slogan{color:var(--fg);font-weight:500}
+.g-brand .values{color:var(--muted);opacity:1}
+.g-sec{display:flex;flex-direction:column;gap:var(--s-3);padding-bottom:var(--s-6);border-bottom:1px solid var(--line)}
+.g-sec.tight{gap:var(--s-2);padding-bottom:0;border-bottom:0}
+.g-links{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-6)}
+.seg.ic button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.st-mini{display:flex;align-items:center;gap:var(--s-3);min-height:48px;padding:var(--s-2) 0}
+.st-mini-t{flex:1;min-width:0;display:inline-flex;align-items:center;gap:var(--s-2);font-size:var(--t-base)}
+.st-mini>small{flex:none;color:var(--muted-2);font-size:var(--t-sm)}
+.st-mini.off .st-mini-t{color:var(--muted)}
+@media (max-width:359px){ .pstat+.pstat{padding-left:var(--s-3)} .pstat b{font-size:var(--t-xl)} .val-btns{gap:var(--s-2)} }
+@media (hover:hover) and (pointer:fine){ .st-mini .sec-link:hover,.val-done .sec-link:hover{text-decoration:underline;text-underline-offset:3px} }
 
 /* ---------- barras de rolagem escondidas (a rolagem continua funcionando) ---------- */
 html,body,.scroll,.guide,textarea{scrollbar-width:none;-ms-overflow-style:none}

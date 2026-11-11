@@ -97,6 +97,13 @@ const LU = {
   'trash-2':'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
   'cooking-pot':'<path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/>',
   'shopping-cart':'<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>',
+  'shield-check':'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  'file-text':'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  'carrot':'<path d="M2.27 21.7s9.87-3.5 12.73-6.36a4.5 4.5 0 0 0-6.36-6.37C5.77 11.84 2.27 21.7 2.27 21.7zM8.64 14l-2.05-2.04M15.34 15l-2.46-2.46"/><path d="M22 9s-1.33-2-3.5-2C16.86 7 15 9 15 9s1.33 2 3.5 2S22 9 22 9z"/><path d="M15 2s-2 1.33-2 3.5S15 9 15 9s2-1.84 2-3.5C17 3.33 15 2 15 2z"/>',
+  'flag':'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
+  'smartphone':'<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>',
+  'maximize':'<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
+  'minimize':'<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>',
   'sandwich':'<path d="m2.37 11.223 8.372-6.777a2 2 0 0 1 2.516 0l8.371 6.777"/><path d="M21 15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5.25"/><path d="M3 15a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h9"/><path d="m6.67 15 6.13 4.6a2 2 0 0 0 2.8-.4l3.15-4.2"/><rect width="20" height="4" x="2" y="11" rx="1"/>'
 };
 const icon = (n, s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${LU[n] ? 2 : 1.8}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${LU[n] || I[n] || ''}</svg>`;
@@ -318,7 +325,7 @@ const pixCode = (cents, org) => `00020126360014BR.GOV.BCB.PIX0114MEZADEMONSTRA52
 /* ================= histórias (MoSCoW do grupo) ================= */
 const STORIES = [
   {m:'M', g:true, t:'Cadastro de voluntário', s:'Como pessoa que quer ajudar, quero me cadastrar com meus dados e dizer como desejo ajudar.', k:'s-vol'},
-  {m:'M', t:'Publicar a próxima entrega', s:'Como dono de uma organização, quero informar aos voluntários quando será a próxima entrega.', k:'s-pub'},
+  {m:'M', t:'Publicar a próxima ação', s:'Como dono de uma organização, quero informar aos voluntários quando será a próxima ação.', k:'s-pub'},
   {m:'M', g:true, t:'Agenda dos parceiros', s:'Como administrador do programa social, quero ver quando serão os próximos eventos dos parceiros.', k:'s-adm'},
   {m:'S', t:'Cadastro de organização', s:'Como dono de uma organização que doa alimentos, quero me cadastrar para me tornar parceiro.', k:'s-org'},
   {m:'S', g:true, t:'Escolher posto e horário', s:'Como voluntário, quero escolher horário, local e posto para ajudar de fato.', k:'s-posto'},
@@ -327,13 +334,24 @@ const STORIES = [
   {m:'W', t:'Programa unificado', s:'Como dono do programa social, quero unir todo o programa de doação sem depender de outras organizações.', k:null}
 ];
 const MOS_LABEL = {M:'Must have', S:'Should have', C:'Could have', W:'Won’t have agora'};
+const MOS_NOME = {M:'Essencial', S:'Importante', C:'Desejável', W:'Fora do escopo'};
+const flagIc = st => st.g ? '' : `<span class="flag" title="Acrescentada no protótipo, prioridade a confirmar" aria-label="Acrescentada no protótipo">${icon('flag',16)}</span>`;
+/* Roteiro completo: histórias agrupadas por prioridade */
 function storiesHtml() {
-  return `<div class="stories">${STORIES.map(st => `<div class="story"><span class="mos ${st.m}" title="${MOS_LABEL[st.m]}">${st.m}</span><span><b>${st.t}</b><p>${st.s}</p>${st.g ? '' : `<span class="src">Acrescentada no protótipo, prioridade a confirmar</span>`}${st.k ? `<button class="link start" data-a="story" data-k="${st.k}">Abrir no app</button>` : `<p>Fora do escopo desta versão.</p>`}</span></div>`).join('')}</div>`;
+  return ['M','S','C','W'].map(m => { const l = STORIES.filter(st => st.m === m); return `<section class="st-grp">
+    <div class="st-gh"><span class="mos ${m}" title="${MOS_LABEL[m]}">${m}</span><h2 class="h-md">${MOS_NOME[m]}</h2><span class="sec-meta">${plural(l.length,'história','histórias')}</span></div>
+    <div class="rule-list">${l.map(st => `<div class="story"><div class="story-t"><b>${st.t}</b>${flagIc(st)}</div><p>${st.s}</p>${st.k ? `<button class="link-ic start" data-a="story" data-k="${st.k}"><span>Abrir no app</span>${icon('arrow-right',16)}</button>` : `<small>Fora do escopo desta versão.</small>`}</div>`).join('')}</div>
+  </section>`; }).join('');
 }
-function roleSeg() {
+/* Lista compacta do painel do computador */
+function storiesMini() {
+  return `<div class="rule-list">${STORIES.map(st => `<div class="st-mini${st.k ? '' : ' off'}"><span class="mos sm ${st.m}" title="${MOS_LABEL[st.m]}">${st.m}</span><span class="st-mini-t">${st.t}${flagIc(st)}</span>${st.k ? `<button class="sec-link ic" data-a="story" data-k="${st.k}">Abrir${icon('arrow-right',16)}</button>` : '<small>Fora do escopo</small>'}</div>`).join('')}</div>`;
+}
+const ROLE_IC = { vol:'user', org:'house-heart', admin:'shield-check' };
+function roleSeg(ic = false) {
   const cur = S.role;
-  return `<div class="seg" role="group" aria-label="Ver o app como">
-    ${[['vol','Voluntário'],['org','Organização'],['admin','Administrador']].map(([r, l]) => `<button data-a="role" data-r="${r}" aria-pressed="${cur === r}">${l}</button>`).join('')}
+  return `<div class="seg${ic ? ' ic' : ''}" role="group" aria-label="Ver o app como">
+    ${[['vol','Voluntário'],['org','Organização'],['admin','Administrador']].map(([r, l]) => `<button data-a="role" data-r="${r}" aria-pressed="${cur === r}">${ic ? icon(ROLE_IC[r],16) : ''}${l}</button>`).join('')}
   </div>`;
 }
 function protoBlock() {
@@ -430,29 +448,52 @@ SCREENS['vol-cad-ok'] = () => {
   };
 };
 
-SCREENS['org-cad'] = () => ({
-  title:'Cadastro de organização',
-  body:`<div class="stack-6"><h2 class="h-lg">Dados da organização</h2><p class="muted small">Nossa equipe confere as informações antes de liberar o perfil para os voluntários.</p></div>
-    ${field({label:'Nome da organização', bind:'orgDraft.nome', ph:'Ex.: Cozinha Solidária do Gama', icon:'org', auto:'organization'})}
-    ${field({label:'CNPJ', bind:'orgDraft.cnpj', ph:'00.000.000/0000-00', icon:'doc', mask:'cnpj', mode:'numeric'})}
-    ${chipsField({label:'Tipo de organização', path:'orgDraft.tipo', options:['ONG','Empresa','Coletivo comunitário','Outro']})}
-    ${field({label:'Nome do responsável', bind:'orgDraft.resp', ph:'Quem responde pela organização', icon:'user', auto:'name'})}
-    ${field({label:'E-mail de contato', bind:'orgDraft.email', type:'email', ph:'contato@organizacao.org', icon:'mail', mode:'email'})}
-    ${field({label:'Telefone', bind:'orgDraft.tel', type:'tel', ph:'(61) 3333-3333', icon:'phone', mask:'tel', mode:'tel'})}
-    ${field({label:'Endereço da sede', bind:'orgDraft.endereco', ph:'Onde os voluntários podem entregar doações', icon:'pin'})}
-    ${taField({label:'O que a organização faz e quem atende?', bind:'orgDraft.sobre', ph:'Ex.: servimos 200 refeições por dia para…'})}
-    ${chipsField({label:'O que vocês distribuem?', path:'orgDraft.distribui', multi:true, options:['Cestas básicas','Refeições prontas','Lanches','Hortifrúti']})}
-    <button class="link start" data-a="fill-org">Preencher com dados de exemplo</button>`,
-  foot:`<button class="btn btn-primary btn-block" data-a="org-submit">Enviar cadastro</button>`
-});
+const DISTRIBUI = ['Cestas básicas','Refeições prontas','Lanches','Hortifrúti'];
+SCREENS['org-cad'] = () => {
+  const d = S.orgDraft;
+  return {
+    title:'Cadastro de organização', cls:'g24',
+    body:`<div class="head form"><h2 class="h-lg">Dados da organização</h2><p class="muted">Nossa equipe confere as informações antes de liberar o perfil para os voluntários.</p></div>
+      ${errSummary('enviar')}
+      <section class="fsec"><h3 class="h-md">Sobre a organização</h3>
+        ${field({label:'Nome da organização', bind:'orgDraft.nome', ph:'Ex.: Cozinha Solidária do Gama', auto:'organization', check:true})}
+        ${field({label:'CNPJ', bind:'orgDraft.cnpj', ph:'00.000.000/0000-00', mask:'cnpj', mode:'numeric', hint:'Usamos só para confirmar que a organização existe.', check:true})}
+        ${radioList({label:'Tipo de organização', path:'orgDraft.tipo', options:['ONG','Empresa','Coletivo comunitário','Outro']})}
+      </section>
+      <section class="fsec"><h3 class="h-md">Contato</h3>
+        ${field({label:'Nome do responsável', bind:'orgDraft.resp', ph:'Quem responde pela organização', auto:'name', check:true})}
+        ${field({label:'E-mail de contato', bind:'orgDraft.email', type:'email', ph:'contato@organizacao.org', mode:'email', auto:'email', check:true})}
+        ${field({label:'Telefone', bind:'orgDraft.tel', type:'tel', ph:'(61) 3333-3333', mask:'tel', mode:'tel', auto:'tel', check:true})}
+        ${field({label:'Endereço da sede', bind:'orgDraft.endereco', ph:'Rua, número e bairro', hint:'Os voluntários podem entregar doações neste endereço.', action:{ a:'org-locate', icon:'locate-fixed', label:'Usar minha localização' }, check:true})}
+      </section>
+      <section class="fsec"><h3 class="h-md">O que vocês fazem</h3>
+        ${taField({label:'O que a organização faz e quem atende?', bind:'orgDraft.sobre', ph:'Ex.: servimos 200 refeições por dia para famílias do Gama.'})}
+        <div class="field grp${S.errors.distribui ? ' err' : ''}"><span class="grp-h"><span class="lbl" id="lbl-distribui">O que vocês distribuem?</span><span class="hint">Escolha uma ou mais opções.</span></span>
+          <div class="ck-grid" role="group" aria-labelledby="lbl-distribui">${DISTRIBUI.map(n => { const on = d.distribui.includes(n); return `<button type="button" class="ck" role="checkbox" aria-checked="${on}" data-a="toggle" data-p="orgDraft.distribui" data-v="${n}" data-k="distribui"><span class="cb">${on ? icon('check',16) : ''}</span><span>${n}</span></button>`; }).join('')}</div>
+          ${errMsg('distribui')}</div>
+        ${prefill('fill-org')}
+      </section>`,
+    foot:`<button class="btn btn-primary btn-block" data-a="org-submit">Enviar cadastro</button>`
+  };
+};
 
 SCREENS['org-cad-ok'] = () => {
-  const o = myOrg();
+  const o = myOrg(); const d = HOJE;
+  const passo = (st, t, sub) => `<li class="tl-i ${st}"><span class="tl-m"><span class="tl-dot">${st === 'ok' ? icon('check',14) : ''}</span><span class="tl-line"></span></span><span class="tl-t"><b>${t}</b><small>${sub}</small></span></li>`;
   return {
     top:`<div class="gingham" aria-hidden="true"></div>`,
-    body:`<div class="done">${seal()}<h2 class="h-xl">Cadastro enviado!</h2><p class="muted">Nossa equipe valida os dados da ${esc(o?.nome || 'organização')} em até 7 dias.</p></div>
-      <div class="notice">${icon('info',20)}<span><b>Já dá para preparar a próxima entrega</b><span class="small">Os eventos que você publicar aparecem para os voluntários assim que o cadastro for aprovado.</span></span></div>`,
-    foot:`<button class="btn btn-primary btn-block" data-a="org-enter">Ir para o painel</button>`
+    cls:'success wide',
+    body:`<div class="done left">${seal()}<h2 class="h-xl">Cadastro enviado!</h2><p class="muted">Nossa equipe valida os dados da ${esc(o?.nome || 'organização')} em até 7 dias.</p></div>
+      <ol class="tl" aria-label="Andamento do cadastro">
+        ${passo('ok', 'Cadastro enviado', `Hoje, ${d.getDate()} de ${MESL[d.getMonth()]}`)}
+        ${passo('now', 'Validação dos dados', 'Em até 7 dias. Você recebe o resultado por e-mail.')}
+        ${passo('next', 'Perfil liberado', 'Suas ações passam a aparecer para os voluntários.')}
+      </ol>
+      <section class="meanwhile"><h3 class="label-14">Enquanto isso, você já pode:</h3>
+        <button class="mw" data-a="org-enter" data-r="o-novo-evento">${icon('circle-plus',20)}<span>Preparar a próxima ação</span></button>
+        <button class="mw" data-a="org-enter" data-r="o-perfil">${icon('building-2',20)}<span>Completar o perfil da organização</span></button>
+      </section>`,
+    foot:`<button class="btn btn-primary btn-block" data-a="org-enter">Ir para o painel ${icon('arrow-right',20)}</button>`
   };
 };
 
@@ -464,9 +505,13 @@ function vagasLinha(e) {
   const l = vagasLivres(e);
   return l ? `<span class="evr-spots">${icon('users',14)}${plural(l,'vaga livre','vagas livres')}</span>` : `<span class="evr-spots full">${icon('users',14)}Lotado</span>`;
 }
-function eventRow(e, route = 'v-evento', ins = null, org = false) {
+function eventRow(e, route = 'v-evento', ins = null, modo = '') {
+  const org = modo === 'org', adm = modo === 'admin';
   const d = toDate(e.data);
-  const meta = org
+  const pendOrg = adm && orgOf(e.orgId).status !== 'aprovada';
+  const meta = adm
+    ? `<span>${icon('clock-3',14)}${e.inicio}–${e.fim}</span><span>${icon('map-pin',14)}${esc(e.endereco)}</span>${pendOrg ? `<span class="evr-spots pend">${icon('hourglass',14)}Parceiro em validação</span>` : `<span class="evr-spots">${icon('users',14)}${inscritosTotal(e)} de ${vagasTotal(e)} inscritos${e.itens.length ? ' · ' + plural(e.itens.length,'item pedido','itens pedidos') : ''}</span>`}`
+    : org
     ? `<span>${icon('clock-3',14)}${e.inicio}–${e.fim}</span><span>${icon('map-pin',14)}${esc(e.endereco)}</span><span class="evr-spots">${icon('users',14)}${inscritosTotal(e)} de ${plural(vagasTotal(e),'vaga preenchida','vagas preenchidas')}</span>`
     : ins
     ? `<span>${icon('clock-3',14)}${e.turnos[ins.turno]} · seu turno</span><span>${icon('map-pin',14)}${esc(e.local)}</span><span class="evr-spots">${icon('circle-check',14)}Inscrito · ${esc(e.postos[ins.posto].nome)}</span>`
@@ -889,7 +934,7 @@ SCREENS['o-painel'] = () => {
     cls:'home',
     body:`${o.status !== 'aprovada' ? `<div class="notice">${icon('hourglass',20)}<span><b>Cadastro em validação</b><span class="small">Você já pode publicar ações. Elas aparecem para os voluntários assim que a equipe MEZA aprovar a organização.</span></span></div>` : ''}
       <section class="sec tight">${secHead('Suas próximas ações', `<button class="sec-link ic" data-a="tab" data-r="o-novo-evento">${icon('plus',16)}Nova ação</button>`)}
-        ${evs.length ? `<div class="rule-list">${evs.map(e => eventRow(e, 'o-evento', null, true)).join('')}</div>` : `<p class="muted small">Nenhuma ação publicada. <button class="link" data-a="tab" data-r="o-novo-evento">Publicar a próxima</button></p>`}
+        ${evs.length ? `<div class="rule-list">${evs.map(e => eventRow(e, 'o-evento', null, 'org')).join('')}</div>` : `<p class="muted small">Nenhuma ação publicada. <button class="link" data-a="tab" data-r="o-novo-evento">Publicar a próxima</button></p>`}
       </section>
       <section class="sec tight">${secHead('Alimentos a caminho', proms.length > 2 && !todos ? '<button class="sec-link" data-a="painel-tudo">Ver todos</button>' : '')}
         ${proms.length ? `<div class="rule-list">${(todos ? proms : proms.slice(0, 2)).map(p => promessaLi(p)).join('')}</div>` : '<p class="muted small">Nenhuma doação de alimentos combinada ainda.</p>'}
@@ -953,7 +998,7 @@ function eventoGestao(e, admin, novo) {
   const proms = S.promessas.filter(p => p.entrega.tipo === 'evento' && p.entrega.eventId === e.id);
   const ins = inscritosTotal(e), tot = vagasTotal(e), livres = vagasLivres(e);
   const pend = o.status !== 'aprovada';
-  const aviso = novo ? (pend
+  const aviso = admin ? '' : novo ? (pend
       ? `<div class="notice">${icon('hourglass',20)}<span><b>Ação salva</b><span class="small">Ela aparece para os voluntários assim que a equipe MEZA aprovar a organização.</span></span></div>`
       : `<div class="notice g">${icon('circle-check',20)}<span><b>Ação publicada</b><span class="small">Os voluntários já podem se inscrever. Você recebe um aviso a cada nova inscrição.</span></span></div>`)
     : pend ? `<div class="notice">${icon('hourglass',20)}<span><b>Parceiro em validação</b><span class="small">Esta ação fica oculta aos voluntários até a aprovação da organização.</span></span></div>` : '';
@@ -966,15 +1011,14 @@ function eventoGestao(e, admin, novo) {
       ${info('map-pin', esc(e.local), e.endereco && e.endereco !== e.local ? esc(e.endereco) : '')}
       ${info('users', `${ins} de ${plural(tot,'vaga preenchida','vagas preenchidas')}`, livres ? plural(livres,'vaga livre','vagas livres') : 'Todas as vagas preenchidas')}
     </div>
-    ${admin && e.desc ? `<div class="about"><p>${esc(e.desc)}</p>${e.nota ? `<p class="note">${icon('info',16)}<span>${esc(e.nota)}</span></p>` : ''}</div>` : ''}
     <section class="sec tight">${secHead('Postos e inscritos', `<span class="sec-meta num">${ins} de ${tot}</span>`)}
-      <div class="rule-list">${e.postos.map((p, i) => { const ns = nomesPosto(e, i); return `<div class="posto-r"><div class="posto-t"><b>${esc(p.nome)}</b><span class="num${p.vagas - p.inscritos === 1 ? ' warn' : ''}">${p.inscritos} de ${p.vagas}</span></div>${prog(p.inscritos, p.vagas, 0, 'thin g')}<small>${ns.length ? esc(ns.join(', ')) : 'Ninguém inscrito ainda'}</small></div>`; }).join('')}</div>
+      <div class="rule-list">${e.postos.map((p, i) => { const ns = nomesPosto(e, i); return `<div class="posto-r"><div class="posto-t"><b>${esc(p.nome)}</b><span class="num${p.inscritos < p.vagas && p.inscritos / p.vagas >= .8 ? ' warn' : ''}">${p.inscritos} de ${p.vagas}</span></div>${prog(p.inscritos, p.vagas, 0, 'thin g')}<small>${ns.length ? esc(ns.join(', ')) : 'Ninguém inscrito ainda'}</small></div>`; }).join('')}</div>
     </section>
     ${e.itens.length ? `<section class="sec tight">${secHead('Itens a caminho')}<p class="hint">Pedidos nesta ação: ${listaNomes(nomesItens)}.</p>
       ${proms.length ? `<div class="rule-list">${proms.map(p => promessaLi(p, false)).join('')}</div>` : '<p class="muted small">Nenhuma doação de alimentos combinada ainda.</p>'}</section>` : ''}
-    ${admin ? `<section class="sec tight">${secHead('Parceiro')}
+    ${admin ? `<section class="sec tight">${secHead('Parceiro', `<button class="sec-link" data-a="go" data-r="a-org" data-id="${o.id}">Ver perfil</button>`)}
       <div class="rule-list"><div class="info pad-y">
-        ${info('hand-coins', `<span class="num">${brl(o.arrecadado)}</span>`, 'Doações em dinheiro')}
+        ${info('hand-coins', `<span class="num">${brl(o.arrecadado)}</span>`, 'Doações em dinheiro recebidas')}
         ${info('user', esc(o.resp), 'Responsável')}
         ${info('phone', `<span class="selectable">${esc(o.tel)}</span>`, 'Telefone')}
         ${info('mail', `<span class="selectable">${esc(o.email)}</span>`, 'E-mail')}
@@ -1020,72 +1064,117 @@ SCREENS['a-eventos'] = () => {
   const orgsAg = S.orgs.filter(o => todos.some(e => e.orgId === o.id));
   if (S.afiltro !== 'todos' && !orgsAg.some(o => o.id === S.afiltro)) S.afiltro = 'todos';
   const evs = todos.filter(e => S.afiltro === 'todos' || e.orgId === S.afiltro);
-  const grupos = [['Próximos 7 dias', e => diff(e.data) <= 7], ['Na semana seguinte', e => diff(e.data) > 7 && diff(e.data) <= 14], ['Mais adiante', e => diff(e.data) > 14]];
+  const grupos = [['Próximos 7 dias', e => diff(e.data) <= 7], ['Semana que vem', e => diff(e.data) > 7 && diff(e.data) <= 14], ['Mais adiante', e => diff(e.data) > 14]];
   const livres = evs.reduce((s, e) => s + vagasLivres(e), 0);
+  const nOrgs = new Set(evs.map(e => e.orgId)).size;
   return {
-    title:'Agenda dos parceiros',
-    body:`<div class="card stack-xs"><span class="small muted">Visão geral</span><p class="summary"><b class="num">${plural(evs.length,'entrega','entregas')}</b> nas próximas semanas, com <b class="num">${livres}</b> vagas livres em <b class="num">${plural(new Set(evs.map(e => e.orgId)).size,'parceiro','parceiros')}</b>.</p></div>
-      <div class="chips x" role="group" aria-label="Filtrar por parceiro"><button class="chip" aria-pressed="${S.afiltro === 'todos'}" data-a="afiltro" data-v="todos">Todos</button>${orgsAg.map(o => `<button class="chip" aria-pressed="${S.afiltro === o.id}" data-a="afiltro" data-v="${o.id}">${esc(o.nome)}</button>`).join('')}</div>
-      ${grupos.map(([g, f]) => { const l = evs.filter(f); return l.length ? `<section class="sec"><h2 class="h-sm">${g}</h2>${l.map(e => eventCard(e, 'a-evento', `<span class="badge ${vagasLivres(e) ? '' : 'n'}">${inscritosTotal(e)}/${vagasTotal(e)} inscritos</span>${e.itens.length ? `<span class="badge t">${plural(e.itens.length,'item pedido','itens pedidos')}</span>` : ''}${orgOf(e.orgId).status !== 'aprovada' ? '<span class="badge y">Parceiro em validação</span>' : ''}`)).join('')}</section>` : ''; }).join('')}`,
+    top:`<header class="page-h gut"><div class="head form"><h1 class="h-lg">Agenda dos parceiros</h1><p class="muted">${plural(evs.length,'ação','ações')} nas próximas semanas, com ${plural(livres,'vaga livre','vagas livres')} em ${plural(nOrgs,'parceiro','parceiros')}.</p></div></header>`,
+    cls:'form-top',
+    body:`${selectField({ label:'Parceiro', bind:'afiltro', options:[['todos','Todos os parceiros'], ...orgsAg.map(o => [o.id, o.nome])] })}
+      ${grupos.map(([g, f]) => { const l = evs.filter(f); return l.length ? `<section class="grp-ev"><h2 class="grp-l">${g}</h2><div class="rule-list open">${l.map(e => eventRow(e, 'a-evento', null, 'admin')).join('')}</div></section>` : ''; }).join('') || '<p class="muted">Nenhuma ação marcada nas próximas semanas.</p>'}`,
     tabs:'admin', tabOn:'a-eventos'
   };
 };
 SCREENS['a-evento'] = () => { const e = evOf(S.params.id); return { title:'Detalhes da ação', body:eventoGestao(e, true) }; };
 
+/* Perfil de um parceiro visto pelo administrador */
+function orgHead(o) {
+  return `<div class="prof"><span class="avatar lg">${initials(o.nome)}</span><span><b>${esc(o.nome)}</b><small>${esc(o.tipo)}${o.cnpj ? ' · CNPJ ' + esc(o.cnpj) : ''}</small>${orgStatus(o, 'st-ic')}</span></div>
+    ${o.sobre ? `<p class="prof-about">${esc(o.sobre)}</p>` : ''}`;
+}
+function orgContato(o) {
+  return `<div class="rule-list"><div class="info pad-y">
+    ${info('user', esc(o.resp), 'Responsável')}
+    ${info('phone', `<span class="selectable">${esc(o.tel)}</span>`, 'Telefone')}
+    ${info('mail', `<span class="selectable">${esc(o.email)}</span>`, 'E-mail')}
+    ${info('map-pin', esc(o.endereco), 'Endereço')}
+    ${info('clock-3', esc(o.horario), 'Horário de atendimento')}
+  </div></div>`;
+}
+SCREENS['a-org'] = () => {
+  const o = orgOf(S.params.id); const evs = futuros().filter(e => e.orgId === o.id);
+  return {
+    title:'Perfil do parceiro', cls:'g32',
+    body:`<div class="prof-h stack-sm">${orgHead(o)}</div>
+      <section class="sec tight">${secHead('Contato')}${orgContato(o)}</section>
+      <section class="sec tight">${secHead('Ações na agenda')}
+        ${evs.length ? `<div class="rule-list">${evs.map(e => eventRow(e, 'a-evento', null, 'admin')).join('')}</div>` : '<p class="muted small">Nenhuma ação marcada.</p>'}</section>`
+  };
+};
+
+/* Validações: cada cadastro fica numa linha; depois de revisado mostra o resultado e "Desfazer" */
+const listaAjudas = arr => arr.map((a, i) => i ? a.charAt(0).toLowerCase() + a.slice(1) : a).join(', ');
+function valBtns(kind, x) {
+  if (x.revisado || x.revisada) {
+    const ok = /aprovad/.test(x.status);
+    const txt = kind === 'vol' ? (ok ? 'Cadastro aprovado. O aviso vai por e-mail.' : 'Cadastro recusado. O aviso vai por e-mail.') : (ok ? 'Organização aprovada. As ações dela já aparecem para os voluntários.' : 'Cadastro recusado. A organização recebe o motivo por e-mail.');
+    return `<div class="val-done${ok ? '' : ' no'}" role="status">${icon(ok ? 'circle-check' : 'circle-alert',20)}<span>${txt}</span><button class="sec-link" data-a="desfazer" data-kind="${kind}" data-id="${x.id}">Desfazer</button></div>`;
+  }
+  const rej = S.confirm === `rej-${kind}-${x.id}`;
+  return `<div class="val-btns"><button class="btn ${rej ? 'btn-warn' : 'btn-cancel'} btn-md" data-a="reject" data-kind="${kind}" data-id="${x.id}">${rej ? 'Confirmar recusa' : 'Recusar'}</button><button class="btn btn-primary btn-md" data-a="approve" data-kind="${kind}" data-id="${x.id}">Aprovar</button></div>`;
+}
+const kvLinha = (l, v) => `<div class="kv-l"><small>${l}</small><span>${v}</span></div>`;
 SCREENS['a-validacoes'] = () => {
   const pv = pendentesVol(), po = pendentesOrg();
   const tab = S.valTab;
-  const btns = (kind, id) => {
-    const rej = S.confirm === `rej-${kind}-${id}`;
-    return `<div class="row"><button class="btn ${rej ? 'btn-warn' : 'btn-ghost'} btn-sm btn-grow" data-a="reject" data-kind="${kind}" data-id="${id}">${rej ? 'Confirmar recusa' : 'Recusar'}</button><button class="btn btn-primary btn-sm btn-grow" data-a="approve" data-kind="${kind}" data-id="${id}">${icon('check',18)} Aprovar</button></div>`;
-  };
   let lista;
   if (tab === 'vol') {
-    lista = pv.length ? pv.map(v => `<div class="card stack">
-        <div class="person"><span class="avatar">${initials(v.nome)}</span><span><b>${esc(v.nome)}</b>${v.id === 'me' ? ' <span class="badge y">você</span>' : ''}<small>Cadastro ${esc(v.quando)} · ${esc(v.cidade)}</small></span></div>
+    const vs = S.pendVol.filter(v => v.status === 'pendente' || v.revisado);
+    lista = vs.length ? vs.map(v => `<article class="val">
+        <div class="person"><span class="avatar">${initials(v.nome)}</span><span><b>${esc(v.nome)}${v.id === 'me' ? ' <span class="you">· você</span>' : ''}</b><small>Enviado ${esc(v.quando)} · ${esc(v.cidade)}</small></span></div>
         <p class="quote">${esc(v.motivacao)}</p>
-        <div class="chips">${v.ajudas.map(a => `<span class="badge n">${a}</span>`).join('')}<span class="badge n">${esc(v.freq)}</span></div>
-        ${v.exp ? `<div class="stack-xs"><span class="small muted">Experiência</span><p class="small">${esc(v.exp)}</p></div>` : ''}
-        ${btns('vol', v.id)}</div>`).join('') : `<p class="muted">Nenhum voluntário aguardando validação.</p>`;
+        <div class="kv-ls">${kvLinha('Como quer ajudar', esc(listaAjudas(v.ajudas)))}${kvLinha('Frequência', esc(v.freq))}${v.exp ? kvLinha('Experiência', esc(v.exp)) : ''}</div>
+        ${valBtns('vol', v)}</article>`).join('') : `<p class="muted">Nenhum voluntário aguardando validação.</p>`;
   } else {
-    lista = po.length ? po.map(o => `<div class="card stack">
-        <div class="person"><span class="avatar">${initials(o.nome)}</span><span><b>${esc(o.nome)}</b>${o.id === 'o-me' ? ' <span class="badge y">sua</span>' : ''}<small>${esc(o.tipo)} · enviado ${esc(o.enviado || 'agora')}</small></span></div>
-        <p class="small">${esc(o.sobre)}</p>
-        <div class="kv sm">${icon('doc',16)}<span class="selectable">CNPJ ${esc(o.cnpj)}</span>${icon('user',16)}<span>${esc(o.resp)} · <span class="selectable">${esc(o.tel)}</span></span>${icon('pin',16)}<span>${esc(o.endereco)}</span></div>
-        <div class="chips">${o.distribui.map(a => `<span class="badge n">${a}</span>`).join('')}</div>
-        ${btns('org', o.id)}</div>`).join('') : `<p class="muted">Nenhuma organização aguardando validação.</p>`;
+    const os = S.orgs.filter(o => o.status === 'pendente' || o.revisada);
+    lista = os.length ? os.map(o => { const n = S.events.filter(e => e.orgId === o.id).length; return `<article class="val">
+        <div class="person"><span class="avatar">${initials(o.nome)}</span><span><b>${esc(o.nome)}${o.id === 'o-me' ? ' <span class="you">· sua</span>' : ''}</b><small>${esc(o.tipo)} · enviado ${esc(o.enviado || 'agora')}</small></span></div>
+        <p>${esc(o.sobre)}</p>
+        <div class="info">
+          ${info('file-text', `<span class="selectable">${esc(o.cnpj)}</span>`, 'CNPJ')}
+          ${info('user', esc(o.resp), `Responsável · <span class="selectable">${esc(o.tel)}</span>`)}
+          ${info('map-pin', esc(o.endereco), 'Endereço')}
+          ${info('carrot', esc(o.distribui.join(', ')), 'O que doa')}
+        </div>
+        ${n && !o.revisada ? `<p class="note-r">${icon('info',16)}<span>Já publicou ${plural(n,'ação, que aparece','ações, que aparecem')} na agenda como “Parceiro em validação”.</span></p>` : ''}
+        ${valBtns('org', o)}</article>`; }).join('') : `<p class="muted">Nenhuma organização aguardando validação.</p>`;
   }
-  const revisados = tab === 'vol' ? S.pendVol.filter(v => v.status !== 'pendente').map(v => [v.nome, v.status]) : S.orgs.filter(o => o.revisada).map(o => [o.nome, o.status]);
   return {
-    title:'Validações',
-    body:`<p class="lede">Confira os cadastros antes de liberar o acesso. O prazo prometido a quem se cadastra é de 7 dias.</p>
-      <div class="seg" role="group" aria-label="Tipo de cadastro"><button data-a="valtab" data-v="vol" aria-pressed="${tab === 'vol'}">Voluntários (${pv.length})</button><button data-a="valtab" data-v="org" aria-pressed="${tab === 'org'}">Organizações (${po.length})</button></div>
-      <div class="stack">${lista}</div>
-      ${revisados.length ? `<section class="sec"><h2 class="h-sm">Revisados nesta sessão</h2><div class="card"><div class="list">${revisados.map(([n, s]) => `<div class="li-plain"><span>${esc(n)}</span>${/aprovad/.test(s) ? '<span class="badge">Aprovado</span>' : '<span class="badge t">Recusado</span>'}</div>`).join('')}</div></div></section>` : ''}`,
+    top:`<header class="page-h gut"><div class="head form"><h1 class="h-lg">Validações</h1><p class="muted">Confira os cadastros antes de liberar o acesso. Quem se cadastra recebe a resposta em até 7 dias.</p></div>
+      <div class="ftabs" role="group" aria-label="Tipo de cadastro"><button class="ftab" data-a="valtab" data-v="vol" aria-pressed="${tab === 'vol'}">Voluntários (${pv.length})</button><button class="ftab" data-a="valtab" data-v="org" aria-pressed="${tab === 'org'}">Organizações (${po.length})</button></div></header>`,
+    cls:'after-tabs',
+    body:`<div class="rule-list open vals">${lista}</div>`,
     tabs:'admin', tabOn:'a-validacoes'
   };
 };
 
-SCREENS['a-perfil'] = () => ({
-  title:'Perfil',
-  body:`<div class="ident"><span class="avatar lg">${icon('shield',28)}</span><span><b class="h-md">Equipe MEZA</b><span class="small muted">Administração do programa · Brasília – DF</span></span></div>
-    <div class="stats"><div class="stat"><b>${S.orgs.filter(o => o.status === 'aprovada').length}</b><small>parceiros ativos</small></div><div class="stat"><b>${futuros().length}</b><small>entregas na agenda</small></div><div class="stat"><b>${pendentesVol().length + pendentesOrg().length}</b><small>cadastros pendentes</small></div></div>
-    ${protoBlock()}`,
-  tabs:'admin', tabOn:'a-perfil'
-});
+SCREENS['a-perfil'] = () => {
+  const pend = pendentesVol().length + pendentesOrg().length;
+  const st = (n, a, b, cls = '') => `<div class="pstat"><b class="num${cls}">${n}</b><small>${a}<br>${b}</small></div>`;
+  const parc = S.orgs.filter(o => o.status === 'aprovada').length, ag = futuros().length;
+  return {
+    top:`<header class="page-h gut prof-h"><h1 class="h-lg">Perfil</h1>
+      <div class="prof"><span class="avatar lg">${icon('shield-check',28)}</span><span><b>Equipe MEZA</b><small>Administração do programa · Brasília – DF</small></span></div>
+      <div class="pstats">${st(parc, parc === 1 ? 'parceiro' : 'parceiros', parc === 1 ? 'ativo' : 'ativos')}${st(ag, ag === 1 ? 'ação na' : 'ações na', 'agenda')}${st(pend, pend === 1 ? 'cadastro' : 'cadastros', pend === 1 ? 'pendente' : 'pendentes', pend ? ' warn' : '')}</div></header>`,
+    cls:'perfil',
+    body:protoBlock(),
+    tabs:'admin', tabOn:'a-perfil'
+  };
+};
 
 SCREENS.roteiro = () => ({
-  title:'Roteiro do protótipo',
-  body:`<p class="lede">Cada história de usuário abre a tela que a atende. As quatro histórias da folha do grupo mantêm a prioridade definida lá. As demais foram acrescentadas no protótipo e a prioridade delas ainda precisa ser confirmada.</p>
-    <div>${storiesHtml()}</div>
-    ${S.role ? '' : `<div class="card stack"><b>Ver o app como</b>${roleSeg()}</div>`}`
+  title:'Roteiro do protótipo', cls:'g32',
+  body:`<div class="head form"><h2 class="h-lg">Histórias de usuário</h2><p class="muted">Cada história abre a tela que a atende. As quatro histórias da folha do grupo mantêm a prioridade definida lá.</p>
+      <p class="note-r flagged">${icon('flag',16)}<span>Acrescentada no protótipo: a prioridade ainda precisa ser confirmada pelo grupo.</span></p></div>
+    ${storiesHtml()}
+    ${S.role ? '' : `<section class="sec tight">${secHead('Ver o app como')}${roleSeg()}</section>`}`
 });
 
 /* ================= abas ================= */
 const TABS = {
   vol:[['v-home','Início','house'],['v-eventos','Ações','calendar-days'],['v-doar','Doar','hand-heart'],['v-perfil','Perfil','circle-user-round']],
   org:[['o-painel','Painel','layout-grid'],['o-novo-evento','Publicar','circle-plus'],['o-perfil','Perfil','building-2']],
-  admin:[['a-eventos','Agenda','calendar'],['a-validacoes','Validações','shield'],['a-perfil','Perfil','user']]
+  admin:[['a-eventos','Agenda','calendar-days'],['a-validacoes','Validações','shield-check'],['a-perfil','Perfil','circle-user-round']]
 };
 function tabsHtml(k, on) {
   return `<nav class="tabs gut" aria-label="Navegação principal">${TABS[k].map(([r, l, ic]) => {
@@ -1113,11 +1202,20 @@ function render(top) {
     if (f) { f.focus({ preventScroll:true }); f.scrollIntoView({ block:'center', behavior:'smooth' }); }
   }
 }
+const ROTA_NOME = { welcome:'Boas-vindas', 'vol-cad-1':'Cadastro de voluntário, etapa 1', 'vol-cad-2':'Cadastro de voluntário, etapa 2', 'vol-cad-ok':'Cadastro enviado', 'org-cad':'Cadastro de organização', 'org-cad-ok':'Cadastro de organização enviado',
+  'v-home':'Início do voluntário', 'v-eventos':'Próximas ações', 'v-evento':'Detalhes da ação', 'v-inscricao-ok':'Vaga reservada', 'v-doar':'Doar', 'v-valor':'Valor da doação', 'v-metodo':'Forma de pagamento', 'v-checkout':'Pagamento', 'v-entrega':'Entrega em mãos', 'v-doacao-ok':'Doação concluída', 'v-alimentos':'Doar alimentos', 'v-alimentos-entrega':'Entrega dos alimentos', 'v-alimentos-ok':'Doação combinada', 'v-perfil':'Perfil do voluntário', 'v-ajuda':'Como quero ajudar',
+  'o-painel':'Painel da organização', 'o-novo-evento':'Publicar ação', 'o-evento':'Detalhes da ação', 'o-perfil':'Perfil da organização', 'o-perfil-editar':'Editar contato',
+  'a-eventos':'Agenda dos parceiros', 'a-evento':'Detalhes da ação', 'a-org':'Perfil do parceiro', 'a-validacoes':'Validações', 'a-perfil':'Perfil do administrador', roteiro:'Roteiro do protótipo' };
 function renderGuide() {
-  $guide.innerHTML = `<div class="stack-sm"><div class="logo">meza</div><p class="slogan">A mesa é de todos.</p><p class="values">Mobilização · Empatia · Zelo · Alimentação</p></div>
-    <div class="guide-card stack"><span class="label">Ver o app como</span>${roleSeg()}<div class="guide-actions"><button class="link" data-a="home">Voltar para a tela de cadastro</button><span class="row" style="gap:var(--s-2)"><button class="btn btn-ghost btn-sm" data-a="fullscreen">${document.fullscreenElement ? icon('shrink',18) + ' Sair da tela cheia' : icon('expand',18) + ' Tela cheia'}</button></span></div></div>
-    <div class="guide-card sec"><h2 class="h-sm">Histórias de usuário (MoSCoW)</h2>${storiesHtml()}</div>
-    <p class="hint">Protótipo funcional com dados de exemplo. Nenhum pagamento é processado e nada é enviado.</p>`;
+  const nome = ROTA_NOME[S.route] || 'MEZA';
+  const fs = document.fullscreenElement;
+  $guide.innerHTML = `<div class="g-brand"><div class="logo">meza</div><p class="slogan">A mesa é de todos.</p><p class="values">Mobilização · Empatia · Zelo · Alimentação</p></div>
+    <section class="g-sec"><span class="label-14">Ver o app como</span>${roleSeg(true)}
+      <p class="note-r">${icon('smartphone',16)}<span>Tela atual: ${nome}. ${S.route === 'welcome' ? 'Escolha um perfil para explorar sem cadastro.' : 'Os dados são de exemplo.'}</span></p>
+      <div class="g-links"><button class="link-ic" data-a="home">${icon('rotate-ccw',16)}<span>Recomeçar pelo cadastro</span></button><button class="link-ic" data-a="fullscreen">${icon(fs ? 'minimize' : 'maximize',16)}<span>${fs ? 'Sair da tela cheia' : 'Tela cheia'}</span></button></div>
+    </section>
+    <section class="g-sec tight">${secHead('Histórias de usuário', `<button class="sec-link ic" data-a="go" data-r="roteiro">Ver roteiro completo${icon('arrow-right',16)}</button>`)}${storiesMini()}
+      <p class="note-r flagged">${icon('flag',16)}<span>Acrescentada no protótipo, prioridade a confirmar</span></p></section>`;
 }
 /* Aparelho do computador: encolhe o celular inteiro quando a janela é baixa (868 = 844 da tela + 24 de moldura). */
 const fitPhone = () => document.documentElement.style.setProperty('--k', Math.max(.55, Math.min(1, (innerHeight - 48) / 868)).toFixed(3));
@@ -1214,7 +1312,7 @@ const A = {
   'start-org'() { go('org-cad'); },
   'fill-vol1'() { Object.assign(S.volDraft, { nome:'Lucas Almeida', email:'lucas.almeida@email.com', telefone:'(61) 98877-6655', genero:'Masculino', nascimento:'2001-08-22', endereco:'QNL 12, casa 8, Taguatinga Norte' }); S.errors = {}; render(false); },
   'fill-vol2'() { Object.assign(S.volDraft, { exp:'Ajudei na distribuição de cestas da paróquia do bairro em 2024.', motivacao:'Quero transformar parte do meu tempo livre em comida no prato de quem precisa.', freq:'A cada 15 dias', ajudas:['Trabalhar em eventos','Doar alimentos'] }); S.errors = {}; render(false); },
-  'fill-org'() { Object.assign(S.orgDraft, { nome:'Cozinha Solidária do Gama', cnpj:'27.615.904/0001-58', tipo:'Coletivo comunitário', resp:'Dona Lourdes Pereira', email:'cozinhagama@email.com', tel:'(61) 99654-3210', endereco:'Setor Leste, Quadra 9, Gama', sobre:'Servimos 150 almoços por dia para trabalhadores informais e famílias do bairro.', distribui:['Refeições prontas'] }); S.errors = {}; render(false); },
+  'fill-org'() { Object.assign(S.orgDraft, { nome:'Cozinha Solidária do Gama', cnpj:'27.615.904/0001-58', tipo:'Coletivo comunitário', resp:'Lourdes Pereira', email:'cozinhagama@email.com', tel:'(61) 99654-3210', endereco:'Setor Leste, Quadra 9, Gama', sobre:'Servimos 150 almoços por dia para trabalhadores informais e famílias do bairro.', distribui:['Cestas básicas','Refeições prontas'] }); S.errors = {}; render(false); },
   'fill-ev'() { Object.assign(S.evDraft, { tipo:'Distribuição de cestas', titulo:'Entrega de cestas de fim de mês', inicio:'08:00', fim:'12:00', desc:'Chegue 15 minutos antes. Use roupa confortável e sapato fechado. Água e lanche por nossa conta.', postos:[{ nome:'Recepção das famílias', vagas:4 }, { nome:'Entrega das cestas', vagas:8 }, { nome:'Carga e descarga', vagas:3 }], itens:['Arroz','Feijão','Óleo de soja'] }); S.errors = {}; render(false); },
   'vol-next'() { const e = valVol1(S.volDraft); Object.keys(e).length ? fail(e) : go('vol-cad-2'); },
   'open-date'(d, el) { const i = el.closest('.inp').querySelector('input'); try { i.showPicker(); } catch (err) { i.focus(); } },
@@ -1237,7 +1335,13 @@ const A = {
     S.needs['o-me'] = [];
     S.myOrgId = 'o-me'; S.evDraft = null; S.orgDraft = blankOrg(); S.stack = []; S.route = 'org-cad-ok'; S.params = {}; render(true);
   },
-  'org-enter'() { S.role = 'org'; tab('o-painel'); },
+  'org-enter'(d) { S.role = 'org'; tab(d.r || 'o-painel'); },
+  'org-locate'() { S.orgDraft.endereco = 'Setor Leste, Quadra 9, Gama'; delete S.errors.endereco; render(false); toast('Localização simulada: endereço preenchido.'); },
+  desfazer(d) {
+    if (d.kind === 'vol') { const v = S.pendVol.find(x => x.id === d.id); v.status = 'pendente'; v.revisado = false; if (d.id === 'me' && S.user) S.user.status = 'em_validacao'; }
+    else { const o = orgOf(d.id); o.status = 'pendente'; o.revisada = false; }
+    S.confirm = null; render(false);
+  },
   pick(d) { setPath(d.p, d.n ? Number(d.v) : d.v); if (d.k) delete S.errors[d.k]; render(false); },
   toggle(d) { const arr = getPath(d.p); const i = arr.indexOf(d.v); i < 0 ? arr.push(d.v) : arr.splice(i, 1); if (d.k) delete S.errors[d.k]; render(false); },
   filtro(d) { S.filtro = d.v; render(false); },
@@ -1344,16 +1448,16 @@ const A = {
     S.evDraft = null; S.stack = [{ route:'o-painel', params:{} }]; S.route = 'o-evento'; S.params = { id, novo:true }; render(true);
   },
   approve(d) {
-    if (d.kind === 'vol') { const v = S.pendVol.find(x => x.id === d.id); v.status = 'aprovado'; if (d.id === 'me' && S.user) S.user.status = 'aprovado'; toast(`${first(v.nome)} foi aprovado e já pode se inscrever.`); }
-    else { const o = orgOf(d.id); o.status = 'aprovada'; o.revisada = true; toast(`${o.nome} aprovada. As entregas dela já aparecem para os voluntários.`); }
+    if (d.kind === 'vol') { const v = S.pendVol.find(x => x.id === d.id); v.status = 'aprovado'; v.revisado = true; if (d.id === 'me' && S.user) S.user.status = 'aprovado'; }
+    else { const o = orgOf(d.id); o.status = 'aprovada'; o.revisada = true; }
     S.confirm = null; render(false);
   },
   reject(d) {
     const key = `rej-${d.kind}-${d.id}`;
     if (S.confirm !== key) { S.confirm = key; render(false); return; }
-    if (d.kind === 'vol') { const v = S.pendVol.find(x => x.id === d.id); v.status = 'recusado'; if (d.id === 'me' && S.user) S.user.status = 'recusado'; }
+    if (d.kind === 'vol') { const v = S.pendVol.find(x => x.id === d.id); v.status = 'recusado'; v.revisado = true; if (d.id === 'me' && S.user) S.user.status = 'recusado'; }
     else { const o = orgOf(d.id); o.status = 'recusada'; o.revisada = true; }
-    S.confirm = null; toast('Cadastro recusado. A pessoa recebe o motivo por e-mail no app final.'); render(false);
+    S.confirm = null; render(false);
   },
   story(d) {
     S.params = {}; S.errors = {}; S.confirm = null;

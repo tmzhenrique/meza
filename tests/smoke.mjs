@@ -43,6 +43,33 @@ try {
     await page.click('[data-a="vol-explore"]');
   });
 
+  await passo('cadastro de organização conclui', async () => {
+    const org = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    org.on('pageerror', e => erros.push(e.message));
+    await org.goto(url);
+    await org.click('[data-a="start-org"]');
+    await org.click('[data-a="org-submit"]');
+    assert.match(await org.locator('.err-sum').innerText(), /para enviar/);
+    await org.click('[data-a="fill-org"]');
+    await org.click('[data-a="org-submit"]');
+    assert.equal(texto(await org.locator('.done h2').innerText()), 'Cadastro enviado!');
+    assert.equal(await org.locator('.tl-i').count(), 3);
+    await org.click('.mw[data-r="o-novo-evento"]');
+    assert.equal(await org.locator('.tab.on').innerText(), 'Publicar');
+    await org.close();
+  });
+
+  await passo('roteiro agrupa as histórias por prioridade', async () => {
+    const r = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    r.on('pageerror', e => erros.push(e.message));
+    await r.goto(url);
+    await r.click('.content [data-a="go"][data-r="roteiro"]');
+    assert.equal(await r.locator('.st-grp').count(), 4);
+    await r.click('.content [data-a="story"][data-k="s-adm"]');
+    assert.ok(await r.locator('.evr').count() >= 5, 'a agenda dos parceiros deveria listar as ações');
+    await r.close();
+  });
+
   await passo('inscrição com posto e turno', async () => {
     await aba('Ações');
     await page.click('.evr >> nth=0');
@@ -138,6 +165,10 @@ try {
     await page.click('.content [data-a="role"][data-r="admin"]');
     await aba('Validações');
     await page.click('[data-a="approve"][data-id="me"]');
+    assert.match(await page.locator('.val-done').innerText(), /aprovado/);
+    await page.click('[data-a="desfazer"][data-id="me"]');
+    assert.equal(await page.locator('.val-done').count(), 0, 'Desfazer deveria devolver o cadastro à fila');
+    await page.click('[data-a="approve"][data-id="me"]');
     await page.click('[data-a="valtab"][data-v="org"]');
     await page.click('[data-a="approve"][data-id="o4"]');
     assert.equal(await page.locator('[data-a="approve"]').count(), 0);
@@ -183,7 +214,9 @@ try {
     const desk = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: 'dark' });
     desk.on('pageerror', e => erros.push(e.message));
     await desk.goto(url);
-    assert.ok(await desk.locator('.guide .story').count() >= 4);
+    assert.equal(await desk.locator('.guide .st-mini').count(), 8);
+    await desk.click('.guide [data-a="role"][data-r="admin"]');
+    assert.match(await desk.locator('.guide').innerText(), /Tela atual: Agenda dos parceiros/);
     assert.equal(await desk.locator('.guide [data-a="fullscreen"]').count(), 1);
     const proporcao = () => desk.locator('.device').evaluate(el => { const r = el.getBoundingClientRect(); return { k: r.width / r.height, h: r.height, vh: innerHeight }; });
     let p = await proporcao();
