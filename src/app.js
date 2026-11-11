@@ -66,6 +66,7 @@ const turnosDe = (a, b) => {
   return [`${a}–${b}`];
 };
 const hash = s => { let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const first = n => String(n || '').trim().split(/\s+/)[0] || '';
 const initials = n => String(n || '').trim().split(/\s+/).filter(Boolean).slice(0,2).map(p => p[0].toUpperCase()).join('');
 const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
@@ -239,7 +240,7 @@ const STORIES = [
 ];
 const MOS_LABEL = {M:'Must have', S:'Should have', C:'Could have', W:'Won’t have agora'};
 function storiesHtml() {
-  return STORIES.map(st => `<div class="story"><span class="mos ${st.m}" title="${MOS_LABEL[st.m]}">${st.m}</span><span><b>${st.t}</b><p>${st.s}</p>${st.g ? '' : `<span class="src">Acrescentada no protótipo · prioridade a confirmar</span>`}${st.k ? `<button class="link" data-a="story" data-k="${st.k}">Abrir no app</button>` : `<p class="small" style="margin-top:6px">Fora do escopo desta versão.</p>`}</span></div>`).join('');
+  return `<div class="stories">${STORIES.map(st => `<div class="story"><span class="mos ${st.m}" title="${MOS_LABEL[st.m]}">${st.m}</span><span><b>${st.t}</b><p>${st.s}</p>${st.g ? '' : `<span class="src">Acrescentada no protótipo, prioridade a confirmar</span>`}${st.k ? `<button class="link start" data-a="story" data-k="${st.k}">Abrir no app</button>` : `<p>Fora do escopo desta versão.</p>`}</span></div>`).join('')}</div>`;
 }
 function roleSeg() {
   const cur = S.role;
@@ -248,16 +249,13 @@ function roleSeg() {
   </div>`;
 }
 function protoBlock() {
-  return `<section class="stack">
-    <p class="eyebrow">Protótipo</p>
-    <div class="card stack">
-      <b>Ver o app como</b>
-      ${roleSeg()}
-      <div>
-        <button class="row-link" data-a="go" data-r="roteiro">${icon('book',20)}<span>Roteiro das histórias de usuário</span>${icon('right',18)}</button>
-        <button class="row-link" data-a="theme">${icon(isDark() ? 'sun' : 'moon',20)}<span>${isDark() ? 'Usar tema claro' : 'Usar tema escuro'}</span></button>
-        <button class="row-link" data-a="reset" style="color:var(--danger)">${icon('refresh',20)}<span>${S.confirm === 'reset' ? 'Toque de novo para apagar tudo' : 'Recomeçar a demonstração'}</span></button>
-      </div>
+  return `<section class="sec">
+    <h2 class="h-md">Protótipo</h2>
+    <div class="stack-sm"><span class="label">Ver o app como</span>${roleSeg()}</div>
+    <div class="card rows">
+      <button class="row-link" data-a="go" data-r="roteiro">${icon('book',20)}<span>Roteiro das histórias de usuário</span>${icon('right',18)}</button>
+      <button class="row-link" data-a="theme">${icon(isDark() ? 'sun' : 'moon',20)}<span>${isDark() ? 'Usar tema claro' : 'Usar tema escuro'}</span></button>
+      <button class="row-link danger" data-a="reset">${icon('refresh',20)}<span>${S.confirm === 'reset' ? 'Toque de novo para apagar tudo' : 'Recomeçar a demonstração'}</span></button>
     </div>
     <p class="hint">Dados de exemplo. Nenhum pagamento é processado e nada é enviado.</p>
   </section>`;
@@ -272,43 +270,43 @@ SCREENS.welcome = () => ({
       <p class="slogan">“a mesa é de todos.”</p>
       <p class="values">mobilização • empatia • zelo • alimentação</p>
     </section><div class="gingham" aria-hidden="true"></div>`,
-  body:`<div class="stack-6" style="padding-top:8px"><h2 class="h-lg">Como você quer participar?</h2><p class="muted">O MEZA conecta quem quer ajudar às organizações que levam comida a quem precisa.</p></div>
-    <div class="stack">
-      <button class="choice" data-a="start-vol"><span class="ic">${icon('userplus',28)}</span><span><b>Quero me voluntariar</b><small>Doe alimentos, dinheiro ou seu tempo em ações perto de você.</small></span>${icon('right',20)}</button>
-      <button class="choice t" data-a="start-org"><span class="ic">${icon('org',28)}</span><span><b>Quero cadastrar minha organização</b><small>Receba voluntários e doações para as entregas da sua ONG ou empresa.</small></span>${icon('right',20)}</button>
+  body:`<div class="sec">
+      <div class="head"><h2 class="h-lg">Como você quer participar?</h2><p class="muted">O MEZA conecta quem quer ajudar às organizações que levam comida a quem precisa.</p></div>
+      <button class="choice" data-a="start-vol"><span class="ic">${icon('userplus',26)}</span><span><b>Quero me voluntariar</b><small>Doe alimentos, dinheiro ou seu tempo em ações perto de você.</small></span>${icon('right',20)}</button>
+      <button class="choice t" data-a="start-org"><span class="ic">${icon('org',26)}</span><span><b>Quero cadastrar minha organização</b><small>Receba voluntários e doações para as entregas da sua ONG ou empresa.</small></span>${icon('right',20)}</button>
     </div>
-    <div class="stack" style="gap:10px">
-      <p class="eyebrow">Explorar sem cadastro</p>
+    <div class="sec">
+      <h2 class="h-sm">Explorar sem cadastro</h2>
       <div class="chips">
         <button class="chip" data-a="role" data-r="vol">${icon('user',16)} Voluntário</button>
         <button class="chip" data-a="role" data-r="org">${icon('org',16)} Organização</button>
         <button class="chip" data-a="role" data-r="admin">${icon('shield',16)} Administrador</button>
       </div>
-      <button class="link" style="align-self:flex-start" data-a="go" data-r="roteiro">Ver o roteiro das histórias de usuário</button>
+      <button class="link start" data-a="go" data-r="roteiro">Ver o roteiro das histórias de usuário</button>
     </div>`
 });
 
 SCREENS['vol-cad-1'] = () => ({
   title:'Cadastro de voluntário',
-  body:`<div class="stack-6"><div class="steps" aria-label="Etapa 1 de 2"><i class="on"></i><i></i></div><p class="eyebrow" style="margin-top:6px">Etapa 1 de 2</p><h2 class="h-lg">Informações básicas</h2></div>
+  body:`<div class="head"><div class="steps" aria-hidden="true"><i class="on"></i><i></i></div><p class="eyebrow">Etapa 1 de 2</p><h2 class="h-lg">Informações básicas</h2></div>
     ${field({label:'Nome completo', bind:'volDraft.nome', ph:'Digite seu nome', icon:'user', auto:'name'})}
     ${field({label:'Endereço de e-mail', bind:'volDraft.email', type:'email', ph:'nome@email.com', icon:'mail', auto:'email', mode:'email'})}
     ${field({label:'Número de telefone', bind:'volDraft.telefone', type:'tel', ph:'(61) 99999-9999', icon:'phone', auto:'tel', mask:'tel', mode:'tel'})}
     ${selectField({label:'Gênero', bind:'volDraft.genero', ph:'Selecione', options:['Feminino','Masculino','Não binário','Prefiro não informar']})}
     ${field({label:'Data de nascimento', bind:'volDraft.nascimento', type:'date', icon:'calendar', max:iso(HOJE)})}
     ${field({label:'Endereço completo', bind:'volDraft.endereco', ph:'Rua, número e bairro', icon:'pin', auto:'street-address'})}
-    <button class="link" style="align-self:flex-start" data-a="fill-vol1">Preencher com dados de exemplo</button>`,
+    <button class="link start" data-a="fill-vol1">Preencher com dados de exemplo</button>`,
   foot:`<div class="row"><button class="btn btn-ghost" data-a="back">Voltar</button><button class="btn btn-primary btn-grow" data-a="vol-next">Continuar</button></div>`
 });
 
 SCREENS['vol-cad-2'] = () => ({
   title:'Cadastro de voluntário',
-  body:`<div class="stack-6"><div class="steps" aria-label="Etapa 2 de 2"><i class="on"></i><i class="on"></i></div><p class="eyebrow" style="margin-top:6px">Etapa 2 de 2</p><h2 class="h-lg">Sobre o seu voluntariado</h2></div>
+  body:`<div class="head"><div class="steps" aria-hidden="true"><i class="on"></i><i class="on"></i></div><p class="eyebrow">Etapa 2 de 2</p><h2 class="h-lg">Sobre o seu voluntariado</h2></div>
     ${taField({label:'Já fez voluntariado antes? Onde?', bind:'volDraft.exp', ph:'Ex.: mutirões na escola, campanha do agasalho…', hint:'Se for a sua primeira vez, conte para a gente.'})}
     ${taField({label:'O que te motivou a se voluntariar?', bind:'volDraft.motivacao', ph:'Conte em poucas palavras'})}
     ${chipsField({label:'Com qual frequência deseja se voluntariar?', path:'volDraft.freq', options:['Toda semana','A cada 15 dias','Uma vez por mês','Quando eu puder']})}
     ${chipsField({label:'Como você quer ajudar?', path:'volDraft.ajudas', multi:true, options:['Trabalhar em eventos','Doar alimentos','Doar dinheiro'], hint:'Escolha uma ou mais opções.'})}
-    <button class="link" style="align-self:flex-start" data-a="fill-vol2">Preencher com dados de exemplo</button>`,
+    <button class="link start" data-a="fill-vol2">Preencher com dados de exemplo</button>`,
   foot:`<div class="row"><button class="btn btn-ghost" data-a="back">Voltar</button><button class="btn btn-primary btn-grow" data-a="vol-finish">Finalizar cadastro</button></div>`
 });
 
@@ -331,7 +329,7 @@ SCREENS['org-cad'] = () => ({
     ${field({label:'Endereço da sede', bind:'orgDraft.endereco', ph:'Onde os voluntários podem entregar doações', icon:'pin'})}
     ${taField({label:'O que a organização faz e quem atende?', bind:'orgDraft.sobre', ph:'Ex.: servimos 200 refeições por dia para…'})}
     ${chipsField({label:'O que vocês distribuem?', path:'orgDraft.distribui', multi:true, options:['Cestas básicas','Refeições prontas','Lanches','Hortifrúti']})}
-    <button class="link" style="align-self:flex-start" data-a="fill-org">Preencher com dados de exemplo</button>`,
+    <button class="link start" data-a="fill-org">Preencher com dados de exemplo</button>`,
   foot:`<button class="btn btn-primary btn-block" data-a="org-submit">Enviar cadastro</button>`
 });
 
@@ -361,15 +359,15 @@ SCREENS['v-home'] = () => {
   let pior = null;
   orgsComNecessidade().forEach(o => S.needs[o.id].forEach(n => { const r = (n.atual + n.prom) / n.meta; if (!pior || r < pior.r) pior = { o, n, r }; }));
   const necessidade = pior ? (() => { const c = CAT[pior.n.id]; const falta = Math.max(0, pior.n.meta - pior.n.atual - pior.n.prom);
-    return `<section class="stack"><h2 class="h-md">Quem mais precisa agora</h2>
-      <div class="card stack" style="gap:10px">
-        <div class="row between"><span><b>${c.nome}</b> <span class="muted small">· ${c.un}</span><br><span class="small muted">${esc(pior.o.nome)}</span></span><span class="badge t">${Math.round(pior.r * 100)}% da meta</span></div>
+    return `<section class="sec"><h2 class="h-md">Quem mais precisa agora</h2>
+      <div class="card stack">
+        <div class="need-h"><span><b>${c.nome}</b><small>${c.un}</small><small>${esc(pior.o.nome)}</small></span><span class="badge t">${Math.round(pior.r * 100)}% da meta</span></div>
         ${prog(pior.n.atual, pior.n.meta, pior.n.prom)}
         <div class="row between"><span class="small muted num">Faltam ${falta} ${c.pl}</span><button class="btn btn-ghost btn-sm" data-a="food-start" data-org="${pior.o.id}">Doar ${c.nome.toLowerCase()}</button></div>
       </div></section>`; })() : '';
   return {
     top:`<section class="hero home-hero gut">
-      <div class="row between"><span class="logo" style="font-size:36px">meza</span><button class="avatar" data-a="tab" data-r="v-perfil" aria-label="Abrir perfil">${initials(u.nome)}</button></div>
+      <div class="top"><span class="logo">meza</span><button class="avatar" data-a="tab" data-r="v-perfil" aria-label="Abrir perfil">${initials(u.nome)}</button></div>
       <p class="greet">Olá, ${esc(first(u.nome))}</p>
       ${destaque}
     </section>`,
@@ -379,7 +377,7 @@ SCREENS['v-home'] = () => {
         <button class="quick y" data-a="don-start">${icon('coins',26)}<span><b>Doar dinheiro</b><small>Pix, cartão ou espécie</small></span></button>
       </div>
       ${necessidade}
-      <section class="stack"><div class="sec-h"><h2 class="h-md">Próximas entregas</h2><button class="link" data-a="tab" data-r="v-eventos">Ver todas</button></div>
+      <section class="sec"><div class="sec-h"><h2 class="h-md">Próximas entregas</h2><button class="link" data-a="tab" data-r="v-eventos">Ver todas</button></div>
         ${evs.slice(0, 3).map(e => eventCard(e, 'v-evento')).join('') || `<p class="muted">Nenhuma entrega marcada por enquanto.</p>`}
       </section>`,
     tabs:'vol', tabOn:'v-home'
@@ -393,7 +391,7 @@ SCREENS['v-eventos'] = () => {
   const lista = evs.filter(e => S.filtro === 'Todas' || e.tipo === S.filtro);
   return {
     title:'Próximas entregas',
-    body:`<p class="muted small" style="margin-top:-8px">Ações publicadas pelas organizações parceiras. Escolha uma para ver os postos e horários.</p>
+    body:`<p class="lede">Ações publicadas pelas organizações parceiras. Escolha uma para ver os postos e horários.</p>
       <div class="chips x" role="group" aria-label="Filtrar por tipo">${tipos.map(t => `<button class="chip" aria-pressed="${S.filtro === t}" data-a="filtro" data-v="${t}">${t}</button>`).join('')}</div>
       <div class="stack">${lista.map(e => eventCard(e, 'v-evento')).join('') || `<p class="muted">Nenhuma entrega deste tipo agora.</p>`}</div>`,
     tabs:'vol', tabOn:'v-eventos'
@@ -406,7 +404,7 @@ SCREENS['v-evento'] = () => {
   S.sel[e.id] = S.sel[e.id] || { posto:null, turno:null };
   const sel = S.sel[e.id];
   const itens = e.itens.length
-    ? `<section class="stack" style="gap:10px"><h2 class="h-md">Itens que a ação precisa</h2><div class="chips">${e.itens.map(i => `<span class="badge t">${CAT[i].nome}</span>`).join('')}</div><button class="link" style="align-self:flex-start" data-a="food-start" data-org="${o.id}" data-ev="${e.id}">Levar alguns destes itens</button></section>` : '';
+    ? `<section class="sec"><h2 class="h-md">Itens que a ação precisa</h2><div class="chips">${e.itens.map(i => `<span class="badge t">${CAT[i].nome}</span>`).join('')}</div><button class="link start" data-a="food-start" data-org="${o.id}" data-ev="${e.id}">Levar alguns destes itens</button></section>` : '';
   let escolha, foot;
   if (ins) {
     const p = e.postos[ins.posto];
@@ -415,24 +413,24 @@ SCREENS['v-evento'] = () => {
     foot = `<button class="btn ${cancel ? 'btn-warn' : 'btn-ghost'} btn-block" data-a="cancel-insc" data-id="${e.id}">${cancel ? 'Confirmar cancelamento' : 'Cancelar inscrição'}</button>`;
   } else {
     const livres = vagasLivres(e);
-    escolha = `<section class="stack" style="gap:10px"><h2 class="h-md">Escolha seu posto</h2>
-        <div class="stack" role="radiogroup" aria-label="Posto" style="gap:8px">
+    escolha = `<section class="sec"><h2 class="h-md">Escolha seu posto</h2>
+        <div class="stack-sm" role="radiogroup" aria-label="Posto">
         ${e.postos.map((p, i) => { const l = p.vagas - p.inscritos; return optCard({ checked: sel.posto === i, action:'pick', data:`data-p="sel.${e.id}.posto" data-v="${i}" data-n="1"`, title:esc(p.nome), sub:`${l > 0 ? `${plural(l,'vaga livre','vagas livres')} de ${p.vagas}` : 'Sem vagas'}`, disabled: l <= 0 }); }).join('')}
         </div></section>
-      <section class="stack" style="gap:10px"><h2 class="h-md">Escolha o turno</h2>
+      <section class="sec"><h2 class="h-md">Escolha o turno</h2>
         <div class="chips" role="group" aria-label="Turno">${e.turnos.map((t, i) => `<button class="chip" aria-pressed="${sel.turno === i}" data-a="pick" data-p="sel.${e.id}.turno" data-v="${i}" data-n="1">${icon('clock',15)} ${t}</button>`).join('')}</div>
       </section>`;
     const ok = sel.posto !== null && sel.turno !== null;
     foot = livres === 0 ? `<button class="btn btn-primary btn-block" disabled>Ação lotada</button>`
-      : `${ok ? '' : `<span class="hint" style="text-align:center">Escolha um posto e um turno para confirmar.</span>`}<button class="btn btn-primary btn-block" data-a="inscrever" data-id="${e.id}" ${ok ? '' : 'disabled'}>Confirmar inscrição</button>`;
+      : `${ok ? '' : `<span class="hint">Escolha um posto e um turno para confirmar.</span>`}<button class="btn btn-primary btn-block" data-a="inscrever" data-id="${e.id}" ${ok ? '' : 'disabled'}>Confirmar inscrição</button>`;
   }
   return {
     title:e.tipo,
-    body:`<div class="stack" style="gap:8px"><p class="eyebrow">${esc(o.nome)}</p><h2 class="h-xl">${esc(e.titulo)}</h2></div>
+    body:`<div class="stack-sm"><p class="eyebrow">${esc(o.nome)}</p><h2 class="h-xl">${esc(e.titulo)}</h2></div>
       <div class="kv">
-        ${icon('calendar',18)}<span><b style="font-weight:600">${fmtLonga(e.data)}</b> <span class="muted">· ${rel(e.data)}</span></span>
+        ${icon('calendar',18)}<span><b>${fmtLonga(e.data)}</b><small>${cap(rel(e.data))}</small></span>
         ${icon('clock',18)}<span>${e.inicio} às ${e.fim}</span>
-        ${icon('pin',18)}<span>${esc(e.local)}${e.endereco !== e.local ? `<br><span class="muted small">${esc(e.endereco)}</span>` : ''}</span>
+        ${icon('pin',18)}<span>${esc(e.local)}${e.endereco !== e.local ? `<small>${esc(e.endereco)}</small>` : ''}</span>
         ${icon('users',18)}<span>${inscritosTotal(e)} de ${vagasTotal(e)} vagas preenchidas</span>
       </div>
       <p>${esc(e.desc)}</p>
@@ -448,9 +446,9 @@ SCREENS['v-inscricao-ok'] = () => {
   return {
     top:`<div class="gingham" aria-hidden="true"></div>`,
     body:`<div class="done">${seal()}<h2 class="h-xl">${pend ? 'Vaga reservada!' : 'Inscrição confirmada!'}</h2><p class="muted">${pend ? 'A vaga é confirmada assim que seu cadastro for aprovado. A organização recebe seu nome hoje.' : `A ${esc(orgOf(e.orgId).nome)} já recebeu seu nome. Chegue 15 minutos antes do seu turno.`}</p></div>
-      <div class="card stack" style="gap:10px">
-        <b class="h-md">${esc(e.titulo)}</b>
-        <div class="kv">${icon('calendar',18)}<span>${fmtLonga(e.data)}</span>${icon('clock',18)}<span>Turno ${e.turnos[ins.turno]}</span>${icon('users',18)}<span>${esc(p.nome)}</span>${icon('pin',18)}<span>${esc(e.local)} · ${esc(e.endereco)}</span></div>
+      <div class="card stack">
+        <h3 class="h-sm">${esc(e.titulo)}</h3>
+        <div class="kv">${icon('calendar',18)}<span>${cap(fmtLonga(e.data))}</span>${icon('clock',18)}<span>Turno ${e.turnos[ins.turno]}</span>${icon('users',18)}<span>${esc(p.nome)}</span>${icon('pin',18)}<span>${esc(e.local)}<small>${esc(e.endereco)}</small></span></div>
       </div>`,
     foot:`<div class="row"><button class="btn btn-ghost btn-grow" data-a="tab" data-r="v-home">Início</button><button class="btn btn-primary btn-grow" data-a="tab" data-r="v-perfil">Minha agenda</button></div>`
   };
@@ -460,10 +458,10 @@ SCREENS['v-doar'] = () => {
   const hist = S.doacoes.slice().reverse().slice(0, 3);
   return {
     title:'Doações e ofertas',
-    body:`<p class="muted" style="margin-top:-8px">Escolha como você quer ajudar hoje.</p>
-      <button class="big-opt t" data-a="food-start"><span class="ic">${icon('bread',32)}</span><span><b>Alimentos</b><small>Veja o que cada organização ainda precisa e escolha a quantidade.</small></span>${icon('right',20)}</button>
-      <button class="big-opt y" data-a="don-start"><span class="ic">${icon('coins',32)}</span><span><b>Dinheiro</b><small>Doe por Pix, cartão ou entregue em mãos em um evento.</small></span>${icon('right',20)}</button>
-      ${hist.length ? `<section class="stack" style="gap:4px"><h2 class="h-md" style="margin-bottom:4px">Suas últimas doações</h2><div class="list">${hist.map(doacaoLi).join('')}</div></section>` : ''}`,
+    body:`<div class="stack"><p class="lede">Escolha como você quer ajudar hoje.</p>
+      <button class="big-opt t" data-a="food-start"><span class="ic">${icon('bread',28)}</span><span><b>Alimentos</b><small>Veja o que cada organização ainda precisa e escolha a quantidade.</small></span>${icon('right',20)}</button>
+      <button class="big-opt y" data-a="don-start"><span class="ic">${icon('coins',28)}</span><span><b>Dinheiro</b><small>Doe por Pix, cartão ou entregue em mãos em um evento.</small></span>${icon('right',20)}</button></div>
+      ${hist.length ? `<section class="sec"><h2 class="h-md">Suas últimas doações</h2><div class="card"><div class="list">${hist.map(doacaoLi).join("")}</div></div></section>` : ''}`,
     tabs:'vol', tabOn:'v-doar'
   };
 };
@@ -471,10 +469,10 @@ function doacaoLi(d) {
   const o = orgOf(d.orgId);
   if (d.tipo === 'alimentos') {
     const tot = Object.values(d.itens).reduce((a, b) => a + b, 0);
-    return `<div class="li"><span class="ic">${icon('bread',20)}</span><span><b>${plural(tot,'item','itens')} de alimento</b><small>${esc(o.nome)} · ${fmtCurta(d.data)}</small></span><span class="badge y">A entregar</span></div>`;
+    return `<div class="li two"><span class="ic">${icon('bread',20)}</span><span><span class="li-t"><b>${plural(tot,'item','itens')} de alimento</b><span class="badge y">A entregar</span></span><small>${esc(o.nome)} · ${fmtCurta(d.data)}</small></span></div>`;
   }
   const m = { pix:['qr','Pix'], cartao:['card','Cartão'], dinheiro:['cash','Em espécie'] }[d.metodo];
-  return `<div class="li"><span class="ic">${icon(m[0],20)}</span><span><b class="num">${brl(d.cents)}</b><small>${esc(o.nome)} · ${m[1]} · ${fmtCurta(d.data)}</small></span>${d.metodo === 'dinheiro' ? '<span class="badge y">A entregar</span>' : '<span class="badge">Confirmada</span>'}</div>`;
+  return `<div class="li two"><span class="ic">${icon(m[0],20)}</span><span><span class="li-t"><b class="num">${brl(d.cents)}</b>${d.metodo === 'dinheiro' ? '<span class="badge y">A entregar</span>' : '<span class="badge">Confirmada</span>'}</span><small>${esc(o.nome)} · ${m[1]} · ${fmtCurta(d.data)}</small></span></div>`;
 }
 
 SCREENS['v-valor'] = () => {
@@ -482,13 +480,13 @@ SCREENS['v-valor'] = () => {
   return {
     title:'Valor',
     body:`${selectField({label:'Para qual organização?', bind:'don.orgId', icon:'org', options:orgs.map(o => [o.id, o.nome])})}
-      <div class="stack" style="gap:6px;text-align:center"><p class="muted">Insira o valor desejado para doação</p><p class="amount${c ? '' : ' zero'}" aria-live="polite">${brl(c)}</p></div>
-      <div class="chips" style="justify-content:center" role="group" aria-label="Valores sugeridos">${[1000, 2500, 5000, 10000].map(v => `<button class="chip" aria-pressed="${c === v}" data-a="quick" data-v="${v}">${brl(v).replace(',00','')}</button>`).join('')}</div>
+      <div class="stack center"><p class="muted small">Valor da doação</p><p class="amount${c ? '' : ' zero'}" aria-live="polite">${brl(c)}</p>
+      <div class="amounts" role="group" aria-label="Valores sugeridos">${[1000, 2500, 5000, 10000].map(v => `<button class="chip" aria-pressed="${c === v}" data-a="quick" data-v="${v}">${brl(v).replace(',00','')}</button>`).join('')}</div></div>
       <div class="keys" role="group" aria-label="Teclado numérico">
         ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="key" data-a="key" data-k="${n}">${n}</button>`).join('')}
         <button class="key fn" data-a="key" data-k="c">Limpar</button><button class="key" data-a="key" data-k="0">0</button><button class="key fn" data-a="key" data-k="b" aria-label="Apagar">${icon('back',24)}</button>
       </div>`,
-    foot:`${c > 0 && c < 100 ? '<span class="hint" style="text-align:center">O valor mínimo é R$ 1,00.</span>' : ''}<button class="btn btn-primary btn-block" data-a="go" data-r="v-metodo" ${c >= 100 ? '' : 'disabled'}>Continuar</button>`
+    foot:`${c > 0 && c < 100 ? '<span class="hint">O valor mínimo é R$ 1,00.</span>' : ''}<button class="btn btn-primary btn-block" data-a="go" data-r="v-metodo" ${c >= 100 ? '' : 'disabled'}>Continuar</button>`
   };
 };
 
@@ -496,8 +494,8 @@ SCREENS['v-metodo'] = () => {
   const o = orgOf(S.don.orgId); const m = S.don.metodo;
   return {
     title:'Métodos de pagamento',
-    body:`<div class="card row between"><span><span class="small muted">Doação para ${esc(o.nome)}</span><br><b class="h-lg num">${brl(S.don.cents)}</b></span><button class="link" data-a="back">Alterar</button></div>
-      <div class="stack" role="radiogroup" aria-label="Método de pagamento" style="gap:8px">
+    body:`<div class="card row between"><span class="stack-xs"><span class="small muted">Doação para ${esc(o.nome)}</span><b class="h-lg num">${brl(S.don.cents)}</b></span><button class="link" data-a="back">Alterar</button></div>
+      <div class="stack-sm" role="radiogroup" aria-label="Método de pagamento">
         ${optCard({ checked:m === 'pix', action:'pick', data:'data-p="don.metodo" data-v="pix"', ic:'qr', title:'Pix', sub:'Aprovação na hora, pelo app do seu banco.' })}
         ${optCard({ checked:m === 'cartao', action:'pick', data:'data-p="don.metodo" data-v="cartao"', ic:'card', title:'Cartão', sub:'Crédito ou débito.' })}
         ${optCard({ checked:m === 'dinheiro', action:'pick', data:'data-p="don.metodo" data-v="dinheiro"', ic:'cash', title:'Dinheiro', sub:'Entregue em mãos em um evento da organização.' })}
@@ -512,10 +510,9 @@ SCREENS['v-checkout'] = () => {
     const code = pixCode(c, o);
     return {
       title:'Checkout',
-      body:`<div class="stack-6" style="text-align:center"><h2 class="h-lg">Instruções para o pagamento</h2><p class="muted">Escaneie o QR Code com o app do seu banco.</p></div>
-        <div class="qr">${qrSvg(o.id + c)}</div>
-        <div style="text-align:center"><p class="amount" style="font-size:38px">${brl(c)}</p><p class="small muted">Para ${esc(o.nome)} · válido por 30 minutos</p></div>
-        <div class="stack" style="gap:8px"><span class="small" style="font-weight:500">Ou use o Pix copia e cola</span><div class="pixcode" id="pixcode">${code}</div><button class="btn btn-ghost btn-sm" data-a="copy-pix">${icon('copy',18)} Copiar código</button></div>
+      body:`<div class="head center"><h2 class="h-lg">Instruções para o pagamento</h2><p class="muted">Escaneie o QR Code com o app do seu banco.</p></div>
+        <div class="stack center"><div class="qr">${qrSvg(o.id + c)}</div><div class="stack-xs"><p class="amount md">${brl(c)}</p><p class="small muted">Para ${esc(o.nome)}, válido por 30 minutos</p></div></div>
+        <div class="stack-sm"><span class="label">Ou use o Pix copia e cola</span><div class="pixcode" id="pixcode">${code}</div><button class="btn btn-ghost btn-sm" data-a="copy-pix">${icon('copy',18)} Copiar código</button></div>
         <p class="hint">Protótipo: o QR Code e o código são ilustrativos e não geram cobrança.</p>`,
       foot:`<button class="btn btn-primary btn-block" data-a="don-confirm">Já fiz o pagamento</button>`
     };
@@ -523,7 +520,7 @@ SCREENS['v-checkout'] = () => {
   if (m === 'cartao') {
     return {
       title:'Checkout',
-      body:`<div class="stack-6"><h2 class="h-lg">Pagamento com cartão</h2><p class="muted">Doação de <b class="num">${brl(c)}</b> para ${esc(o.nome)}.</p></div>
+      body:`<div class="head"><h2 class="h-lg">Pagamento com cartão</h2><p class="muted">Doação de <b class="num">${brl(c)}</b> para ${esc(o.nome)}.</p></div>
         <div class="mockcard" aria-label="Cartão de teste"><span class="logo">meza</span><span class="no">•••• •••• •••• 4242</span><span class="row between small"><span>CARTÃO DE TESTE</span><span>12/30</span></span></div>
         <div class="notice">${icon('info',20)}<span><b>Como funciona no app final</b><span class="small">Os dados do cartão são digitados na tela segura do provedor de pagamento, e o MEZA não guarda esses dados. Aqui o pagamento é só simulado.</span></span></div>`,
       foot:`<button class="btn btn-primary btn-block" data-a="don-confirm">Simular pagamento de ${brl(c)}</button>`
@@ -533,8 +530,8 @@ SCREENS['v-checkout'] = () => {
   if (S.don.eventId === null || !evs.some(e => e.id === S.don.eventId) && S.don.eventId !== 'sede') S.don.eventId = evs[0]?.id || 'sede';
   return {
     title:'Checkout',
-    body:`<div class="stack-6"><h2 class="h-lg">Entrega em mãos</h2><p class="muted">Leve <b class="num">${brl(c)}</b> e entregue à equipe da organização. Você recebe um recibo na hora.</p></div>
-      <section class="stack" style="gap:8px" role="radiogroup" aria-label="Onde entregar"><h2 class="h-md">Onde você vai entregar?</h2>
+    body:`<div class="head"><h2 class="h-lg">Entrega em mãos</h2><p class="muted">Leve <b class="num">${brl(c)}</b> e entregue à equipe da organização. Você recebe um recibo na hora.</p></div>
+      <section class="sec" role="radiogroup" aria-label="Onde entregar"><h2 class="h-md">Onde você vai entregar?</h2>
         ${evs.map(e => optCard({ checked:S.don.eventId === e.id, action:'pick', data:`data-p="don.eventId" data-v="${e.id}"`, ic:'calendar', title:esc(e.titulo), sub:`${fmtCurta(e.data)} · ${e.inicio}–${e.fim} · ${esc(e.local)}` })).join('')}
         ${optCard({ checked:S.don.eventId === 'sede', action:'pick', data:'data-p="don.eventId" data-v="sede"', ic:'org', title:'Na sede da organização', sub:`${esc(o.horario)} · ${esc(o.endereco)}` })}
       </section>`,
@@ -561,16 +558,16 @@ SCREENS['v-alimentos'] = () => {
   const tot = Object.values(S.food.qty).reduce((a, b) => a + b, 0);
   return {
     title:'Quero doar alimentos',
-    body:`<p class="muted small" style="margin-top:-8px">Escolha a organização e o que você vai levar. A lista mostra o que cada uma ainda precisa arrecadar.</p>
+    body:`<p class="lede">Escolha a organização e o que você vai levar. A lista mostra o que cada uma ainda precisa arrecadar.</p>
       <div class="chips x" role="group" aria-label="Organização">${orgs.map(x => `<button class="chip" aria-pressed="${x.id === o.id}" data-a="food-org" data-v="${x.id}">${esc(x.nome)}</button>`).join('')}</div>
       <p class="small muted">${esc(o.sobre)}</p>
-      <div class="card" style="padding-block:4px"><div class="list">
+      <div class="card"><div class="list">
         ${needs.map(n => { const c = CAT[n.id]; const q = S.food.qty[n.id] || 0; const falta = Math.max(0, n.meta - n.atual - n.prom);
           return `<div class="need">
             <div class="need-h"><span><b>${c.nome}</b><small>${c.un}</small></span>
               <span class="stepper"><button data-a="qty" data-id="${n.id}" data-d="-1" aria-label="Menos ${c.nome}" ${q ? '' : 'disabled'}>${icon('minus',18)}</button><output aria-live="polite">${q}</output><button data-a="qty" data-id="${n.id}" data-d="1" aria-label="Mais ${c.nome}">${icon('plus',18)}</button></span></div>
             ${prog(n.atual, n.meta, n.prom + q)}
-            <small class="muted num" style="font-size:12.5px">${n.atual} arrecadados${n.prom ? ` · ${n.prom} a caminho` : ''} · faltam ${falta} ${c.pl}</small>
+            <small class="num">${n.atual} arrecadados${n.prom ? ` · ${n.prom} a caminho` : ''} · faltam ${falta} ${c.pl}</small>
           </div>`; }).join('')}
       </div></div>`,
     foot:`<button class="btn btn-primary btn-block" data-a="go" data-r="v-alimentos-entrega" ${tot ? '' : 'disabled'}>${tot ? `Continuar com ${plural(tot,'item','itens')}` : 'Escolha ao menos um item'}</button>`
@@ -584,9 +581,9 @@ SCREENS['v-alimentos-entrega'] = () => {
   const itens = Object.entries(S.food.qty).filter(([, q]) => q > 0);
   return {
     title:'Entrega dos alimentos',
-    body:`<div class="card stack" style="gap:6px"><span class="small muted">Você vai levar para ${esc(o.nome)}</span>
-        ${itens.map(([id, q]) => `<div class="row between"><span>${CAT[id].nome} <span class="muted small">· ${CAT[id].un}</span></span><b class="num">${q}×</b></div>`).join('')}</div>
-      <section class="stack" style="gap:8px" role="radiogroup" aria-label="Onde entregar"><h2 class="h-md">Onde você vai entregar?</h2>
+    body:`<section class="sec"><h2 class="h-md">Você vai levar para ${esc(o.nome)}</h2>
+        <div class="card"><div class="list">${itens.map(([id, q]) => `<div class="li-plain"><span>${CAT[id].nome}<small>${CAT[id].un}</small></span><b class="num">${q}×</b></div>`).join('')}</div></div></section>
+      <section class="sec" role="radiogroup" aria-label="Onde entregar"><h2 class="h-md">Onde você vai entregar?</h2>
         ${evs.map(e => optCard({ checked:S.food.entrega === e.id, action:'pick', data:`data-p="food.entrega" data-v="${e.id}"`, ic:'calendar', title:`No evento: ${esc(e.titulo)}`, sub:`${fmtCurta(e.data)} · ${e.inicio}–${e.fim} · ${esc(e.local)}` })).join('')}
         ${optCard({ checked:S.food.entrega === 'sede', action:'pick', data:'data-p="food.entrega" data-v="sede"', ic:'org', title:'Na sede da organização', sub:`${esc(o.horario)} · ${esc(o.endereco)}` })}
       </section>
@@ -601,7 +598,7 @@ SCREENS['v-alimentos-ok'] = () => {
   return {
     top:`<div class="gingham" aria-hidden="true"></div>`,
     body:`<div class="done">${seal()}<h2 class="h-xl">Doação combinada!</h2><p class="muted">${e ? `Leve os itens ao ${esc(e.local)} em ${fmtLonga(e.data)}, entre ${e.inicio} e ${e.fim}.` : `Leve os itens à sede da ${esc(o.nome)}: ${esc(o.endereco)}, ${esc(o.horario).toLowerCase()}.`} A organização confirma o recebimento na hora.</p></div>
-      <div class="card stack" style="gap:6px">${Object.entries(d.itens).map(([id, q]) => `<div class="row between"><span>${CAT[id].nome}</span><b class="num">${q}×</b></div>`).join('')}</div>`,
+      <div class="card"><div class="list">${Object.entries(d.itens).map(([id, q]) => `<div class="li-plain"><span>${CAT[id].nome}</span><b class="num">${q}×</b></div>`).join('')}</div></div>`,
     foot:`<div class="row"><button class="btn btn-ghost btn-grow" data-a="tab" data-r="v-doar">Doar de novo</button><button class="btn btn-primary btn-grow" data-a="tab" data-r="v-home">Início</button></div>`
   };
 };
@@ -611,13 +608,13 @@ SCREENS['v-perfil'] = () => {
   const agenda = S.inscricoes.map(i => ({ i, e: evOf(i.eventId) })).filter(x => x.e).sort((a, b) => byDate(a.e, b.e));
   return {
     title:'Perfil',
-    body:`<div class="row" style="gap:14px"><span class="avatar lg">${initials(u.nome)}</span><span style="min-width:0"><b class="h-md">${esc(u.nome)}</b><br><span class="small muted">${esc(u.email)}</span><br>${u.status === 'aprovado' ? '<span class="badge">Cadastro aprovado</span>' : '<span class="badge y">Cadastro em validação</span>'}</span></div>
-      <div class="card stack" style="gap:10px"><span class="small muted">Como quero ajudar</span><div class="chips">${(u.ajudas || []).map(a => `<span class="badge n">${a}</span>`).join('')}</div><span class="small"><span class="muted">Frequência:</span> ${esc(u.freq || '—')}</span></div>
-      <section class="stack" style="gap:4px"><h2 class="h-md" style="margin-bottom:4px">Minha agenda</h2>
-        ${agenda.length ? `<div class="list">${agenda.map(({ i, e }) => `<button class="li" data-a="go" data-r="v-evento" data-id="${e.id}"><span class="ic">${icon('calendar',20)}</span><span><b>${esc(e.titulo)}</b><small>${fmtCurta(e.data)} · ${e.turnos[i.turno]} · ${esc(e.postos[i.posto].nome)}</small></span>${icon('right',18)}</button>`).join('')}</div>` : `<p class="muted small">Você ainda não se inscreveu em nenhuma entrega. <button class="link" data-a="tab" data-r="v-eventos">Ver entregas</button></p>`}
+    body:`<div class="ident"><span class="avatar lg">${initials(u.nome)}</span><span><b class="h-md">${esc(u.nome)}</b><span class="small muted">${esc(u.email)}</span>${u.status === 'aprovado' ? '<span class="badge">Cadastro aprovado</span>' : '<span class="badge y">Cadastro em validação</span>'}</span></div>
+      <section class="sec"><h2 class="h-md">Como quero ajudar</h2><div class="card stack"><div class="chips">${(u.ajudas || []).map(a => `<span class="badge n">${a}</span>`).join('')}</div><div class="pair"><span>Frequência</span><span>${esc(u.freq || '—')}</span></div></div></section>
+      <section class="sec"><h2 class="h-md">Minha agenda</h2>
+        ${agenda.length ? `<div class="card"><div class="list">${agenda.map(({ i, e }) => `<button class="li" data-a="go" data-r="v-evento" data-id="${e.id}"><span class="ic">${icon('calendar',20)}</span><span><b>${esc(e.titulo)}</b><small>${fmtCurta(e.data)} · ${e.turnos[i.turno]} · ${esc(e.postos[i.posto].nome)}</small></span>${icon('right',18)}</button>`).join('')}</div></div>` : `<p class="muted small">Você ainda não se inscreveu em nenhuma entrega. <button class="link start" data-a="tab" data-r="v-eventos">Ver entregas</button></p>`}
       </section>
-      <section class="stack" style="gap:4px"><h2 class="h-md" style="margin-bottom:4px">Minhas doações</h2>
-        ${S.doacoes.length ? `<div class="list">${S.doacoes.slice().reverse().map(doacaoLi).join('')}</div>` : `<p class="muted small">Nenhuma doação ainda.</p>`}
+      <section class="sec"><h2 class="h-md">Minhas doações</h2>
+        ${S.doacoes.length ? `<div class="card"><div class="list">${S.doacoes.slice().reverse().map(doacaoLi).join("")}</div></div>` : `<p class="muted small">Nenhuma doação ainda.</p>`}
       </section>
       ${protoBlock()}`,
     tabs:'vol', tabOn:'v-perfil'
@@ -628,7 +625,7 @@ SCREENS['v-perfil'] = () => {
 function promessaLi(p) {
   const tot = Object.entries(p.itens).map(([id, q]) => `${q} ${CAT[id].nome.toLowerCase()}`).join(', ');
   const onde = p.entrega.tipo === 'sede' ? 'na sede' : `em ${esc(evOf(p.entrega.eventId)?.titulo || 'evento')}`;
-  return `<div class="li"><span class="ic">${icon('bread',20)}</span><span><b>${esc(p.nome)}</b><small>${tot} · entrega ${onde}</small></span><span class="badge y">A caminho</span></div>`;
+  return `<div class="li two"><span class="ic">${icon('bread',20)}</span><span><span class="li-t"><b>${esc(p.nome)}</b><span class="badge y">A caminho</span></span><small>${tot}, entrega ${onde}</small></span></div>`;
 }
 SCREENS['o-painel'] = () => {
   const o = myOrg(); const evs = futuros().filter(e => e.orgId === o.id);
@@ -636,19 +633,19 @@ SCREENS['o-painel'] = () => {
   const proms = S.promessas.filter(p => p.orgId === o.id);
   const itens = proms.reduce((s, p) => s + Object.values(p.itens).reduce((a, b) => a + b, 0), 0);
   return {
-    top:`<section class="hero org-hero gut"><div class="row between" style="min-height:52px"><span class="logo" style="font-size:32px">meza</span>${o.status === 'aprovada' ? '<span class="badge">Parceiro aprovado</span>' : '<span class="badge y">Em validação</span>'}</div><p class="small" style="opacity:.8">Painel da organização</p><h1 class="h-lg">${esc(o.nome)}</h1></section>`,
+    top:`<section class="hero org-hero gut"><div class="top"><span class="logo">meza</span>${o.status === 'aprovada' ? '<span class="badge">Parceiro aprovado</span>' : '<span class="badge y">Em validação</span>'}</div><p class="eyebrow">Painel da organização</p><h1 class="h-lg">${esc(o.nome)}</h1></section>`,
     body:`${o.status !== 'aprovada' ? `<div class="notice">${icon('info',20)}<span><b>Cadastro em validação</b><span class="small">Você já pode publicar entregas. Elas aparecem para os voluntários assim que a equipe MEZA aprovar a organização.</span></span></div>` : ''}
       <div class="stats">
         <div class="stat"><b>${evs.length}</b><small>próximas entregas</small></div>
         <div class="stat"><b>${insc}</b><small>voluntários inscritos</small></div>
-        <div class="stat"><b>${itens}</b><small>itens de alimento a caminho</small></div>
+        <div class="stat"><b>${itens}</b><small>itens a caminho</small></div>
       </div>
       <button class="btn btn-primary btn-block" data-a="tab" data-r="o-novo-evento">${icon('megaphone',20)} Publicar próxima entrega</button>
-      <section class="stack"><h2 class="h-md">Suas próximas entregas</h2>
+      <section class="sec"><h2 class="h-md">Suas próximas entregas</h2>
         ${evs.map(e => eventCard(e, 'o-evento', `<span class="badge">${inscritosTotal(e)}/${vagasTotal(e)} inscritos</span>`)).join('') || `<p class="muted small">Nenhuma entrega publicada. Publique a próxima para receber voluntários.</p>`}
       </section>
-      <section class="stack" style="gap:4px"><h2 class="h-md" style="margin-bottom:4px">Alimentos a caminho</h2>
-        ${proms.length ? `<div class="list">${proms.map(promessaLi).join('')}</div>` : '<p class="muted small">Nenhuma doação de alimentos combinada ainda.</p>'}
+      <section class="sec"><h2 class="h-md">Alimentos a caminho</h2>
+        ${proms.length ? `<div class="card"><div class="list">${proms.map(promessaLi).join("")}</div></div>` : '<p class="muted small">Nenhuma doação de alimentos combinada ainda.</p>'}
       </section>`,
     tabs:'org', tabOn:'o-painel'
   };
@@ -664,24 +661,24 @@ SCREENS['o-novo-evento'] = () => {
   const turnos = (d.inicio && d.fim && toMin(d.fim) > toMin(d.inicio)) ? turnosDe(d.inicio, d.fim) : [];
   return {
     title:'Publicar entrega',
-    body:`<p class="muted small" style="margin-top:-8px">Os voluntários veem a data, o horário e os postos assim que você publicar.</p>
+    body:`<p class="lede">Os voluntários veem a data, o horário e os postos assim que você publicar.</p>
       ${chipsField({ label:'Tipo de ação', path:'evDraft.tipo', options:TIPOS_EV })}
       ${field({ label:'Título', bind:'evDraft.titulo', ph:'Ex.: Entrega de cestas de dezembro' })}
       ${field({ label:'Data', bind:'evDraft.data', type:'date', icon:'calendar', min:iso(HOJE) })}
       <div class="grid2">${field({ label:'Começa às', bind:'evDraft.inicio', type:'time', rer:true })}${field({ label:'Termina às', bind:'evDraft.fim', type:'time', rer:true })}</div>
-      ${S.errors.fim ? '' : turnos.length ? `<p class="hint" style="margin-top:-12px">${turnos.length > 1 ? `Os voluntários escolhem entre dois turnos: ${turnos.join(' e ')}.` : `Turno único: ${turnos[0]}.`}</p>` : ''}
+      ${S.errors.fim ? '' : turnos.length ? `<p class="hint attach">${turnos.length > 1 ? `Os voluntários escolhem entre dois turnos: ${turnos.join(' e ')}.` : `Turno único: ${turnos[0]}.`}</p>` : ''}
       ${field({ label:'Local e endereço', bind:'evDraft.local', ph:'Onde os voluntários se encontram', icon:'pin' })}
       ${taField({ label:'Orientações para os voluntários', bind:'evDraft.desc', ph:'O que levar, roupa adequada, ponto de encontro…' })}
       <div class="field${S.errors.postos ? ' err' : ''}"><span class="lbl">Postos e vagas</span>
         <div class="posto-head"><span>Posto</span><span>Vagas</span><span></span></div>
-        <div class="stack" style="gap:8px">
+        <div class="stack-sm">
         ${d.postos.map((p, i) => `<div class="posto-row"><div class="inp"><input data-bind="evDraft.postos.${i}.nome" value="${esc(p.nome)}" placeholder="Nome do posto" aria-label="Nome do posto ${i + 1}"></div><div class="inp"><input type="number" min="1" max="99" inputmode="numeric" data-bind="evDraft.postos.${i}.vagas" value="${esc(p.vagas)}" aria-label="Vagas do posto ${i + 1}"></div><button class="icon-btn" data-a="ev-del-posto" data-i="${i}" aria-label="Remover posto ${i + 1}" ${d.postos.length < 2 ? 'disabled' : ''}>${icon('x',18)}</button></div>`).join('')}
         </div>
-        <button class="btn btn-ghost btn-sm" style="align-self:flex-start" data-a="ev-add-posto">${icon('plus',18)} Adicionar posto</button>
+        <button class="btn btn-ghost btn-sm start" data-a="ev-add-posto">${icon('plus',18)} Adicionar posto</button>
         ${errMsg('postos')}
       </div>
       ${chipsField({ label:'Itens que a ação precisa', path:'evDraft.itens', multi:true, options:Object.keys(CAT).map(k => CAT[k].nome), key:'itens', hint:'Aparecem para quem quer doar alimentos.' })}
-      <button class="link" style="align-self:flex-start" data-a="fill-ev">Preencher com dados de exemplo</button>`,
+      <button class="link start" data-a="fill-ev">Preencher com dados de exemplo</button>`,
     foot:`<button class="btn btn-primary btn-block" data-a="ev-publish">${icon('megaphone',20)} Publicar entrega</button>`,
     tabs:'org', tabOn:'o-novo-evento'
   };
@@ -698,26 +695,26 @@ function nomesPosto(e, i) {
 function eventoGestao(e, admin) {
   const o = orgOf(e.orgId);
   const proms = S.promessas.filter(p => p.entrega.tipo === 'evento' && p.entrega.eventId === e.id);
-  return `<div class="stack" style="gap:8px"><p class="eyebrow">${esc(o.nome)}</p><h2 class="h-xl">${esc(e.titulo)}</h2>${o.status !== 'aprovada' ? '<span class="badge y" style="align-self:flex-start">Parceiro em validação · não visível aos voluntários</span>' : ''}</div>
+  return `<div class="head"><p class="eyebrow">${esc(o.nome)}</p><h2 class="h-xl">${esc(e.titulo)}</h2>${o.status !== 'aprovada' ? '<span class="badge y start">Parceiro em validação, oculto aos voluntários</span>' : ''}</div>
     <div class="kv">
-      ${icon('calendar',18)}<span><b style="font-weight:600">${fmtLonga(e.data)}</b> <span class="muted">· ${rel(e.data)}</span></span>
-      ${icon('clock',18)}<span>${e.inicio} às ${e.fim} <span class="muted small">· ${e.turnos.length > 1 ? 'turnos ' + e.turnos.join(' e ') : 'turno único'}</span></span>
-      ${icon('pin',18)}<span>${esc(e.local)}${e.endereco && e.endereco !== e.local ? `<br><span class="muted small">${esc(e.endereco)}</span>` : ''}</span>
+      ${icon('calendar',18)}<span><b>${fmtLonga(e.data)}</b><small>${cap(rel(e.data))}</small></span>
+      ${icon('clock',18)}<span>${e.inicio} às ${e.fim}<small>${e.turnos.length > 1 ? "Turnos " + e.turnos.join(" e ") : "Turno único"}</small></span>
+      ${icon('pin',18)}<span>${esc(e.local)}${e.endereco && e.endereco !== e.local ? `<small>${esc(e.endereco)}</small>` : ''}</span>
     </div>
     ${e.desc ? `<p>${esc(e.desc)}</p>` : ''}
-    <section class="stack"><div class="sec-h"><h2 class="h-md">Postos e inscritos</h2><span class="small muted num">${inscritosTotal(e)}/${vagasTotal(e)}</span></div>
-      <div class="card" style="padding-block:4px"><div class="list">
-      ${e.postos.map((p, i) => { const ns = nomesPosto(e, i); return `<div class="need"><div class="need-h"><b>${esc(p.nome)}</b><span class="num small">${p.inscritos}/${p.vagas}</span></div>${prog(p.inscritos, p.vagas, 0, 'g')}<small class="muted" style="font-size:12.5px">${ns.length ? esc(ns.join(', ')) : 'Ninguém inscrito ainda'}</small></div>`; }).join('')}
+    <section class="sec"><div class="sec-h"><h2 class="h-md">Postos e inscritos</h2><span class="small muted num">${inscritosTotal(e)}/${vagasTotal(e)}</span></div>
+      <div class="card"><div class="list">
+      ${e.postos.map((p, i) => { const ns = nomesPosto(e, i); return `<div class="need"><div class="need-h"><b>${esc(p.nome)}</b><span class="num small">${p.inscritos}/${p.vagas}</span></div>${prog(p.inscritos, p.vagas, 0, 'g')}<small>${ns.length ? esc(ns.join(', ')) : 'Ninguém inscrito ainda'}</small></div>`; }).join('')}
       </div></div>
     </section>
-    <section class="stack" style="gap:10px"><h2 class="h-md">Itens pedidos</h2>${e.itens.length ? `<div class="chips">${e.itens.map(i => `<span class="badge t">${CAT[i].nome}</span>`).join('')}</div>` : '<p class="muted small">Esta ação não pede itens.</p>'}
-      ${proms.length ? `<div class="list">${proms.map(promessaLi).join('')}</div>` : ''}</section>
-    ${admin ? `<section class="stack" style="gap:10px"><h2 class="h-md">Parceiro</h2>
-      <div class="card stack" style="gap:8px">
-        <div class="row between"><span class="small muted">Doações em dinheiro recebidas</span><b class="num">${brl(o.arrecadado)}</b></div>
-        <div class="row between"><span class="small muted">Responsável</span><span>${esc(o.resp)}</span></div>
-        <div class="row between"><span class="small muted">Telefone</span><span class="selectable">${esc(o.tel)}</span></div>
-        <div class="row between" style="gap:12px"><span class="small muted">E-mail</span><span class="selectable" style="word-break:break-all;text-align:right">${esc(o.email)}</span></div>
+    <section class="sec"><h2 class="h-md">Itens pedidos</h2>${e.itens.length ? `<div class="chips">${e.itens.map(i => `<span class="badge t">${CAT[i].nome}</span>`).join('')}</div>` : '<p class="muted small">Esta ação não pede itens.</p>'}
+      ${proms.length ? `<div class="card"><div class="list">${proms.map(promessaLi).join('')}</div></div>` : ''}</section>
+    ${admin ? `<section class="sec"><h2 class="h-md">Parceiro</h2>
+      <div class="card stack">
+        <div class="pair"><span>Doações em dinheiro</span><b class="num">${brl(o.arrecadado)}</b></div>
+        <div class="pair"><span>Responsável</span><span>${esc(o.resp)}</span></div>
+        <div class="pair"><span>Telefone</span><span class="selectable">${esc(o.tel)}</span></div>
+        <div class="pair"><span>E-mail</span><span class="selectable">${esc(o.email)}</span></div>
       </div></section>` : ''}`;
 }
 SCREENS['o-evento'] = () => { const e = evOf(S.params.id); return { title:'Entrega publicada', body:eventoGestao(e, false) }; };
@@ -726,9 +723,9 @@ SCREENS['o-perfil'] = () => {
   const o = myOrg();
   return {
     title:'Perfil da organização',
-    body:`<div class="row" style="gap:14px"><span class="avatar lg">${initials(o.nome)}</span><span style="min-width:0"><b class="h-md">${esc(o.nome)}</b><br><span class="small muted">${esc(o.tipo)}${o.cnpj ? ' · CNPJ ' + esc(o.cnpj) : ''}</span><br>${o.status === 'aprovada' ? '<span class="badge">Parceiro aprovado</span>' : '<span class="badge y">Em validação</span>'}</span></div>
+    body:`<div class="ident"><span class="avatar lg">${initials(o.nome)}</span><span><b class="h-md">${esc(o.nome)}</b><span class="small muted">${esc(o.tipo)}${o.cnpj ? ' · CNPJ ' + esc(o.cnpj) : ''}</span>${o.status === 'aprovada' ? '<span class="badge">Parceiro aprovado</span>' : '<span class="badge y">Em validação</span>'}</span></div>
       <p>${esc(o.sobre)}</p>
-      <div class="card kv" style="gap:8px 10px">${icon('user',18)}<span>${esc(o.resp)}</span>${icon('phone',18)}<span class="selectable">${esc(o.tel)}</span>${icon('mail',18)}<span class="selectable" style="word-break:break-all">${esc(o.email)}</span>${icon('pin',18)}<span>${esc(o.endereco)}</span>${icon('clock',18)}<span>${esc(o.horario)}</span></div>
+      <div class="card kv">${icon('user',18)}<span>${esc(o.resp)}</span>${icon('phone',18)}<span class="selectable">${esc(o.tel)}</span>${icon('mail',18)}<span class="selectable">${esc(o.email)}</span>${icon('pin',18)}<span>${esc(o.endereco)}</span>${icon('clock',18)}<span>${esc(o.horario)}</span></div>
       ${protoBlock()}`,
     tabs:'org', tabOn:'o-perfil'
   };
@@ -744,9 +741,9 @@ SCREENS['a-eventos'] = () => {
   const livres = evs.reduce((s, e) => s + vagasLivres(e), 0);
   return {
     title:'Agenda dos parceiros',
-    body:`<div class="card stack" style="gap:6px"><span class="small muted">Visão geral</span><p class="h-md" style="font-weight:500"><b class="num">${plural(evs.length,'entrega','entregas')}</b> nas próximas semanas, com <b class="num">${livres}</b> vagas livres em <b class="num">${plural(new Set(evs.map(e => e.orgId)).size,'parceiro','parceiros')}</b>.</p></div>
+    body:`<div class="card stack-xs"><span class="small muted">Visão geral</span><p class="summary"><b class="num">${plural(evs.length,'entrega','entregas')}</b> nas próximas semanas, com <b class="num">${livres}</b> vagas livres em <b class="num">${plural(new Set(evs.map(e => e.orgId)).size,'parceiro','parceiros')}</b>.</p></div>
       <div class="chips x" role="group" aria-label="Filtrar por parceiro"><button class="chip" aria-pressed="${S.afiltro === 'todos'}" data-a="afiltro" data-v="todos">Todos</button>${orgsAg.map(o => `<button class="chip" aria-pressed="${S.afiltro === o.id}" data-a="afiltro" data-v="${o.id}">${esc(o.nome)}</button>`).join('')}</div>
-      ${grupos.map(([g, f]) => { const l = evs.filter(f); return l.length ? `<section class="stack"><h2 class="eyebrow">${g}</h2>${l.map(e => eventCard(e, 'a-evento', `<span class="badge ${vagasLivres(e) ? '' : 'n'}">${inscritosTotal(e)}/${vagasTotal(e)} inscritos</span>${e.itens.length ? `<span class="badge t">${plural(e.itens.length,'item pedido','itens pedidos')}</span>` : ''}${orgOf(e.orgId).status !== 'aprovada' ? '<span class="badge y">Parceiro em validação</span>' : ''}`)).join('')}</section>` : ''; }).join('')}`,
+      ${grupos.map(([g, f]) => { const l = evs.filter(f); return l.length ? `<section class="sec"><h2 class="h-sm">${g}</h2>${l.map(e => eventCard(e, 'a-evento', `<span class="badge ${vagasLivres(e) ? '' : 'n'}">${inscritosTotal(e)}/${vagasTotal(e)} inscritos</span>${e.itens.length ? `<span class="badge t">${plural(e.itens.length,'item pedido','itens pedidos')}</span>` : ''}${orgOf(e.orgId).status !== 'aprovada' ? '<span class="badge y">Parceiro em validação</span>' : ''}`)).join('')}</section>` : ''; }).join('')}`,
     tabs:'admin', tabOn:'a-eventos'
   };
 };
@@ -761,34 +758,34 @@ SCREENS['a-validacoes'] = () => {
   };
   let lista;
   if (tab === 'vol') {
-    lista = pv.length ? pv.map(v => `<div class="card stack" style="gap:10px">
-        <div class="row" style="gap:12px"><span class="avatar">${initials(v.nome)}</span><span><b>${esc(v.nome)}</b>${v.id === 'me' ? ' <span class="badge y">você</span>' : ''}<br><span class="small muted">Cadastro ${esc(v.quando)} · ${esc(v.cidade)}</span></span></div>
+    lista = pv.length ? pv.map(v => `<div class="card stack">
+        <div class="person"><span class="avatar">${initials(v.nome)}</span><span><b>${esc(v.nome)}</b>${v.id === 'me' ? ' <span class="badge y">você</span>' : ''}<small>Cadastro ${esc(v.quando)} · ${esc(v.cidade)}</small></span></div>
         <p class="quote">${esc(v.motivacao)}</p>
         <div class="chips">${v.ajudas.map(a => `<span class="badge n">${a}</span>`).join('')}<span class="badge n">${esc(v.freq)}</span></div>
-        ${v.exp ? `<p class="small"><span class="muted">Experiência:</span> ${esc(v.exp)}</p>` : ''}
+        ${v.exp ? `<div class="stack-xs"><span class="small muted">Experiência</span><p class="small">${esc(v.exp)}</p></div>` : ''}
         ${btns('vol', v.id)}</div>`).join('') : `<p class="muted">Nenhum voluntário aguardando validação.</p>`;
   } else {
-    lista = po.length ? po.map(o => `<div class="card stack" style="gap:10px">
-        <div class="row" style="gap:12px"><span class="avatar">${initials(o.nome)}</span><span><b>${esc(o.nome)}</b>${o.id === 'o-me' ? ' <span class="badge y">sua</span>' : ''}<br><span class="small muted">${esc(o.tipo)} · enviado ${esc(o.enviado || 'agora')}</span></span></div>
+    lista = po.length ? po.map(o => `<div class="card stack">
+        <div class="person"><span class="avatar">${initials(o.nome)}</span><span><b>${esc(o.nome)}</b>${o.id === 'o-me' ? ' <span class="badge y">sua</span>' : ''}<small>${esc(o.tipo)} · enviado ${esc(o.enviado || 'agora')}</small></span></div>
         <p class="small">${esc(o.sobre)}</p>
-        <div class="kv small" style="gap:6px 10px">${icon('doc',16)}<span class="selectable">CNPJ ${esc(o.cnpj)}</span>${icon('user',16)}<span>${esc(o.resp)} · <span class="selectable">${esc(o.tel)}</span></span>${icon('pin',16)}<span>${esc(o.endereco)}</span></div>
+        <div class="kv sm">${icon('doc',16)}<span class="selectable">CNPJ ${esc(o.cnpj)}</span>${icon('user',16)}<span>${esc(o.resp)} · <span class="selectable">${esc(o.tel)}</span></span>${icon('pin',16)}<span>${esc(o.endereco)}</span></div>
         <div class="chips">${o.distribui.map(a => `<span class="badge n">${a}</span>`).join('')}</div>
         ${btns('org', o.id)}</div>`).join('') : `<p class="muted">Nenhuma organização aguardando validação.</p>`;
   }
   const revisados = tab === 'vol' ? S.pendVol.filter(v => v.status !== 'pendente').map(v => [v.nome, v.status]) : S.orgs.filter(o => o.revisada).map(o => [o.nome, o.status]);
   return {
     title:'Validações',
-    body:`<p class="muted small" style="margin-top:-8px">Confira os cadastros antes de liberar o acesso. O prazo prometido a quem se cadastra é de 7 dias.</p>
+    body:`<p class="lede">Confira os cadastros antes de liberar o acesso. O prazo prometido a quem se cadastra é de 7 dias.</p>
       <div class="seg" role="group" aria-label="Tipo de cadastro"><button data-a="valtab" data-v="vol" aria-pressed="${tab === 'vol'}">Voluntários (${pv.length})</button><button data-a="valtab" data-v="org" aria-pressed="${tab === 'org'}">Organizações (${po.length})</button></div>
       <div class="stack">${lista}</div>
-      ${revisados.length ? `<section class="stack" style="gap:4px"><h2 class="eyebrow" style="margin-bottom:4px">Revisados nesta sessão</h2><div class="list">${revisados.map(([n, s]) => `<div class="row between" style="padding:10px 0"><span>${esc(n)}</span>${/aprovad/.test(s) ? '<span class="badge">Aprovado</span>' : '<span class="badge t">Recusado</span>'}</div>`).join('')}</div></section>` : ''}`,
+      ${revisados.length ? `<section class="sec"><h2 class="h-sm">Revisados nesta sessão</h2><div class="card"><div class="list">${revisados.map(([n, s]) => `<div class="li-plain"><span>${esc(n)}</span>${/aprovad/.test(s) ? '<span class="badge">Aprovado</span>' : '<span class="badge t">Recusado</span>'}</div>`).join('')}</div></div></section>` : ''}`,
     tabs:'admin', tabOn:'a-validacoes'
   };
 };
 
 SCREENS['a-perfil'] = () => ({
   title:'Perfil',
-  body:`<div class="row" style="gap:14px"><span class="avatar lg">${icon('shield',28)}</span><span><b class="h-md">Equipe MEZA</b><br><span class="small muted">Administração do programa · Brasília – DF</span></span></div>
+  body:`<div class="ident"><span class="avatar lg">${icon('shield',28)}</span><span><b class="h-md">Equipe MEZA</b><span class="small muted">Administração do programa · Brasília – DF</span></span></div>
     <div class="stats"><div class="stat"><b>${S.orgs.filter(o => o.status === 'aprovada').length}</b><small>parceiros ativos</small></div><div class="stat"><b>${futuros().length}</b><small>entregas na agenda</small></div><div class="stat"><b>${pendentesVol().length + pendentesOrg().length}</b><small>cadastros pendentes</small></div></div>
     ${protoBlock()}`,
   tabs:'admin', tabOn:'a-perfil'
@@ -796,7 +793,7 @@ SCREENS['a-perfil'] = () => ({
 
 SCREENS.roteiro = () => ({
   title:'Roteiro do protótipo',
-  body:`<p class="muted small" style="margin-top:-8px">Cada história de usuário abre a tela que a atende. As quatro histórias da folha do grupo mantêm a prioridade definida lá. As demais foram acrescentadas no protótipo e a prioridade delas ainda precisa ser confirmada.</p>
+  body:`<p class="lede">Cada história de usuário abre a tela que a atende. As quatro histórias da folha do grupo mantêm a prioridade definida lá. As demais foram acrescentadas no protótipo e a prioridade delas ainda precisa ser confirmada.</p>
     <div>${storiesHtml()}</div>
     ${S.role ? '' : `<div class="card stack"><b>Ver o app como</b>${roleSeg()}</div>`}`
 });
@@ -821,7 +818,7 @@ function render(top) {
   const sc = (SCREENS[S.route] || SCREENS.welcome)();
   const old = $app.querySelector('.scroll');
   const prev = top || !old ? 0 : old.scrollTop;
-  const bar = sc.title != null ? `<header class="bar gut">${S.stack.length ? `<button class="icon-btn" data-a="back" aria-label="Voltar">${icon('left',24)}</button>` : ''}<h1>${sc.title}</h1></header>` : '';
+  const bar = sc.title != null ? `<header class="bar gut${S.stack.length ? '' : ' root'}">${S.stack.length ? `<button class="icon-btn" data-a="back" aria-label="Voltar">${icon('left',24)}</button>` : ''}<h1>${sc.title}</h1></header>` : '';
   $app.innerHTML = `${bar}<main class="scroll${top ? ' enter' : ''}">${sc.top || ''}<div class="content gut">${sc.body}</div></main>${sc.foot ? `<footer class="foot gut">${sc.foot}</footer>` : ''}${sc.tabs ? tabsHtml(sc.tabs, sc.tabOn) : ''}`;
   $app.querySelector('.scroll').scrollTop = prev;
   document.body.classList.toggle('hero-top', !!sc.top && sc.title == null && sc.top.indexOf('class="hero') > -1);
@@ -833,9 +830,9 @@ function render(top) {
   }
 }
 function renderGuide() {
-  $guide.innerHTML = `<div class="stack" style="gap:8px"><div class="logo">meza</div><p class="slogan">“a mesa é de todos.”</p><p class="values">mobilização • empatia • zelo • alimentação</p></div>
-    <div class="guide-card stack"><b>Ver o app como</b>${roleSeg()}<div class="row between" style="flex-wrap:wrap"><button class="link" data-a="home">Voltar para a tela de cadastro</button><span class="row" style="gap:8px"><button class="btn btn-ghost btn-sm" data-a="theme">${isDark() ? icon('sun',18) + ' Tema claro' : icon('moon',18) + ' Tema escuro'}</button><button class="btn btn-ghost btn-sm" data-a="fullscreen">${document.fullscreenElement ? icon('shrink',18) + ' Sair da tela cheia' : icon('expand',18) + ' Tela cheia'}</button></span></div></div>
-    <div class="guide-card"><p class="eyebrow" style="margin-bottom:6px">Histórias de usuário · MoSCoW</p>${storiesHtml()}</div>
+  $guide.innerHTML = `<div class="stack-sm"><div class="logo">meza</div><p class="slogan">“a mesa é de todos.”</p><p class="values">mobilização • empatia • zelo • alimentação</p></div>
+    <div class="guide-card stack"><span class="label">Ver o app como</span>${roleSeg()}<div class="guide-actions"><button class="link" data-a="home">Voltar para a tela de cadastro</button><span class="row" style="gap:var(--s-2)"><button class="btn btn-ghost btn-sm" data-a="theme">${isDark() ? icon('sun',18) + ' Tema claro' : icon('moon',18) + ' Tema escuro'}</button><button class="btn btn-ghost btn-sm" data-a="fullscreen">${document.fullscreenElement ? icon('shrink',18) + ' Sair da tela cheia' : icon('expand',18) + ' Tela cheia'}</button></span></div></div>
+    <div class="guide-card sec"><h2 class="h-sm">Histórias de usuário (MoSCoW)</h2>${storiesHtml()}</div>
     <p class="hint">Protótipo funcional com dados de exemplo. Nenhum pagamento é processado e nada é enviado.</p>`;
 }
 /* Tema: segue o sistema até o primeiro toque no botão; depois fixa data-theme no <html> e guarda a escolha no navegador. */

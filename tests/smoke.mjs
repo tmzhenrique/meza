@@ -102,6 +102,22 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   });
 
+  await passo('nada transborda numa tela de 320px', async () => {
+    const mini = await browser.newPage({ viewport: { width: 320, height: 640 } });
+    mini.on('pageerror', e => erros.push(e.message));
+    await mini.goto(url);
+    await mini.click('.content [data-a="role"][data-r="vol"]');
+    await mini.click('.tab:has-text("Perfil")');
+    const corta = sel => mini.locator(sel).evaluate(el => el.scrollWidth > el.clientWidth + 1);
+    assert.equal(await corta('.content .seg'), false, 'o seletor "Ver o app como" não deveria cortar');
+    await mini.click('.tab:has-text("Doar")');
+    await mini.click('.big-opt.y');
+    const linhas = await mini.locator('.amounts .chip').evaluateAll(els => new Set(els.map(e => e.offsetTop)).size);
+    assert.equal(linhas, 1, 'os valores sugeridos deveriam caber numa linha');
+    assert.equal(await mini.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    await mini.close();
+  });
+
   await passo('painel do computador e tema escuro carregam', async () => {
     const desk = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: 'dark' });
     desk.on('pageerror', e => erros.push(e.message));
