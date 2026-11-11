@@ -2,7 +2,7 @@
 
 Protótipo funcional do MEZA, app de voluntariado que conecta voluntários a instituições parceiras (ONGs, empresas e coletivos que distribuem alimentos). Slogan: “a mesa é de todos.” Valores: mobilização • empatia • zelo • alimentação.
 
-Projeto acadêmico do Ibmec Brasília. Fontes do produto: o protótipo de papel e a folha de user stories em `docs/referencias/`, e a identidade visual no Figma (https://www.figma.com/design/8MHxkJJR7gRTR1AvuFGXJc/MEZA).
+Projeto acadêmico do Ibmec Brasília. Fontes do produto: o protótipo de papel e a folha de user stories em `docs/referencias/`, a identidade visual no Figma (https://www.figma.com/design/8MHxkJJR7gRTR1AvuFGXJc/MEZA) e as telas redesenhadas no pen.dev (arquivo `meza.pen`, lido pelo MCP `pencil`). Quando o pen.dev tiver a tela, ele é a referência de layout, textos e ícones.
 
 Escreva textos de interface, mensagens de commit e respostas em português do Brasil.
 
@@ -18,8 +18,8 @@ Escreva textos de interface, mensagens de commit e respostas em português do Br
 
 | Caminho | Conteúdo |
 | --- | --- |
-| `index.html` | Casca da página: fontes, CSS, marcação do palco (`aside.guide` + `.device > #app` + `#toast`) e o script |
-| `src/styles.css` | Tokens de design no `:root` (claro e escuro) e todos os estilos |
+| `index.html` | Casca da página: fontes, CSS, marcação do palco (`aside.guide` + `.phone > .device > #app` + `#toast`, com barra de status, ilha e indicador de início que só aparecem no computador) e o script |
+| `src/styles.css` | Tokens de design no `:root` e todos os estilos |
 | `src/app.js` | O app inteiro: estado, dados de exemplo, telas e ações |
 | `scripts/build.mjs` | Gera `dist/meza.html` embutindo CSS e JS |
 | `tests/smoke.mjs` | Percorre os fluxos principais no Chromium e falha se houver erro de JavaScript |
@@ -35,8 +35,8 @@ Aplicação de página única sem framework, dentro de uma IIFE.
 - **Renderização**: `render(top)` reconstrói `#app` inteiro a cada mudança. Com `top = true` a rolagem volta ao topo e a tela entra animada.
 - **Navegação**: `go(rota, params)` empilha, `back()` desempilha e `tab(rota)` zera a pilha. O papel atual fica em `S.role` e muda por `setRole()`.
 - **Ações**: cliques são delegados. Um elemento com `data-a="nome"` chama `A.nome(dataset, el)`; os outros atributos `data-*` chegam como parâmetros.
-- **Formulários**: `<input data-bind="caminho.no.estado">` grava direto em `S` via `setPath`. `data-mask="tel"` ou `"cnpj"` aplica máscara. Use os helpers `field`, `selectField`, `taField`, `chipsField` e `optCard`.
-- **Validação**: `valVol1`, `valVol2`, `valOrg` e `valEv` devolvem `{ campo: 'mensagem' }`; `fail(errs)` mostra os erros e foca o primeiro campo com problema.
+- **Formulários**: `<input data-bind="caminho.no.estado">` grava direto em `S` via `setPath`. `data-mask="tel"` ou `"cnpj"` aplica máscara. Use os helpers `field`, `selectField`, `taField`, `radioList` (escolha única em linhas), `checkList` (escolha múltipla com ícone e descrição), `chipsField` e `optCard`. Em `field`, `check:true` mostra o ✓ verde depois de uma tentativa de envio, e `action:{a, icon, label}` põe um botão de ícone à direita (ex.: localização). Telas de cadastro em etapas passam `steps:[atual, total]`, que desenha a barra de progresso no cabeçalho.
+- **Validação**: `valVol1`, `valVol2`, `valOrg` e `valEv` devolvem `{ campo: 'mensagem' }`; `fail(errs)` mostra os erros, marca `S.tried` e foca o primeiro campo com problema. `errSummary()` mostra o resumo “Revise os N campos destacados” no topo.
 - **Confirmações destrutivas** (cancelar inscrição, recusar cadastro, recomeçar) usam dois toques controlados por `S.confirm`. Não use `alert()` nem `confirm()`.
 - **Segurança**: todo texto digitado pelo usuário passa por `esc()` antes de entrar no HTML.
 - **Dinheiro** é guardado em centavos (`cents`) e formatado com `brl()`.
@@ -50,13 +50,13 @@ Aplicação de página única sem framework, dentro de uma IIFE.
 
 ## Papéis e rotas
 
-- **Voluntário** (`v-*`): início, próximas entregas, inscrição com posto e turno, doação em dinheiro, doação de alimentos e perfil com agenda e histórico.
+- **Voluntário** (`v-*`): início, perfil com agenda, doações, “Como quero ajudar” (editável em `v-ajuda`, com rascunho em `S.ajudaDraft`) e bloco Protótipo, próximas ações (aba “Ações”, com filtro por tipo e grupos “Esta semana” e “Mais adiante”), detalhe com escolha de posto e turno, vaga reservada (com download de `.ics` para o calendário), doação em dinheiro, doação de alimentos e perfil com agenda e histórico. Ações do voluntário aparecem como `eventRow()`; as telas de organização e administrador ainda usam `eventCard()`. Cada evento tem `desc` (o que será feito) e `nota` opcional (orientação, como roupa e o que levar).
 - **Organização** (`o-*`): painel, publicação de entrega com postos e vagas, detalhe com inscritos e alimentos a caminho.
 - **Administrador** (`a-*`): agenda dos parceiros e validação de cadastros de voluntários e organizações.
 - **Cadastro**: `vol-cad-1`, `vol-cad-2` e `org-cad`, com telas de sucesso.
 - **`roteiro`**: lista as user stories e abre a tela de cada uma. No computador o mesmo roteiro aparece no painel à esquerda do aparelho.
 
-A doação em dinheiro segue o protótipo de papel: Doações e ofertas → Valor (teclado numérico) → Métodos de pagamento (Pix, Cartão, Dinheiro) → Checkout com QR Code. Pagamentos são simulados; o QR Code e o código Pix são ilustrativos.
+A doação em dinheiro segue o protótipo de papel, redesenhado no pen.dev em três etapas (`steps:[n, 3]`): Doar → Valor (teclado numérico e valores sugeridos) → Como você quer pagar (Pix, Cartão, Dinheiro em mãos) → Pix (QR Code, contador de 30 minutos em `pixRestante()` e “copia e cola” com estado de copiado), Cartão (formulário de teste já preenchido com 4242…, máscaras `card`, `mmaa` e `digits` e validação em `valCard`) ou Entrega em mãos (ação da organização ou sede). “Alterar” (`don-edit`) volta para o Valor. Pagamentos são simulados; o QR Code e o código Pix são ilustrativos.
 
 ## User stories
 
@@ -82,15 +82,16 @@ As histórias e prioridades exibidas no app ficam na constante `STORIES` (`g: tr
 
 ## Identidade visual
 
-Os tokens estão no topo de `src/styles.css`. Estilize sempre por token; cor literal só no QR Code, que precisa de fundo branco nos dois temas.
+Os tokens estão no topo de `src/styles.css`. Estilize sempre por token; cor literal só no QR Code (fundo branco) e nos textos sobre o cabeçalho verde.
 
+- **Tokens do pen.dev** (já aplicados): fundo `#F5F0E6`, superfície `#FFFDF9`, texto `#24211C`/`#6A6357`/`#9A9286` (`--fg`, `--muted`, `--muted-2`), bordas `#DDD4C4`/`#B9AF9E`, verde `#1B4A35`, ok `#2E7A52`, erro `#B03A26` com fundo `#FAE6DF` (`--danger`, `--danger-soft`), terracota de destaque `#C8694A` (`--accent`) e toalha `#E3A68E`. Ícones novos vêm do Lucide (objeto `LU` no `app.js`, traço 2).
 - **Paleta do Figma**: verde profundo `#194B35` (escuro `#103123`, claro `#207D54`), amarelo acolhedor `#E9B96E` (`#AF894F`, `#FCD79E`), terracota `#D17C5B` (`#A15D43`, `#F58E66`), creme `#F5F1E7` (`#E0DACB`, `#FFFFFF`) e texto `#2C2C2C`.
 - **Tipografia**: no Figma o logotipo “meza” e os títulos usam Aconchego (Bold, Medium e Black, espaçamento de -5%). É uma fonte de teste sem licença para web, então o código usa Outfit com `letter-spacing: -0.05em`. O texto corrido usa Poppins, como no Figma.
-- **Elementos**: o slogan, a linha de valores e a faixa xadrez terracota (`.gingham`), que lembra uma toalha de mesa.
-- O tema segue o sistema (`prefers-color-scheme`) e respeita `data-theme="light"` ou `"dark"` no `<html>`. O botão de tema (ação `theme`, no painel do computador e no bloco “Protótipo” dos perfis) grava esse atributo e salva a escolha no `localStorage` (chave `meza-tema`), que é a única coisa que sobrevive à recarga; `isDark()` diz o tema em uso. Toda cor nova precisa de valor nos três blocos de tokens.
+- **Elementos**: o slogan “A mesa é de todos.”, a linha de valores “Mobilização · Empatia · Zelo · Alimentação” e a faixa xadrez terracota (`.gingham`, quadrados de 10 px em duas fileiras), que lembra uma toalha de mesa.
+- O app só tem tema claro (`color-scheme: light` no `:root`); o modo escuro foi removido a pedido do grupo. Nada sobrevive à recarga: o app não usa `localStorage`.
 - **Escalas** (tokens no `:root`): espaçamento `--s-1`…`--s-8` (4, 8, 12, 16, 20, 24, 32, 40 px); tipo `--t-xs`…`--t-2xl` (12, 13, 15, 17, 20, 24, 30 px); raio `--r-sm`/`--r`/`--r-lg` (peças pequenas, controles, cartões). Não use valores soltos nem `style="gap:…"` inline.
 - **Ritmo e hierarquia**: `.content` separa blocos por 24 px. Uma seção com título é `<section class="sec">` + `h2.h-md` (20 px); subgrupos usam `.h-sm` (17 px, o mesmo do título de cartão). Cabeçalho de página é `.head` (rótulo `.eyebrow` + `.h-lg`/`.h-xl`); texto introdutório abaixo da barra é `.lede`. Listas (`.list` com `.li` ou `.li-plain`) ficam dentro de `.card`; selos de status vão na linha do título (`.li-t`). Pares rótulo/valor usam `.pair`; dados com ícone usam `.kv` com a linha de apoio em `<small>`. Rótulos não usam caixa alta.
-- Layout: no celular o app ocupa a tela com margem `--gut` (16 px, 20 px a partir de 400 px); entre 600 e 979 px o conteúdo vira uma coluna central de 560 px (`.gut`); a partir de 980 px aparece o roteiro à esquerda e o aparelho à direita. Abaixo de 360 px há ajustes em `@media (max-width:359px)`, e o teste de fumaça confere que nada transborda em 320 px.
+- Layout: no celular o app ocupa a tela com margem `--gut` (16 px, 20 px a partir de 400 px); entre 600 e 979 px o conteúdo vira uma coluna central de 560 px (`.gut`); a partir de 980 px aparece o roteiro à esquerda e o aparelho à direita, com a tela sempre em 390 × 844; em janelas baixas o aparelho inteiro encolhe por `zoom` (variável `--k`, calculada em `fitPhone()`), sem mudar a proporção. Abaixo de 360 px há ajustes em `@media (max-width:359px)`, e o teste de fumaça confere que nada transborda em 320 px.
 
 ## Limitações conhecidas
 

@@ -41,7 +41,53 @@ const I = {
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>',
   moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>'
 };
-const icon = (n, s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n] || ''}</svg>`;
+/* Ícones do Lucide usados no design do pen.dev (traço 2) */
+const LU = {
+  'repeat':'<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+  'rotate-ccw':'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  'package-check':'<path d="m16 16 2 2 4-4"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/>',
+  'minus':'<path d="M5 12h14"/>',
+  'plus':'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  'banknote':'<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+  'package':'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/>',
+  'qr-code':'<rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/>',
+  'credit-card':'<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+  'delete':'<path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><path d="m12 9 6 6"/><path d="m18 9-6 6"/>',
+  'timer':'<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
+  'copy':'<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  'lock':'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  'circle-help':'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  'receipt':'<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/>',
+  'house':'<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  'circle-user-round':'<path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/>',
+  'bell':'<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
+  'hourglass':'<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>',
+  'clock-3':'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16.5 12"/>',
+  'map-pin':'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  'users':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  'info':'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  'calendar':'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  'calendar-plus':'<path d="M8 2v4"/><path d="M16 2v4"/><path d="M21 13V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8"/><path d="M3 10h18"/><path d="M16 19h6"/><path d="M19 16v6"/>',
+  'hand-helping':'<path d="M11 12h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 14"/><path d="m7 18 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 13 6 6"/>',
+  'hand-heart':'<path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"/><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 15 6 6"/><path d="M19.5 8.5c.7-.7 1.5-1.6 1.5-2.7A2.73 2.73 0 0 0 16 4a2.78 2.78 0 0 0-5 1.8c0 1.2.8 2 1.5 2.8L16 12Z"/>',
+  'house-heart':'<path d="M8.62 13.8A2.25 2.25 0 1 1 12 10.836a2.25 2.25 0 1 1 3.38 2.966l-2.626 2.856a.998.998 0 0 1-1.507 0z"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  'map':'<path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/>',
+  'chevron-right':'<path d="m9 18 6-6-6-6"/>',
+  'chevron-down':'<path d="m6 9 6 6 6-6"/>',
+  'arrow-left':'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  'arrow-right':'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  'locate-fixed':'<line x1="2" x2="5" y1="12" y2="12"/><line x1="19" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="5"/><line x1="12" x2="12" y1="19" y2="22"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/>',
+  'wand-sparkles':'<path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/>',
+  'circle-check':'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  'circle-alert':'<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>',
+  'check':'<path d="M20 6 9 17l-5-5"/>',
+  'calendar-heart':'<path d="M3 10h18V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h7"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="M21.29 14.7a2.43 2.43 0 0 0-2.65-.52c-.3.12-.57.3-.8.53l-.34.34-.35-.34a2.43 2.43 0 0 0-2.65-.53c-.3.12-.56.3-.79.53-.95.94-1 2.53.2 3.74L17.5 22l3.6-3.55c1.2-1.21 1.14-2.8.19-3.74Z"/>',
+  'shopping-basket':'<path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/>',
+  'hand-coins':'<path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"/><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 16 6 6"/><circle cx="16" cy="9" r="2.9"/><circle cx="6" cy="5" r="3"/>',
+  'calendar-days':'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>',
+  'ticket':'<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>'
+};
+const icon = (n, s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${LU[n] ? 2 : 1.8}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${LU[n] || I[n] || ''}</svg>`;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ================= datas e valores ================= */
@@ -94,12 +140,12 @@ const seedOrgs = () => [
   {id:'o4', nome:'Mercado Bom Vizinho', tipo:'Empresa', endereco:'QE 40, Guará II', resp:'Paulo Mendes', tel:'(61) 3381-7765', email:'paulo@bomvizinho.com.br', status:'pendente', sobre:'Rede de três mercados de bairro que quer destinar o hortifrúti excedente.', distribui:['Hortifrúti'], arrecadado:0, horario:'Todos os dias, 7h às 21h', cnpj:'12.345.678/0001-90', enviado:'há 3 dias'}
 ];
 const seedEvents = () => [
-  {id:'e1', orgId:'o1', tipo:'Distribuição de cestas', titulo:'Montagem de cestas básicas', data:emDias(2), inicio:'08:00', fim:'12:00', local:'Galpão do Banco de Alimentos', endereco:'SGAS 905, Asa Sul', desc:'Vamos separar e montar 180 cestas para a entrega da semana seguinte. Use sapato fechado; luvas e toucas são fornecidas.', turnos:['08:00–10:00','10:00–12:00'], postos:[{nome:'Recepção de doações',vagas:4,inscritos:2},{nome:'Triagem e validade',vagas:6,inscritos:5},{nome:'Montagem das cestas',vagas:10,inscritos:6}], itens:['arroz','feijao','oleo','macarrao']},
-  {id:'e2', orgId:'o2', tipo:'Preparo de refeições', titulo:'Preparo de marmitas', data:emDias(4), inicio:'07:30', fim:'13:00', local:'Cozinha comunitária', endereco:'QNM 18, Ceilândia Sul', desc:'Preparo e embalagem de 400 marmitas para a rota da noite. Cabelo preso e sapato fechado; avental e touca ficam por nossa conta.', turnos:['07:30–10:00','10:00–13:00'], postos:[{nome:'Cozinha',vagas:8,inscritos:7},{nome:'Embalagem',vagas:6,inscritos:2},{nome:'Limpeza da cozinha',vagas:3,inscritos:3}], itens:['arroz','feijao','oleo']},
+  {id:'e1', orgId:'o1', tipo:'Distribuição de cestas', titulo:'Montagem de cestas básicas', data:emDias(2), inicio:'08:00', fim:'12:00', local:'Galpão do Banco de Alimentos', endereco:'SGAS 905, Asa Sul', desc:'Vamos separar e montar 180 cestas para a entrega da semana seguinte.', nota:'Use sapato fechado. Luvas e toucas são fornecidas.', turnos:['08:00–10:00','10:00–12:00'], postos:[{nome:'Recepção de doações',vagas:4,inscritos:2},{nome:'Triagem e validade',vagas:6,inscritos:5},{nome:'Montagem das cestas',vagas:10,inscritos:6}], itens:['arroz','feijao','oleo','macarrao']},
+  {id:'e2', orgId:'o2', tipo:'Preparo de refeições', titulo:'Preparo de marmitas', data:emDias(4), inicio:'07:30', fim:'13:00', local:'Cozinha comunitária', endereco:'QNM 18, Ceilândia Sul', desc:'Preparo e embalagem de 400 marmitas para a rota da noite.', nota:'Cabelo preso e sapato fechado. Avental e touca ficam por nossa conta.', turnos:['07:30–10:00','10:00–13:00'], postos:[{nome:'Cozinha',vagas:8,inscritos:7},{nome:'Embalagem',vagas:6,inscritos:2},{nome:'Limpeza da cozinha',vagas:3,inscritos:3}], itens:['arroz','feijao','oleo']},
   {id:'e6', orgId:'o4', tipo:'Coleta de alimentos', titulo:'Separação de hortifrúti excedente', data:emDias(6), inicio:'18:00', fim:'20:00', local:'Mercado Bom Vizinho', endereco:'QE 40, Guará II', desc:'Separação de frutas e verduras que saem da gôndola no fim do dia, para entrega no dia seguinte.', turnos:['18:00–20:00'], postos:[{nome:'Separação',vagas:4,inscritos:0},{nome:'Transporte',vagas:2,inscritos:0}], itens:[]},
-  {id:'e3', orgId:'o1', tipo:'Distribuição de cestas', titulo:'Entrega de cestas às famílias', data:emDias(9), inicio:'14:00', fim:'17:00', local:'Centro Comunitário da 912 Sul', endereco:'SGAS 912, Asa Sul', desc:'Entrega das cestas montadas na semana anterior para as 180 famílias cadastradas. Haverá café e água para a equipe.', turnos:['14:00–15:30','15:30–17:00'], postos:[{nome:'Organização da fila',vagas:4,inscritos:1},{nome:'Entrega das cestas',vagas:8,inscritos:3},{nome:'Conferência do cadastro',vagas:3,inscritos:0}], itens:['arroz','feijao']},
+  {id:'e3', orgId:'o1', tipo:'Distribuição de cestas', titulo:'Entrega de cestas às famílias', data:emDias(9), inicio:'14:00', fim:'17:00', local:'Centro Comunitário da 912 Sul', endereco:'SGAS 912, Asa Sul', desc:'Entrega das cestas montadas na semana anterior para as 180 famílias cadastradas.', nota:'Haverá café e água para a equipe.', turnos:['14:00–15:30','15:30–17:00'], postos:[{nome:'Organização da fila',vagas:4,inscritos:1},{nome:'Entrega das cestas',vagas:8,inscritos:3},{nome:'Conferência do cadastro',vagas:3,inscritos:0}], itens:['arroz','feijao']},
   {id:'e4', orgId:'o3', tipo:'Lanche e reforço', titulo:'Lanche no contraturno', data:emDias(12), inicio:'15:00', fim:'18:00', local:'Escola Classe 21', endereco:'QSA 21, Taguatinga Sul', desc:'Preparo e servimento do lanche da tarde para 90 crianças, seguido de uma roda de leitura.', turnos:['15:00–16:30','16:30–18:00'], postos:[{nome:'Preparo do lanche',vagas:5,inscritos:2},{nome:'Leitura com as crianças',vagas:6,inscritos:4},{nome:'Organização e limpeza',vagas:3,inscritos:1}], itens:['leite','biscoito','acucar']},
-  {id:'e5', orgId:'o2', tipo:'Coleta de alimentos', titulo:'Coleta na feira do Guará', data:emDias(17), inicio:'06:30', fim:'11:00', local:'Feira do Guará', endereco:'QE 25, Guará II', desc:'Conversa com feirantes e recolhimento do hortifrúti que não será vendido. Traga garrafa de água e boné.', turnos:['06:30–09:00','09:00–11:00'], postos:[{nome:'Conversa com feirantes',vagas:6,inscritos:1},{nome:'Carga e transporte',vagas:3,inscritos:1},{nome:'Separação dos alimentos',vagas:5,inscritos:0}], itens:[]}
+  {id:'e5', orgId:'o2', tipo:'Coleta de alimentos', titulo:'Coleta na feira do Guará', data:emDias(17), inicio:'06:30', fim:'11:00', local:'Feira do Guará', endereco:'QE 25, Guará II', desc:'Conversa com feirantes e recolhimento do hortifrúti que não será vendido.', nota:'Traga garrafa de água e boné.', turnos:['06:30–09:00','09:00–11:00'], postos:[{nome:'Conversa com feirantes',vagas:6,inscritos:1},{nome:'Carga e transporte',vagas:3,inscritos:1},{nome:'Separação dos alimentos',vagas:5,inscritos:0}], itens:[]}
 ];
 const seedNeeds = () => ({
   o1:[{id:'arroz',meta:150,atual:92,prom:2},{id:'feijao',meta:200,atual:61,prom:0},{id:'oleo',meta:120,atual:104,prom:3},{id:'macarrao',meta:180,atual:75,prom:0},{id:'sardinha',meta:100,atual:22,prom:0}],
@@ -172,32 +218,61 @@ function prog(a, max, b = 0, cls = '') {
   const pa = Math.min(100, (a / max) * 100), pb = Math.min(100 - pa, (b / max) * 100);
   return `<span class="prog ${cls}" role="img" aria-label="${a} de ${max}"><i style="width:${pa}%"></i>${b ? `<i class="p2" style="width:${pb}%"></i>` : ''}</span>`;
 }
-function errMsg(k) { return S.errors[k] ? `<span class="msg-err">${S.errors[k]}</span>` : ''; }
+function errMsg(k) { return S.errors[k] ? `<span class="msg-err" id="e-${k}">${icon('circle-alert',16)}<span>${S.errors[k]}</span></span>` : ''; }
+/* Depois de uma tentativa de envio (S.tried), campos opcionais "check" mostram o ✓ verde quando estão certos. */
+const okMark = (o, k, v) => o.check && S.tried && !S.errors[k] && String(v).trim() ? `<span class="trail ok" aria-label="Campo correto">${icon('circle-check',20)}</span>` : '';
+const helper = (o, k, ok) => S.errors[k] ? errMsg(k) : (o.hint && !ok ? `<span class="hint">${o.hint}</span>` : '');
+const describedBy = (o, k) => S.errors[k] ? ` aria-invalid="true" aria-describedby="e-${k}"` : '';
 function field(o) {
   const v = getPath(o.bind) ?? ''; const k = o.key || o.bind.split('.').pop(); const id = 'f-' + o.bind.replace(/\./g, '-');
+  const ok = okMark(o, k, v);
+  if (o.type === 'date' && !o.action) o = { ...o, action:{ a:'open-date', icon:'calendar', label:'Abrir calendário' } };
+  const trail = ok || (o.trailIcon ? `<span class="trail">${icon(o.trailIcon,20)}</span>` : '') || (o.action ? `<button type="button" class="trail-btn" data-a="${o.action.a}" aria-label="${o.action.label}">${icon(o.action.icon,20)}</button>` : '');
   return `<div class="field${S.errors[k] ? ' err' : ''}">
     <label for="${id}">${o.label}</label>
-    <div class="inp">${o.icon ? icon(o.icon, 19) : ''}<input id="${id}" type="${o.type || 'text'}" data-bind="${o.bind}" value="${esc(v)}" placeholder="${esc(o.ph || '')}"${o.mask ? ` data-mask="${o.mask}"` : ''}${o.auto ? ` autocomplete="${o.auto}"` : ''}${o.mode ? ` inputmode="${o.mode}"` : ''}${o.min ? ` min="${o.min}"` : ''}${o.max ? ` max="${o.max}"` : ''}${o.rer ? ' data-rerender="1"' : ''}></div>
-    ${o.hint ? `<span class="hint">${o.hint}</span>` : ''}${errMsg(k)}
+    <div class="inp">${o.icon ? icon(o.icon, 19) : ''}<input id="${id}" type="${o.type || 'text'}" data-bind="${o.bind}" value="${esc(v)}" placeholder="${esc(o.ph || '')}"${o.mask ? ` data-mask="${o.mask}"` : ''}${o.auto ? ` autocomplete="${o.auto}"` : ''}${o.mode ? ` inputmode="${o.mode}"` : ''}${o.min ? ` min="${o.min}"` : ''}${o.max ? ` max="${o.max}"` : ''}${o.rer ? ' data-rerender="1"' : ''}${describedBy(o, k)}>${trail}</div>
+    ${helper(o, k, ok)}
   </div>`;
 }
 function selectField(o) {
   const v = getPath(o.bind) ?? ''; const k = o.key || o.bind.split('.').pop(); const id = 'f-' + o.bind.replace(/\./g, '-');
   return `<div class="field${S.errors[k] ? ' err' : ''}">
     <label for="${id}">${o.label}</label>
-    <div class="inp">${o.icon ? icon(o.icon, 19) : ''}<select id="${id}" data-bind="${o.bind}"${o.rer ? ' data-rerender="1"' : ''}>
+    <div class="inp${v === '' ? ' empty' : ''}">${o.icon ? icon(o.icon, 19) : ''}<select id="${id}" data-bind="${o.bind}" data-rerender="1"${describedBy(o, k)}>
       ${o.ph ? `<option value="" ${v === '' ? 'selected' : ''} disabled>${o.ph}</option>` : ''}
       ${o.options.map(op => { const [val, lab] = Array.isArray(op) ? op : [op, op]; return `<option value="${esc(val)}" ${val === v ? 'selected' : ''}>${esc(lab)}</option>`; }).join('')}
-    </select><span class="caret">${icon('chevdown',18)}</span></div>${errMsg(k)}
+    </select><span class="caret">${icon('chevron-down',20)}</span></div>${helper(o, k)}
   </div>`;
 }
 function taField(o) {
   const v = getPath(o.bind) ?? ''; const k = o.key || o.bind.split('.').pop(); const id = 'f-' + o.bind.replace(/\./g, '-');
   return `<div class="field${S.errors[k] ? ' err' : ''}">
     <label for="${id}">${o.label}</label>
-    <textarea class="ta" id="${id}" data-bind="${o.bind}" rows="${o.rows || 3}" placeholder="${esc(o.ph || '')}">${esc(v)}</textarea>
-    ${o.hint ? `<span class="hint">${o.hint}</span>` : ''}${errMsg(k)}
+    <textarea class="ta" id="${id}" data-bind="${o.bind}" rows="${o.rows || 3}" placeholder="${esc(o.ph || '')}"${describedBy(o, k)}>${esc(v)}</textarea>
+    ${helper(o, k)}
   </div>`;
+}
+/* Resumo no topo do formulário quando o envio falha */
+function errSummary() {
+  const n = Object.keys(S.errors).length; if (!n) return '';
+  return `<div class="err-sum" role="alert">${icon('circle-alert',20)}<span>${n === 1 ? 'Revise o campo destacado para continuar.' : `Revise os ${n} campos destacados para continuar.`}</span></div>`;
+}
+function groupHead(o, k) { return `<span class="grp-h"><span class="lbl" id="lbl-${k}">${o.label}</span>${o.hint ? `<span class="hint">${o.hint}</span>` : ''}</span>`; }
+/* Lista de opções de escolha única (rádio) */
+function radioList(o) {
+  const v = getPath(o.path); const k = o.key || o.path.split('.').pop();
+  return `<div class="field grp${S.errors[k] ? ' err' : ''}">${groupHead(o, k)}
+    <div class="rows" role="radiogroup" aria-labelledby="lbl-${k}">
+      ${o.options.map(x => `<button type="button" class="rrow" role="radio" aria-checked="${v === x}" data-a="pick" data-p="${o.path}" data-v="${esc(x)}" data-k="${k}"><span class="rd"></span><span>${esc(x)}</span></button>`).join('')}
+    </div>${errMsg(k)}</div>`;
+}
+/* Lista de opções de escolha múltipla, com ícone e descrição */
+function checkList(o) {
+  const v = getPath(o.path) || []; const k = o.key || o.path.split('.').pop();
+  return `<div class="field grp${S.errors[k] ? ' err' : ''}">${groupHead(o, k)}
+    <div class="rows" role="group" aria-labelledby="lbl-${k}">
+      ${o.options.map(x => { const on = v.includes(x.v); return `<button type="button" class="crow" role="checkbox" aria-checked="${on}" data-a="toggle" data-p="${o.path}" data-v="${esc(x.v)}" data-k="${k}"><span class="ci">${icon(x.ic,22)}</span><span class="ct"><b>${esc(x.v)}</b><small>${esc(x.d)}</small></span><span class="cb">${on ? icon('check',16) : ''}</span></button>`; }).join('')}
+    </div>${errMsg(k)}</div>`;
 }
 function chipsField(o) {
   const v = getPath(o.path); const k = o.key || o.path.split('.').pop();
@@ -215,7 +290,7 @@ function optCard({ checked, action, data = '', ic, title, sub, disabled }) {
     ${ic ? `<span class="ic">${icon(ic,22)}</span>` : ''}<span><b>${title}</b>${sub ? `<small>${sub}</small>` : ''}</span><span class="radio"></span>
   </button>`;
 }
-function seal() { return `<span class="seal">${icon('check',44)}</span>`; }
+function seal() { return `<span class="seal">${icon('check',32)}</span>`; }
 function qrSvg(seed) {
   const N = 25; let st = hash(seed) || 1;
   const rnd = () => { st ^= st << 13; st >>>= 0; st ^= st >>> 17; st ^= st << 5; st >>>= 0; return st / 4294967296; };
@@ -249,15 +324,13 @@ function roleSeg() {
   </div>`;
 }
 function protoBlock() {
-  return `<section class="sec">
-    <h2 class="h-md">Protótipo</h2>
-    <div class="stack-sm"><span class="label">Ver o app como</span>${roleSeg()}</div>
-    <div class="card rows">
-      <button class="row-link" data-a="go" data-r="roteiro">${icon('book',20)}<span>Roteiro das histórias de usuário</span>${icon('right',18)}</button>
-      <button class="row-link" data-a="theme">${icon(isDark() ? 'sun' : 'moon',20)}<span>${isDark() ? 'Usar tema claro' : 'Usar tema escuro'}</span></button>
-      <button class="row-link danger" data-a="reset">${icon('refresh',20)}<span>${S.confirm === 'reset' ? 'Toque de novo para apagar tudo' : 'Recomeçar a demonstração'}</span></button>
+  return `<section class="sec tight">${secHead('Protótipo')}
+    <div class="rule-list">
+      <div class="proto-as"><span class="label-14">Ver o app como</span>${roleSeg()}</div>
+      <button class="set-r" data-a="go" data-r="roteiro">${icon('map',20)}<span>Roteiro das histórias de usuário</span>${icon('chevron-right',20)}</button>
+      <button class="set-r danger" data-a="reset">${icon('rotate-ccw',20)}<span>${S.confirm === 'reset' ? 'Toque de novo para apagar tudo' : 'Recomeçar a demonstração'}</span></button>
     </div>
-    <p class="hint">Dados de exemplo. Nenhum pagamento é processado e nada é enviado.</p>
+    <p class="note-r">${icon('info',16)}<span>Dados de exemplo. Nenhum pagamento é processado e nada é enviado.</span></p>
   </section>`;
 }
 
@@ -265,57 +338,84 @@ function protoBlock() {
 const SCREENS = {};
 
 SCREENS.welcome = () => ({
-  top:`<section class="hero welcome-hero gut">
+  top:`<section class="hero welcome-hero gut wide">
       <div class="logo" aria-label="meza">meza</div>
-      <p class="slogan">“a mesa é de todos.”</p>
-      <p class="values">mobilização • empatia • zelo • alimentação</p>
+      <p class="slogan">A mesa é de todos.</p>
+      <p class="values">Mobilização · Empatia · Zelo · Alimentação</p>
     </section><div class="gingham" aria-hidden="true"></div>`,
-  body:`<div class="sec">
-      <div class="head"><h2 class="h-lg">Como você quer participar?</h2><p class="muted">O MEZA conecta quem quer ajudar às organizações que levam comida a quem precisa.</p></div>
-      <button class="choice" data-a="start-vol"><span class="ic">${icon('userplus',26)}</span><span><b>Quero me voluntariar</b><small>Doe alimentos, dinheiro ou seu tempo em ações perto de você.</small></span>${icon('right',20)}</button>
-      <button class="choice t" data-a="start-org"><span class="ic">${icon('org',26)}</span><span><b>Quero cadastrar minha organização</b><small>Receba voluntários e doações para as entregas da sua ONG ou empresa.</small></span>${icon('right',20)}</button>
+  cls:'wide',
+  body:`<div class="head"><h2 class="h-lg">Como você quer participar?</h2><p class="muted">O MEZA conecta quem quer ajudar a organizações que levam comida a quem precisa.</p></div>
+    <div class="paths">
+      <button class="path" data-a="start-vol"><span class="tile">${icon('hand-heart',24)}</span><span><b>Quero me voluntariar</b><small>Doe alimentos, dinheiro ou seu tempo em ações perto de você.</small></span>${icon('chevron-right',22)}</button>
+      <button class="path t" data-a="start-org"><span class="tile">${icon('house-heart',24)}</span><span><b>Quero cadastrar minha organização</b><small>Receba voluntários e doações para as entregas da sua ONG ou empresa.</small></span>${icon('chevron-right',22)}</button>
     </div>
-    <div class="sec">
-      <h2 class="h-sm">Explorar sem cadastro</h2>
-      <div class="chips">
-        <button class="chip" data-a="role" data-r="vol">${icon('user',16)} Voluntário</button>
-        <button class="chip" data-a="role" data-r="org">${icon('org',16)} Organização</button>
-        <button class="chip" data-a="role" data-r="admin">${icon('shield',16)} Administrador</button>
+    <div class="stack">
+      <p class="muted label-14">Só quer conhecer? Explore sem cadastro como:</p>
+      <div class="text-links">
+        <button class="text-link" data-a="role" data-r="vol">Voluntário</button>
+        <button class="text-link" data-a="role" data-r="org">Organização</button>
+        <button class="text-link" data-a="role" data-r="admin">Administrador</button>
       </div>
-      <button class="link start" data-a="go" data-r="roteiro">Ver o roteiro das histórias de usuário</button>
-    </div>`
+    </div>
+    <button class="story-link start" data-a="go" data-r="roteiro">${icon('map',16)}<span>Ver roteiro das histórias de usuário</span></button>`
 });
 
+const FREQS = ['Toda semana','A cada 15 dias','Uma vez por mês','Quando eu puder'];
+const AJUDAS = [
+  { v:'Trabalhar em eventos', ic:'calendar-heart', d:'Monte e distribua cestas nas ações.' },
+  { v:'Doar alimentos', ic:'shopping-basket', d:'Leve itens não perecíveis aos pontos de coleta.' },
+  { v:'Doar dinheiro', ic:'hand-coins', d:'Contribua via Pix com as organizações.' }
+];
+const prefill = a => `<button class="link-ic start" data-a="${a}">${icon('wand-sparkles',16)}<span>Preencher com dados de exemplo</span></button>`;
+const formHead = (step, title, sub) => `<div class="head form"><p class="eyebrow step">Etapa ${step} de 2</p><h2 class="h-lg">${title}</h2>${Object.keys(S.errors).length ? '' : `<p class="muted">${sub}</p>`}</div>${errSummary()}`;
+
 SCREENS['vol-cad-1'] = () => ({
-  title:'Cadastro de voluntário',
-  body:`<div class="head"><div class="steps" aria-hidden="true"><i class="on"></i><i></i></div><p class="eyebrow">Etapa 1 de 2</p><h2 class="h-lg">Informações básicas</h2></div>
-    ${field({label:'Nome completo', bind:'volDraft.nome', ph:'Digite seu nome', icon:'user', auto:'name'})}
-    ${field({label:'Endereço de e-mail', bind:'volDraft.email', type:'email', ph:'nome@email.com', icon:'mail', auto:'email', mode:'email'})}
-    ${field({label:'Número de telefone', bind:'volDraft.telefone', type:'tel', ph:'(61) 99999-9999', icon:'phone', auto:'tel', mask:'tel', mode:'tel'})}
-    ${selectField({label:'Gênero', bind:'volDraft.genero', ph:'Selecione', options:['Feminino','Masculino','Não binário','Prefiro não informar']})}
-    ${field({label:'Data de nascimento', bind:'volDraft.nascimento', type:'date', icon:'calendar', max:iso(HOJE)})}
-    ${field({label:'Endereço completo', bind:'volDraft.endereco', ph:'Rua, número e bairro', icon:'pin', auto:'street-address'})}
-    <button class="link start" data-a="fill-vol1">Preencher com dados de exemplo</button>`,
-  foot:`<div class="row"><button class="btn btn-ghost" data-a="back">Voltar</button><button class="btn btn-primary btn-grow" data-a="vol-next">Continuar</button></div>`
+  title:'Cadastro de voluntário', steps:[1, 2],
+  body:`${formHead(1, 'Informações básicas', 'Usamos esses dados para te avisar sobre ações perto de você.')}
+    <div class="fields">
+      ${field({label:'Nome completo', bind:'volDraft.nome', ph:'Ex.: Maria da Silva', auto:'name', check:true})}
+      ${field({label:'E-mail', bind:'volDraft.email', type:'email', ph:'nome@email.com', auto:'email', mode:'email', check:true})}
+      ${field({label:'Telefone', bind:'volDraft.telefone', type:'tel', ph:'(61) 99999-9999', auto:'tel', mask:'tel', mode:'tel', check:true, hint:'Com DDD. Usamos só para avisos sobre entregas.'})}
+      ${selectField({label:'Gênero', bind:'volDraft.genero', ph:'Selecione', options:['Feminino','Masculino','Não binário','Prefiro não informar']})}
+      ${field({label:'Data de nascimento', bind:'volDraft.nascimento', type:'date', max:iso(HOJE), check:true})}
+      ${field({label:'Endereço', bind:'volDraft.endereco', ph:'Rua, número e bairro', auto:'street-address', hint:'Toque no ícone para usar sua localização atual.', action:{a:'locate', icon:'locate-fixed', label:'Usar minha localização atual'}})}
+    </div>
+    ${prefill('fill-vol1')}`,
+  foot:`<button class="btn btn-primary btn-block" data-a="vol-next">Continuar</button>`
 });
 
 SCREENS['vol-cad-2'] = () => ({
-  title:'Cadastro de voluntário',
-  body:`<div class="head"><div class="steps" aria-hidden="true"><i class="on"></i><i class="on"></i></div><p class="eyebrow">Etapa 2 de 2</p><h2 class="h-lg">Sobre o seu voluntariado</h2></div>
-    ${taField({label:'Já fez voluntariado antes? Onde?', bind:'volDraft.exp', ph:'Ex.: mutirões na escola, campanha do agasalho…', hint:'Se for a sua primeira vez, conte para a gente.'})}
+  title:'Cadastro de voluntário', steps:[2, 2],
+  body:`${formHead(2, 'Sobre seu voluntariado', 'Isso ajuda as organizações a te chamarem para as ações certas.')}
+    ${taField({label:'Já fez voluntariado antes? Onde?', bind:'volDraft.exp', ph:'Ex.: mutirões na escola, campanha do agasalho…', hint:'Se for sua primeira vez, tudo bem. Conte para a gente.'})}
     ${taField({label:'O que te motivou a se voluntariar?', bind:'volDraft.motivacao', ph:'Conte em poucas palavras'})}
-    ${chipsField({label:'Com qual frequência deseja se voluntariar?', path:'volDraft.freq', options:['Toda semana','A cada 15 dias','Uma vez por mês','Quando eu puder']})}
-    ${chipsField({label:'Como você quer ajudar?', path:'volDraft.ajudas', multi:true, options:['Trabalhar em eventos','Doar alimentos','Doar dinheiro'], hint:'Escolha uma ou mais opções.'})}
-    <button class="link start" data-a="fill-vol2">Preencher com dados de exemplo</button>`,
-  foot:`<div class="row"><button class="btn btn-ghost" data-a="back">Voltar</button><button class="btn btn-primary btn-grow" data-a="vol-finish">Finalizar cadastro</button></div>`
+    ${radioList({label:'Com que frequência você quer ajudar?', hint:'Escolha uma opção.', path:'volDraft.freq', options:FREQS})}
+    ${checkList({label:'Como você quer ajudar?', hint:'Escolha uma ou mais opções.', path:'volDraft.ajudas', options:AJUDAS})}
+    ${prefill('fill-vol2')}`,
+  foot:`<button class="btn btn-primary btn-block" data-a="vol-finish">Finalizar cadastro</button>`
 });
 
-SCREENS['vol-cad-ok'] = () => ({
-  top:`<div class="gingham" aria-hidden="true"></div>`,
-  body:`<div class="done">${seal()}<h2 class="h-xl">Cadastro finalizado com sucesso!</h2><p class="muted">Estamos validando seu cadastro e divulgaremos o resultado em até 7 dias.</p></div>
-    <div class="notice g">${icon('info',20)}<span><b>Enquanto isso</b><span class="small">Você já pode conhecer as próximas entregas, reservar uma vaga e fazer doações.</span></span></div>`,
-  foot:`<button class="btn btn-primary btn-block" data-a="vol-explore">Explorar o MEZA</button>`
-});
+SCREENS['vol-cad-ok'] = () => {
+  const d = HOJE;
+  const passo = (st, t, s) => `<li class="tl-i ${st}"><span class="tl-m"><span class="tl-dot">${st === 'ok' ? icon('check',14) : ''}</span><span class="tl-line"></span></span><span class="tl-t"><b>${t}</b><small>${s}</small></span></li>`;
+  const nome = first(S.user?.nome);
+  return {
+    top:`<div class="gingham" aria-hidden="true"></div>`,
+    cls:'success wide',
+    body:`<div class="done left">${seal()}<h2 class="h-xl">Cadastro enviado!</h2><p class="muted">Obrigado${nome ? ', ' + esc(nome) : ''}. Agora vamos validar seus dados e te avisar por e-mail.</p></div>
+      <ol class="tl" aria-label="Andamento do cadastro">
+        ${passo('ok', 'Cadastro enviado', `Hoje, ${d.getDate()} de ${MESL[d.getMonth()]}`)}
+        ${passo('now', 'Validação dos dados', 'Em até 7 dias. Você recebe o resultado por e-mail.')}
+        ${passo('next', 'Pronto para ajudar', 'Você passa a receber convites para ações perto de você.')}
+      </ol>
+      <section class="meanwhile"><h3 class="label-14">Enquanto isso, você já pode:</h3>
+        <button class="mw" data-a="vol-explore" data-r="v-eventos">${icon('calendar-days',20)}<span>Ver as próximas ações</span></button>
+        <button class="mw" data-a="vol-explore" data-r="v-eventos">${icon('ticket',20)}<span>Reservar uma vaga em uma ação</span></button>
+        <button class="mw" data-a="vol-explore" data-r="v-doar">${icon('hand-coins',20)}<span>Fazer uma doação</span></button>
+      </section>`,
+    foot:`<button class="btn btn-primary btn-block" data-a="vol-explore">Explorar o MEZA ${icon('arrow-right',20)}</button>`
+  };
+};
 
 SCREENS['org-cad'] = () => ({
   title:'Cadastro de organização',
@@ -344,41 +444,72 @@ SCREENS['org-cad-ok'] = () => {
 };
 
 /* ---------- voluntário ---------- */
+/* Linha de ação: data à esquerda, organização, título, horário, local e vagas */
+const TIPO_CURTO = { 'Distribuição de cestas':'Cestas', 'Preparo de refeições':'Marmitas', 'Coleta de alimentos':'Coleta', 'Lanche e reforço':'Lanches' };
+function vagasLinha(e) {
+  if (minhaInsc(e.id)) return `<span class="evr-spots">${icon('circle-check',14)}Você está inscrito</span>`;
+  const l = vagasLivres(e);
+  return l ? `<span class="evr-spots">${icon('users',14)}${plural(l,'vaga livre','vagas livres')}</span>` : `<span class="evr-spots full">${icon('users',14)}Lotado</span>`;
+}
+function eventRow(e, route = 'v-evento', ins = null) {
+  const d = toDate(e.data);
+  const meta = ins
+    ? `<span>${icon('clock-3',14)}${e.turnos[ins.turno]} · seu turno</span><span>${icon('map-pin',14)}${esc(e.local)}</span><span class="evr-spots">${icon('circle-check',14)}Inscrito · ${esc(e.postos[ins.posto].nome)}</span>`
+    : `<span>${icon('clock-3',14)}${e.inicio}–${e.fim}</span><span>${icon('map-pin',14)}${esc(e.endereco)}</span>${vagasLinha(e)}`;
+  return `<button class="evr" data-a="go" data-r="${route}" data-id="${e.id}">
+    <span class="evr-date" aria-hidden="true"><span class="w">${SEM[d.getDay()]}</span><span class="d">${d.getDate()}</span><span class="m">${MES[d.getMonth()]}</span></span>
+    <span class="evr-b">
+      <span class="evr-org">${esc(orgOf(e.orgId).nome)}</span>
+      <span class="evr-t">${esc(e.titulo)}</span>
+      <span class="evr-meta">${meta}</span>
+    </span>
+    ${icon('chevron-right',20)}
+  </button>`;
+}
+/* Linha de informação com ícone, valor e linha de apoio */
+const info = (ic, main, sub) => `<div class="info-r">${icon(ic,20)}<span><span class="info-m">${main}</span>${sub ? `<small>${sub}</small>` : ''}</span></div>`;
+const listaNomes = arr => arr.length < 2 ? arr.join('') : `${arr.slice(0, -1).join(', ')} e ${arr[arr.length - 1]}`;
+const duracao = t => { const [a, b] = t.split('–'); const m = toMin(b) - toMin(a); return m % 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}` : plural(m / 60, 'hora', 'horas'); };
+function turnosResumo(e) {
+  if (e.turnos.length < 2) return 'Turno único';
+  const ds = e.turnos.map(duracao);
+  return ds.every(x => x === ds[0]) ? `${e.turnos.length === 2 ? 'Dois' : e.turnos.length} turnos de ${ds[0]}` : `Turnos ${listaNomes(e.turnos)}`;
+}
+const secHead = (t, link) => `<div class="sec-h"><h2 class="h-md">${t}</h2>${link || ''}</div>`;
+
 SCREENS['v-home'] = () => {
   const u = S.user; const evs = eventosVoluntario();
   const minhas = S.inscricoes.map(i => ({ i, e: evOf(i.eventId) })).filter(x => x.e && diff(x.e.data) >= 0).sort((a, b) => byDate(a.e, b.e));
   const prox = minhas[0];
-  let destaque;
+  const destId = prox ? prox.e.id : evs[0]?.id;
+  let destaque = '';
   if (prox) {
-    const p = prox.e.postos[prox.i.posto];
-    destaque = `<p class="lbl">Sua próxima ação · ${rel(prox.e.data)}</p>${eventCard(prox.e, 'v-evento', `<span class="badge y">${esc(p.nome)} · ${prox.e.turnos[prox.i.turno]}</span>`)}`;
+    const e = prox.e, p = e.postos[prox.i.posto];
+    destaque = `<div class="next"><p class="next-eb">Sua próxima ação · ${rel(e.data)}</p><p class="next-t">${esc(e.titulo)}</p><p class="next-m">${cap(fmtCurta(e.data))} · ${e.turnos[prox.i.turno]} · ${esc(p.nome)}</p><button class="next-link" data-a="go" data-r="v-evento" data-id="${e.id}">Ver detalhes ${icon('arrow-right',18)}</button></div>`;
   } else if (evs[0]) {
-    destaque = `<p class="lbl">Próxima entrega perto de você · ${rel(evs[0].data)}</p>${eventCard(evs[0], 'v-evento')}`;
-  } else destaque = '';
-  // item com menor cobertura da meta
-  let pior = null;
-  orgsComNecessidade().forEach(o => S.needs[o.id].forEach(n => { const r = (n.atual + n.prom) / n.meta; if (!pior || r < pior.r) pior = { o, n, r }; }));
-  const necessidade = pior ? (() => { const c = CAT[pior.n.id]; const falta = Math.max(0, pior.n.meta - pior.n.atual - pior.n.prom);
-    return `<section class="sec"><h2 class="h-md">Quem mais precisa agora</h2>
-      <div class="card stack">
-        <div class="need-h"><span><b>${c.nome}</b><small>${c.un}</small><small>${esc(pior.o.nome)}</small></span><span class="badge t">${Math.round(pior.r * 100)}% da meta</span></div>
-        ${prog(pior.n.atual, pior.n.meta, pior.n.prom)}
-        <div class="row between"><span class="small muted num">Faltam ${falta} ${c.pl}</span><button class="btn btn-ghost btn-sm" data-a="food-start" data-org="${pior.o.id}">Doar ${c.nome.toLowerCase()}</button></div>
-      </div></section>`; })() : '';
+    const e = evs[0];
+    destaque = `<div class="next"><p class="next-eb">Próxima ação perto de você · ${rel(e.data)}</p><p class="next-t">${esc(e.titulo)}</p><p class="next-m">${cap(fmtCurta(e.data))} · ${e.inicio}–${e.fim} · ${esc(e.endereco)}</p><button class="next-link" data-a="go" data-r="v-evento" data-id="${e.id}">Ver vagas ${icon('arrow-right',18)}</button></div>`;
+  }
+  // os dois itens com menor cobertura da meta
+  const needs = [];
+  orgsComNecessidade().forEach(o => S.needs[o.id].forEach(n => needs.push({ o, n, r:(n.atual + n.prom) / n.meta })));
+  needs.sort((a, b) => a.r - b.r);
+  const needRow = ({ o, n, r }) => { const c = CAT[n.id]; const falta = Math.max(0, n.meta - n.atual - n.prom);
+    return `<div class="need-r"><div class="need-top"><span><b>${c.nome}</b><small>${esc(o.nome)} · ${c.un}</small></span><button class="btn-2" data-a="food-start" data-org="${o.id}" aria-label="Doar ${c.nome.toLowerCase()} para ${esc(o.nome)}">Doar</button></div>${prog(n.atual + n.prom, n.meta, 0, 'thin')}<small class="num">${Math.round(r * 100)}% da meta · faltam ${falta} ${c.pl}</small></div>`; };
+  const pend = u.status === 'em_validacao';
   return {
-    top:`<section class="hero home-hero gut">
-      <div class="top"><span class="logo">meza</span><button class="avatar" data-a="tab" data-r="v-perfil" aria-label="Abrir perfil">${initials(u.nome)}</button></div>
-      <p class="greet">Olá, ${esc(first(u.nome))}</p>
-      ${destaque}
-    </section>`,
-    body:`${u.status === 'em_validacao' ? `<div class="notice">${icon('info',20)}<span><b>Cadastro em validação</b><span class="small">Divulgamos o resultado em até 7 dias. Você já pode reservar vagas e doar.</span></span></div>` : ''}
-      <div class="grid2">
-        <button class="quick t" data-a="food-start">${icon('bread',26)}<span><b>Doar alimentos</b><small>Escolha o que levar</small></span></button>
-        <button class="quick y" data-a="don-start">${icon('coins',26)}<span><b>Doar dinheiro</b><small>Pix, cartão ou espécie</small></span></button>
+    top:`<section class="hero home-hero">
+      <div class="top"><span class="logo">meza</span><button class="bell" data-a="notif" aria-label="Notificações${pend ? ', 1 aviso' : ''}">${icon('bell',24)}${pend ? '<span class="dot"></span>' : ''}</button></div>
+      <div class="hero-c gut wide">
+        <div class="greet-b"><p class="greet">Olá, ${esc(first(u.nome))}</p><p class="greet-s">Que bom ter você na mesa.</p></div>
+        ${destaque}
       </div>
-      ${necessidade}
-      <section class="sec"><div class="sec-h"><h2 class="h-md">Próximas entregas</h2><button class="link" data-a="tab" data-r="v-eventos">Ver todas</button></div>
-        ${evs.slice(0, 3).map(e => eventCard(e, 'v-evento')).join('') || `<p class="muted">Nenhuma entrega marcada por enquanto.</p>`}
+    </section><div class="gingham" aria-hidden="true"></div>`,
+    cls:'home',
+    body:`${pend ? `<div class="notice">${icon('hourglass',20)}<span><b>Cadastro em validação</b><span class="small">Resultado em até 7 dias. Enquanto isso, você já pode reservar vagas e doar.</span></span></div>` : ''}
+      ${needs.length ? `<section class="sec tight">${secHead('Quem mais precisa agora', '<button class="sec-link" data-a="food-start">Ver todas</button>')}<div class="rule-list">${needs.slice(0, 2).map(needRow).join('')}</div></section>` : ''}
+      <section class="sec tight">${secHead('Próximas ações', '<button class="sec-link" data-a="tab" data-r="v-eventos">Ver todas</button>')}
+        ${evs.length ? `<div class="rule-list">${evs.filter(e => e.id !== destId).slice(0, 2).map(e => eventRow(e)).join('')}</div>` : `<p class="muted">Nenhuma ação marcada por enquanto.</p>`}
       </section>`,
     tabs:'vol', tabOn:'v-home'
   };
@@ -389,51 +520,56 @@ SCREENS['v-eventos'] = () => {
   const tipos = ['Todas', ...TIPOS_EV.filter(t => evs.some(e => e.tipo === t))];
   if (!tipos.includes(S.filtro)) S.filtro = 'Todas';
   const lista = evs.filter(e => S.filtro === 'Todas' || e.tipo === S.filtro);
+  const grupos = [['Esta semana', lista.filter(e => diff(e.data) <= 7)], ['Mais adiante', lista.filter(e => diff(e.data) > 7)]].filter(g => g[1].length);
   return {
-    title:'Próximas entregas',
-    body:`<p class="lede">Ações publicadas pelas organizações parceiras. Escolha uma para ver os postos e horários.</p>
-      <div class="chips x" role="group" aria-label="Filtrar por tipo">${tipos.map(t => `<button class="chip" aria-pressed="${S.filtro === t}" data-a="filtro" data-v="${t}">${t}</button>`).join('')}</div>
-      <div class="stack">${lista.map(e => eventCard(e, 'v-evento')).join('') || `<p class="muted">Nenhuma entrega deste tipo agora.</p>`}</div>`,
+    top:`<header class="page-h gut"><div class="head form"><h1 class="h-lg">Próximas ações</h1><p class="muted">Escolha uma ação para ver os postos e horários disponíveis.</p></div>
+      <div class="ftabs" role="group" aria-label="Filtrar por tipo">${tipos.map(t => `<button class="ftab" aria-pressed="${S.filtro === t}" data-a="filtro" data-v="${t}">${TIPO_CURTO[t] || t}</button>`).join('')}</div></header>`,
+    cls:'after-tabs',
+    body:grupos.map(([g, l]) => `<section class="grp-ev"><h2 class="grp-l">${g}</h2><div class="rule-list open">${l.map(e => eventRow(e)).join('')}</div></section>`).join('') || `<p class="muted">Nenhuma ação deste tipo agora. Veja <button class="link" data-a="filtro" data-v="Todas">todas as ações</button>.</p>`,
     tabs:'vol', tabOn:'v-eventos'
   };
 };
 
+/* Linha de escolha única com título e descrição opcional */
+function choiceRows(label, hint, rows) {
+  return `<div class="field grp"><span class="grp-h"><span class="lbl">${label}</span>${hint ? `<span class="hint">${hint}</span>` : ''}</span>
+    <div class="rows" role="radiogroup" aria-label="${label}">${rows.map(r => `<button type="button" class="rrow tall" role="radio" aria-checked="${!!r.on}" data-a="pick" data-p="${r.p}" data-v="${r.v}" data-n="1"${r.off ? ' disabled' : ''}><span class="rd"></span><span class="rt"><span>${r.t}</span>${r.d ? `<small${r.warn ? ' class="warn"' : ''}>${r.d}</small>` : ''}</span></button>`).join('')}</div></div>`;
+}
+
 SCREENS['v-evento'] = () => {
   const e = evOf(S.params.id); if (!e) return SCREENS['v-eventos']();
   const o = orgOf(e.orgId); const ins = minhaInsc(e.id);
-  S.sel[e.id] = S.sel[e.id] || { posto:null, turno:null };
+  S.sel[e.id] = S.sel[e.id] || { posto:null, turno:null, levar:false };
   const sel = S.sel[e.id];
-  const itens = e.itens.length
-    ? `<section class="sec"><h2 class="h-md">Itens que a ação precisa</h2><div class="chips">${e.itens.map(i => `<span class="badge t">${CAT[i].nome}</span>`).join('')}</div><button class="link start" data-a="food-start" data-org="${o.id}" data-ev="${e.id}">Levar alguns destes itens</button></section>` : '';
-  let escolha, foot;
+  const livres = vagasLivres(e), conf = inscritosTotal(e);
+  const nomesItens = e.itens.map((i, k) => k ? CAT[i].nome.toLowerCase() : CAT[i].nome);
+  const levar = ins ? !!ins.levar : !!sel.levar;
+  const itens = e.itens.length ? `<div class="field grp"><span class="grp-h"><span class="lbl">Itens que a ação precisa</span><span class="hint">${listaNomes(nomesItens)}.</span></span>
+      <div class="rows"><button type="button" class="crow" role="checkbox" aria-checked="${levar}" data-a="${ins ? 'levar-insc' : 'flip'}" data-p="sel.${e.id}.levar" data-id="${e.id}"><span class="ci">${icon('shopping-basket',22)}</span><span class="ct"><b>Vou levar alguns destes itens</b><small>Avisamos a organização para te receber na entrada.</small></span><span class="cb">${levar ? icon('check',16) : ''}</span></button></div></div>` : '';
+  let aviso = '', escolha = '', foot;
   if (ins) {
-    const p = e.postos[ins.posto];
-    const cancel = S.confirm === 'cancel-' + e.id;
-    escolha = `<div class="notice g">${icon('check',20)}<span><b>Você está inscrito</b><span class="small">${esc(p.nome)} · turno ${e.turnos[ins.turno]}${S.user.status === 'em_validacao' ? '. A vaga fica reservada até a aprovação do seu cadastro.' : '.'}</span></span></div>`;
-    foot = `<button class="btn ${cancel ? 'btn-warn' : 'btn-ghost'} btn-block" data-a="cancel-insc" data-id="${e.id}">${cancel ? 'Confirmar cancelamento' : 'Cancelar inscrição'}</button>`;
+    const p = e.postos[ins.posto]; const cancel = S.confirm === 'cancel-' + e.id;
+    aviso = `<div class="notice g">${icon('circle-check',20)}<span><b>Você está inscrito</b><span class="small">${esc(p.nome)} · ${e.turnos[ins.turno]}${S.user.status === 'em_validacao' ? '. A vaga fica reservada até a aprovação do seu cadastro.' : '. Chegue 15 minutos antes do seu turno.'}</span></span></div>`;
+    foot = `<button class="btn ${cancel ? 'btn-warn' : 'btn-cancel'} btn-block" data-a="cancel-insc" data-id="${e.id}">${cancel ? 'Toque de novo para cancelar' : 'Cancelar inscrição'}</button>`;
   } else {
-    const livres = vagasLivres(e);
-    escolha = `<section class="sec"><h2 class="h-md">Escolha seu posto</h2>
-        <div class="stack-sm" role="radiogroup" aria-label="Posto">
-        ${e.postos.map((p, i) => { const l = p.vagas - p.inscritos; return optCard({ checked: sel.posto === i, action:'pick', data:`data-p="sel.${e.id}.posto" data-v="${i}" data-n="1"`, title:esc(p.nome), sub:`${l > 0 ? `${plural(l,'vaga livre','vagas livres')} de ${p.vagas}` : 'Sem vagas'}`, disabled: l <= 0 }); }).join('')}
-        </div></section>
-      <section class="sec"><h2 class="h-md">Escolha o turno</h2>
-        <div class="chips" role="group" aria-label="Turno">${e.turnos.map((t, i) => `<button class="chip" aria-pressed="${sel.turno === i}" data-a="pick" data-p="sel.${e.id}.turno" data-v="${i}" data-n="1">${icon('clock',15)} ${t}</button>`).join('')}</div>
-      </section>`;
+    escolha = `${choiceRows('Escolha seu posto', 'Cada posto cuida de uma parte da ação.', e.postos.map((p, i) => { const l = p.vagas - p.inscritos; return { p:`sel.${e.id}.posto`, v:i, on:sel.posto === i, t:esc(p.nome), d:l <= 0 ? 'Sem vagas' : l === 1 ? 'Última vaga' : `${l} vagas livres de ${p.vagas}`, warn:l === 1, off:l <= 0 }; }))}
+      ${choiceRows('Escolha o turno', e.turnos.length > 1 ? 'Escolha um dos turnos.' : 'Esta ação tem um turno só.', e.turnos.map((t, i) => ({ p:`sel.${e.id}.turno`, v:i, on:sel.turno === i, t })))}`;
     const ok = sel.posto !== null && sel.turno !== null;
     foot = livres === 0 ? `<button class="btn btn-primary btn-block" disabled>Ação lotada</button>`
-      : `${ok ? '' : `<span class="hint">Escolha um posto e um turno para confirmar.</span>`}<button class="btn btn-primary btn-block" data-a="inscrever" data-id="${e.id}" ${ok ? '' : 'disabled'}>Confirmar inscrição</button>`;
+      : `<span class="hint${ok ? ' sel' : ''}">${ok ? `${esc(e.postos[sel.posto].nome)} · ${e.turnos[sel.turno]}` : 'Escolha um posto e um turno para reservar.'}</span><button class="btn btn-primary btn-block" data-a="inscrever" data-id="${e.id}" ${ok ? '' : 'disabled'}>Reservar vaga</button>`;
   }
+  const confTxt = !conf ? 'Seja a primeira pessoa a confirmar' : ins ? (conf === 1 ? 'Só você confirmou até agora' : `${conf} pessoas confirmadas, incluindo você`) : plural(conf, 'pessoa já confirmou', 'pessoas já confirmaram');
   return {
-    title:e.tipo,
-    body:`<div class="stack-sm"><p class="eyebrow">${esc(o.nome)}</p><h2 class="h-xl">${esc(e.titulo)}</h2></div>
-      <div class="kv">
-        ${icon('calendar',18)}<span><b>${fmtLonga(e.data)}</b><small>${cap(rel(e.data))}</small></span>
-        ${icon('clock',18)}<span>${e.inicio} às ${e.fim}</span>
-        ${icon('pin',18)}<span>${esc(e.local)}${e.endereco !== e.local ? `<small>${esc(e.endereco)}</small>` : ''}</span>
-        ${icon('users',18)}<span>${inscritosTotal(e)} de ${vagasTotal(e)} vagas preenchidas</span>
+    title:'Detalhes da ação',
+    body:`<div class="head form"><p class="eyebrow step">${esc(o.nome)}</p><h2 class="h-lg">${esc(e.titulo)}</h2></div>
+      ${aviso}
+      <div class="info">
+        ${info('calendar', cap(fmtLonga(e.data)), cap(rel(e.data)))}
+        ${info('clock-3', `${e.inicio}–${e.fim}`, turnosResumo(e))}
+        ${info('map-pin', esc(e.local), e.endereco !== e.local ? esc(e.endereco) : '')}
+        ${info('users', livres ? `${plural(livres,'vaga livre','vagas livres')} de ${vagasTotal(e)}` : 'Todas as vagas preenchidas', confTxt)}
       </div>
-      <p>${esc(e.desc)}</p>
+      <div class="about"><p>${esc(e.desc)}</p>${e.nota ? `<p class="note">${icon('info',16)}<span>${esc(e.nota)}</span></p>` : ''}</div>
       ${escolha}
       ${itens}`,
     foot
@@ -441,115 +577,175 @@ SCREENS['v-evento'] = () => {
 };
 
 SCREENS['v-inscricao-ok'] = () => {
-  const e = evOf(S.params.id); const ins = minhaInsc(e.id); const p = e.postos[ins.posto];
+  const e = evOf(S.params.id); const ins = minhaInsc(e.id); const p = e.postos[ins.posto]; const o = orgOf(e.orgId);
   const pend = S.user.status === 'em_validacao';
   return {
     top:`<div class="gingham" aria-hidden="true"></div>`,
-    body:`<div class="done">${seal()}<h2 class="h-xl">${pend ? 'Vaga reservada!' : 'Inscrição confirmada!'}</h2><p class="muted">${pend ? 'A vaga é confirmada assim que seu cadastro for aprovado. A organização recebe seu nome hoje.' : `A ${esc(orgOf(e.orgId).nome)} já recebeu seu nome. Chegue 15 minutos antes do seu turno.`}</p></div>
-      <div class="card stack">
-        <h3 class="h-sm">${esc(e.titulo)}</h3>
-        <div class="kv">${icon('calendar',18)}<span>${cap(fmtLonga(e.data))}</span>${icon('clock',18)}<span>Turno ${e.turnos[ins.turno]}</span>${icon('users',18)}<span>${esc(p.nome)}</span>${icon('pin',18)}<span>${esc(e.local)}<small>${esc(e.endereco)}</small></span></div>
-      </div>`,
-    foot:`<div class="row"><button class="btn btn-ghost btn-grow" data-a="tab" data-r="v-home">Início</button><button class="btn btn-primary btn-grow" data-a="tab" data-r="v-perfil">Minha agenda</button></div>`
+    cls:'success wide',
+    body:`<div class="done left">${seal()}<h2 class="h-xl">${pend ? 'Vaga reservada!' : 'Inscrição confirmada!'}</h2><p class="muted">${pend ? 'Ela é confirmada assim que seu cadastro for aprovado. A organização já recebeu seu nome.' : `A ${esc(o.nome)} já recebeu seu nome. Chegue 15 minutos antes do seu turno.`}${ins.levar ? ' Avisamos também que você vai levar alguns itens.' : ''}</p></div>
+      <section class="res-sum"><h3 class="sum-t">${esc(e.titulo)}</h3>
+        <div class="info">
+          ${info('calendar', cap(fmtLonga(e.data)), cap(rel(e.data)))}
+          ${info('clock-3', e.turnos[ins.turno], 'Seu turno')}
+          ${info('hand-helping', esc(p.nome), 'Seu posto')}
+          ${info('map-pin', esc(e.local), esc(e.endereco))}
+        </div>
+        <button class="link-ic start" data-a="ics" data-id="${e.id}">${icon('calendar-plus',18)}<span>Adicionar ao calendário do celular</span></button>
+      </section>`,
+    foot:`<button class="btn btn-primary btn-block" data-a="tab" data-r="v-perfil">Ver minha agenda</button><button class="btn-text" data-a="tab" data-r="v-home">Voltar ao início</button>`
   };
 };
 
 SCREENS['v-doar'] = () => {
   const hist = S.doacoes.slice().reverse().slice(0, 3);
   return {
-    title:'Doações e ofertas',
-    body:`<div class="stack"><p class="lede">Escolha como você quer ajudar hoje.</p>
-      <button class="big-opt t" data-a="food-start"><span class="ic">${icon('bread',28)}</span><span><b>Alimentos</b><small>Veja o que cada organização ainda precisa e escolha a quantidade.</small></span>${icon('right',20)}</button>
-      <button class="big-opt y" data-a="don-start"><span class="ic">${icon('coins',28)}</span><span><b>Dinheiro</b><small>Doe por Pix, cartão ou entregue em mãos em um evento.</small></span>${icon('right',20)}</button></div>
-      ${hist.length ? `<section class="sec"><h2 class="h-md">Suas últimas doações</h2><div class="card"><div class="list">${hist.map(doacaoLi).join("")}</div></div></section>` : ''}`,
+    top:`<header class="page-h gut"><div class="head form"><h1 class="h-lg">Doar</h1><p class="muted">Escolha como você quer ajudar hoje.</p></div></header>`,
+    cls:'after-tabs g36',
+    body:`<div class="paths">
+        <button class="path t" data-a="food-start"><span class="tile">${icon('shopping-basket',24)}</span><span><b>Doar alimentos</b><small>Veja o que cada organização ainda precisa e escolha a quantidade.</small></span>${icon('chevron-right',22)}</button>
+        <button class="path" data-a="don-start"><span class="tile">${icon('hand-coins',24)}</span><span><b>Doar dinheiro</b><small>Por Pix, cartão ou em mãos durante uma ação.</small></span>${icon('chevron-right',22)}</button>
+      </div>
+      ${hist.length ? `<section class="sec tight">${secHead('Suas doações', '<button class="sec-link" data-a="tab" data-r="v-perfil">Ver todas</button>')}<div class="rule-list">${hist.map(doacaoLi).join('')}</div></section>` : ''}`,
     tabs:'vol', tabOn:'v-doar'
   };
 };
+/* Linha do histórico de doações: ícone, o que foi doado, para quem e quando, e o status com um ponto colorido */
+const METODO = { pix:{ ic:'qr-code', txt:'via Pix', nome:'Pix' }, cartao:{ ic:'credit-card', txt:'no cartão', nome:'Cartão' }, dinheiro:{ ic:'banknote', txt:'em espécie', nome:'Dinheiro em mãos' } };
 function doacaoLi(d) {
   const o = orgOf(d.orgId);
+  const status = (txt, ok) => `<span class="st${ok ? ' ok' : ''}"><i></i>${txt}</span>`;
   if (d.tipo === 'alimentos') {
-    const tot = Object.values(d.itens).reduce((a, b) => a + b, 0);
-    return `<div class="li two"><span class="ic">${icon('bread',20)}</span><span><span class="li-t"><b>${plural(tot,'item','itens')} de alimento</b><span class="badge y">A entregar</span></span><small>${esc(o.nome)} · ${fmtCurta(d.data)}</small></span></div>`;
+    const it = Object.entries(d.itens); const tot = it.reduce((a, [, q]) => a + q, 0);
+    const nome = it.length === 1 ? `${it[0][1]} ${it[0][1] === 1 ? CAT[it[0][0]].un.split(' ')[0] : CAT[it[0][0]].pl} de ${CAT[it[0][0]].nome.toLowerCase()}` : `${plural(tot,'item','itens')} de alimento`;
+    const quando = d.entrega && d.entrega !== 'sede' && evOf(d.entrega) ? evOf(d.entrega).data : d.data;
+    return `<div class="don-r">${icon('shopping-basket',20)}<span><b>${nome}</b><small>${esc(o.nome)} · ${cap(fmtCurta(quando))}</small>${status('A entregar')}</span></div>`;
   }
-  const m = { pix:['qr','Pix'], cartao:['card','Cartão'], dinheiro:['cash','Em espécie'] }[d.metodo];
-  return `<div class="li two"><span class="ic">${icon(m[0],20)}</span><span><span class="li-t"><b class="num">${brl(d.cents)}</b>${d.metodo === 'dinheiro' ? '<span class="badge y">A entregar</span>' : '<span class="badge">Confirmada</span>'}</span><small>${esc(o.nome)} · ${m[1]} · ${fmtCurta(d.data)}</small></span></div>`;
+  const m = METODO[d.metodo];
+  const quando = d.metodo === 'dinheiro' && d.eventId && d.eventId !== 'sede' && evOf(d.eventId) ? evOf(d.eventId).data : d.data;
+  return `<div class="don-r">${icon(m.ic,20)}<span><b class="num">${brl(d.cents)} ${m.txt}</b><small>${esc(o.nome)} · ${cap(fmtCurta(quando))}</small>${d.metodo === 'dinheiro' ? status('A entregar') : status('Confirmada', true)}</span></div>`;
 }
 
+/* Resumo de valor e organização no topo das etapas 2 e 3 */
+const paySum = (right) => { const o = orgOf(S.don.orgId); return `<div class="pay-sum"><span><b class="num">${brl(S.don.cents)}</b><small>para ${esc(o.nome)}</small></span>${right || '<button class="sec-link" data-a="don-edit">Alterar</button>'}</div>`; };
+const donHead = (step, title, sub) => `<div class="head form"><p class="eyebrow step">Etapa ${step} de 3</p><h2 class="h-lg">${title}</h2>${sub ? `<p class="muted">${sub}</p>` : ''}</div>`;
+
 SCREENS['v-valor'] = () => {
-  const c = S.don.cents; const orgs = S.orgs.filter(o => o.status === 'aprovada');
+  const c = S.don.cents; const orgs = S.orgs.filter(o => o.status === 'aprovada'); const o = orgOf(S.don.orgId);
+  const reais = brl(c).replace(/^R\$\s?/, '');
+  const hint = !c ? '<span class="hint">Escolha ou digite um valor para continuar.</span>' : c < 100 ? '<span class="hint">O valor mínimo é R$ 1,00.</span>' : `<span class="hint sel">${brl(c)} para ${esc(o.nome)}</span>`;
   return {
-    title:'Valor',
-    body:`${selectField({label:'Para qual organização?', bind:'don.orgId', icon:'org', options:orgs.map(o => [o.id, o.nome])})}
-      <div class="stack center"><p class="muted small">Valor da doação</p><p class="amount${c ? '' : ' zero'}" aria-live="polite">${brl(c)}</p>
-      <div class="amounts" role="group" aria-label="Valores sugeridos">${[1000, 2500, 5000, 10000].map(v => `<button class="chip" aria-pressed="${c === v}" data-a="quick" data-v="${v}">${brl(v).replace(',00','')}</button>`).join('')}</div></div>
-      <div class="keys" role="group" aria-label="Teclado numérico">
-        ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="key" data-a="key" data-k="${n}">${n}</button>`).join('')}
-        <button class="key fn" data-a="key" data-k="c">Limpar</button><button class="key" data-a="key" data-k="0">0</button><button class="key fn" data-a="key" data-k="b" aria-label="Apagar">${icon('back',24)}</button>
+    title:'Doação em dinheiro', steps:[1, 3], cls:'g24',
+    body:`${donHead(1, 'Quanto você quer doar?')}
+      ${selectField({label:'Para qual organização?', bind:'don.orgId', options:orgs.map(x => [x.id, x.nome])})}
+      <div class="amt">
+        <span class="label-14">Valor da doação</span>
+        <p class="amt-v${c ? '' : ' zero'}" aria-live="polite"><span class="cur">R$</span><span class="num">${reais}</span></p>
+        <div class="seg-amt" role="group" aria-label="Valores sugeridos">${[1000, 2500, 5000, 10000].map(v => `<button aria-pressed="${c === v}" data-a="quick" data-v="${v}">${brl(v).replace(',00','')}</button>`).join('')}</div>
+      </div>
+      <div class="pad" role="group" aria-label="Teclado numérico">
+        ${[1,2,3,4,5,6,7,8,9].map(n => `<button data-a="key" data-k="${n}">${n}</button>`).join('')}
+        <span></span><button data-a="key" data-k="0">0</button><button data-a="key" data-k="b" aria-label="Apagar">${icon('delete',26)}</button>
       </div>`,
-    foot:`${c > 0 && c < 100 ? '<span class="hint">O valor mínimo é R$ 1,00.</span>' : ''}<button class="btn btn-primary btn-block" data-a="go" data-r="v-metodo" ${c >= 100 ? '' : 'disabled'}>Continuar</button>`
+    foot:`${hint}<button class="btn btn-primary btn-block" data-a="go" data-r="v-metodo" ${c >= 100 ? '' : 'disabled'}>Continuar</button>`
   };
 };
 
 SCREENS['v-metodo'] = () => {
-  const o = orgOf(S.don.orgId); const m = S.don.metodo;
+  const m = S.don.metodo;
+  const row = (v, d) => `<button type="button" class="rrow tall" role="radio" aria-checked="${m === v}" data-a="pick" data-p="don.metodo" data-v="${v}"><span class="rd"></span><span class="rt"><span>${METODO[v].nome}</span><small>${d}</small></span>${icon(METODO[v].ic,22)}</button>`;
   return {
-    title:'Métodos de pagamento',
-    body:`<div class="card row between"><span class="stack-xs"><span class="small muted">Doação para ${esc(o.nome)}</span><b class="h-lg num">${brl(S.don.cents)}</b></span><button class="link" data-a="back">Alterar</button></div>
-      <div class="stack-sm" role="radiogroup" aria-label="Método de pagamento">
-        ${optCard({ checked:m === 'pix', action:'pick', data:'data-p="don.metodo" data-v="pix"', ic:'qr', title:'Pix', sub:'Aprovação na hora, pelo app do seu banco.' })}
-        ${optCard({ checked:m === 'cartao', action:'pick', data:'data-p="don.metodo" data-v="cartao"', ic:'card', title:'Cartão', sub:'Crédito ou débito.' })}
-        ${optCard({ checked:m === 'dinheiro', action:'pick', data:'data-p="don.metodo" data-v="dinheiro"', ic:'cash', title:'Dinheiro', sub:'Entregue em mãos em um evento da organização.' })}
+    title:'Doação em dinheiro', steps:[2, 3], cls:'g24',
+    body:`${donHead(2, 'Como você quer pagar?')}
+      ${paySum()}
+      <div class="rows open" role="radiogroup" aria-label="Forma de pagamento">
+        ${row('pix', 'Aprovação na hora, pelo app do seu banco.')}
+        ${row('cartao', 'Crédito ou débito.')}
+        ${row('dinheiro', 'Entregue à equipe durante uma ação ou na sede.')}
       </div>`,
     foot:`<button class="btn btn-primary btn-block" data-a="go" data-r="v-checkout">Continuar</button>`
   };
 };
 
+const PIX_MIN = 30;
+const pixRestante = () => { const s = Math.max(0, PIX_MIN * 60 - Math.floor((Date.now() - (S.don.pixAt || Date.now())) / 1000)); return s ? `Expira em ${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}` : 'Código expirado'; };
+
 SCREENS['v-checkout'] = () => {
   const o = orgOf(S.don.orgId); const c = S.don.cents; const m = S.don.metodo;
   if (m === 'pix') {
-    const code = pixCode(c, o);
+    if (!S.don.pixAt) S.don.pixAt = Date.now();
+    const code = pixCode(c, o); const ok = S.don.copied;
     return {
-      title:'Checkout',
-      body:`<div class="head center"><h2 class="h-lg">Instruções para o pagamento</h2><p class="muted">Escaneie o QR Code com o app do seu banco.</p></div>
-        <div class="stack center"><div class="qr">${qrSvg(o.id + c)}</div><div class="stack-xs"><p class="amount md">${brl(c)}</p><p class="small muted">Para ${esc(o.nome)}, válido por 30 minutos</p></div></div>
-        <div class="stack-sm"><span class="label">Ou use o Pix copia e cola</span><div class="pixcode" id="pixcode">${code}</div><button class="btn btn-ghost btn-sm" data-a="copy-pix">${icon('copy',18)} Copiar código</button></div>
-        <p class="hint">Protótipo: o QR Code e o código são ilustrativos e não geram cobrança.</p>`,
-      foot:`<button class="btn btn-primary btn-block" data-a="don-confirm">Já fiz o pagamento</button>`
+      title:'Doação em dinheiro', steps:[3, 3], cls:'g24',
+      body:`${donHead(3, 'Pague com Pix', 'Escaneie o QR Code com o app do seu banco.')}
+        ${paySum(`<span class="timer">${icon('timer',16)}<span id="pix-timer">${pixRestante()}</span></span>`)}
+        <div class="qr-panel"><div class="qr">${qrSvg(o.id + c)}</div></div>
+        <div class="field"><span class="lbl">Ou use o Pix Copia e Cola</span>
+          <button class="inp copy-f${ok ? ' ok' : ''}" data-a="copy-pix" aria-label="Copiar código Pix"><span class="cf-v" id="pixcode">${code}</span>${icon(ok ? 'check' : 'copy',20)}</button>
+          ${ok ? `<span class="msg-ok">${icon('circle-check',16)}<span>Código copiado. Cole no app do seu banco.</span></span>` : '<span class="hint">Toque no campo para copiar o código.</span>'}
+        </div>
+        <p class="note-r">${icon('info',16)}<span>Protótipo: o QR Code e o código são ilustrativos e não geram cobrança.</span></p>`,
+      foot:`<span class="hint">Assim que o pagamento cair, avisamos aqui.</span><button class="btn btn-primary btn-block" data-a="don-confirm">Já fiz o pagamento</button>`
     };
   }
   if (m === 'cartao') {
+    if (!S.don.card) S.don.card = { num:'4242 4242 4242 4242', nome:S.user ? S.user.nome : '', val:'12/30', cvv:'123' };
     return {
-      title:'Checkout',
-      body:`<div class="head"><h2 class="h-lg">Pagamento com cartão</h2><p class="muted">Doação de <b class="num">${brl(c)}</b> para ${esc(o.nome)}.</p></div>
-        <div class="mockcard" aria-label="Cartão de teste"><span class="logo">meza</span><span class="no">•••• •••• •••• 4242</span><span class="row between small"><span>CARTÃO DE TESTE</span><span>12/30</span></span></div>
-        <div class="notice">${icon('info',20)}<span><b>Como funciona no app final</b><span class="small">Os dados do cartão são digitados na tela segura do provedor de pagamento, e o MEZA não guarda esses dados. Aqui o pagamento é só simulado.</span></span></div>`,
-      foot:`<button class="btn btn-primary btn-block" data-a="don-confirm">Simular pagamento de ${brl(c)}</button>`
+      title:'Doação em dinheiro', steps:[3, 3], cls:'g24',
+      body:`${donHead(3, 'Pague com cartão')}${errSummary()}
+        ${paySum()}
+        <div class="fields">
+          ${field({label:'Número do cartão', bind:'don.card.num', key:'num', mode:'numeric', mask:'card', auto:'cc-number', trailIcon:'credit-card'})}
+          ${field({label:'Nome impresso no cartão', bind:'don.card.nome', key:'nome', auto:'cc-name'})}
+          <div class="grid2">
+            ${field({label:'Validade', bind:'don.card.val', key:'val', ph:'MM/AA', mode:'numeric', mask:'mmaa', auto:'cc-exp'})}
+            ${field({label:'CVV', bind:'don.card.cvv', key:'cvv', mode:'numeric', mask:'digits', auto:'cc-csc', action:{a:'cvv-help', icon:'circle-help', label:'O que é o CVV?'}})}
+          </div>
+        </div>
+        <p class="note-r">${icon('lock',16)}<span>Ambiente de teste: o pagamento é simulado. No app final, os dados do cartão ficam com o provedor de pagamento, não com o MEZA.</span></p>`,
+      foot:`<button class="btn btn-primary btn-block" data-a="don-confirm">Pagar ${brl(c)}</button>`
     };
   }
   const evs = eventosVoluntario().filter(e => e.orgId === o.id);
   if (S.don.eventId === null || !evs.some(e => e.id === S.don.eventId) && S.don.eventId !== 'sede') S.don.eventId = evs[0]?.id || 'sede';
+  const sel = S.don.eventId; const selEv = sel !== 'sede' ? evOf(sel) : null;
+  const row = (v, t, d, ic) => `<button type="button" class="rrow tall" role="radio" aria-checked="${sel === v}" data-a="pick" data-p="don.eventId" data-v="${v}"><span class="rd"></span><span class="rt"><span>${t}</span><small>${d}</small></span>${icon(ic,22)}</button>`;
   return {
-    title:'Checkout',
-    body:`<div class="head"><h2 class="h-lg">Entrega em mãos</h2><p class="muted">Leve <b class="num">${brl(c)}</b> e entregue à equipe da organização. Você recebe um recibo na hora.</p></div>
-      <section class="sec" role="radiogroup" aria-label="Onde entregar"><h2 class="h-md">Onde você vai entregar?</h2>
-        ${evs.map(e => optCard({ checked:S.don.eventId === e.id, action:'pick', data:`data-p="don.eventId" data-v="${e.id}"`, ic:'calendar', title:esc(e.titulo), sub:`${fmtCurta(e.data)} · ${e.inicio}–${e.fim} · ${esc(e.local)}` })).join('')}
-        ${optCard({ checked:S.don.eventId === 'sede', action:'pick', data:'data-p="don.eventId" data-v="sede"', ic:'org', title:'Na sede da organização', sub:`${esc(o.horario)} · ${esc(o.endereco)}` })}
-      </section>`,
-    foot:`<button class="btn btn-primary btn-block" data-a="don-confirm">Confirmar doação</button>`
+    title:'Doação em dinheiro', steps:[3, 3], cls:'g24',
+    body:`${donHead(3, 'Entregue em mãos', 'Leve o valor e entregue à equipe da organização. Você recebe um recibo na hora.')}
+      ${paySum()}
+      <div class="field grp"><span class="grp-h"><span class="lbl">Onde você vai entregar?</span><span class="hint">Escolha uma ação da organização ou a sede.</span></span>
+        <div class="rows" role="radiogroup" aria-label="Onde entregar">
+          ${evs.map(e => row(e.id, esc(e.titulo), `${cap(fmtCurta(e.data))} · ${e.inicio}–${e.fim} · ${esc(e.local)}`, 'calendar-days')).join('')}
+          ${row('sede', 'Na sede da organização', `${esc(o.horario)} · ${esc(o.endereco)}`, 'house-heart')}
+        </div></div>`,
+    foot:`<span class="hint sel">${selEv ? `${esc(selEv.titulo)} · ${cap(fmtCurta(selEv.data))}` : 'Na sede da organização'}</span><button class="btn btn-primary btn-block" data-a="don-confirm">Confirmar doação</button>`
   };
 };
 
 SCREENS['v-doacao-ok'] = () => {
-  const d = S.doacoes[S.doacoes.length - 1]; const o = orgOf(d.orgId);
-  const esp = d.metodo === 'dinheiro';
-  const onde = esp ? (d.eventId === 'sede' ? `na sede (${esc(o.endereco)})` : `no evento “${esc(evOf(d.eventId).titulo)}”, ${fmtCurta(evOf(d.eventId).data)}`) : '';
+  const d = S.doacoes[S.doacoes.length - 1]; const o = orgOf(d.orgId); const m = METODO[d.metodo];
+  const esp = d.metodo === 'dinheiro'; const e = esp && d.eventId !== 'sede' ? evOf(d.eventId) : null;
+  const linhas = esp
+    ? `${info('banknote', `${brl(d.cents)} em espécie`, `Para ${esc(o.nome)}`)}
+       ${e ? info('calendar', cap(fmtLonga(e.data)), `${esc(e.titulo)} · ${e.inicio}–${e.fim}`) : info('clock-3', esc(o.horario), 'Horário da sede')}
+       ${e ? info('map-pin', esc(e.local), esc(e.endereco)) : info('map-pin', 'Sede da organização', esc(o.endereco))}
+       ${info('receipt', 'Recibo na entrega', 'Fica salvo em Suas doações.')}`
+    : `${info(m.ic, `${brl(d.cents)} ${m.txt}`, `Para ${esc(o.nome)}`)}
+       ${info('receipt', 'Comprovante', 'Fica salvo em Suas doações.')}`;
   return {
     top:`<div class="gingham" aria-hidden="true"></div>`,
-    body:`<div class="done">${seal()}<h2 class="h-xl">${esp ? 'Doação combinada!' : 'Obrigado pela doação!'}</h2><p class="muted">${esp ? `Entregue ${brl(d.cents)} ${onde}. A equipe confirma o recebimento na hora.` : `${brl(d.cents)} chegam à ${esc(o.nome)} e entram nas compras da próxima entrega.`}</p></div>
-      <div class="card"><div class="list">${doacaoLi(d)}</div></div>`,
-    foot:`<div class="row"><button class="btn btn-ghost btn-grow" data-a="tab" data-r="v-doar">Doar de novo</button><button class="btn btn-primary btn-grow" data-a="tab" data-r="v-home">Início</button></div>`
+    cls:'success wide',
+    body:`<div class="done left">${seal()}<h2 class="h-xl">${esp ? 'Doação combinada!' : 'Obrigado pela doação!'}</h2><p class="muted">${esp ? (e ? 'Entregue o valor à equipe no dia da ação. Ela confirma o recebimento na hora.' : 'Entregue o valor na sede da organização. A equipe confirma o recebimento na hora.') : `${brl(d.cents)} chegam à ${esc(o.nome)} e entram nas compras da próxima entrega.`}</p></div>
+      <section class="res-sum"><div class="info">${linhas}</div>
+        ${e ? `<button class="link-ic start" data-a="ics" data-id="${e.id}">${icon('calendar-plus',18)}<span>Adicionar ao calendário do celular</span></button>` : ''}
+      </section>`,
+    foot:`<button class="btn btn-primary btn-block" data-a="tab" data-r="v-doar">Ver minhas doações</button><button class="btn-text" data-a="tab" data-r="v-home">Voltar ao início</button>`
   };
 };
+
+/* Quantidade escolhida, em texto curto: "1 arroz · 2 feijão" */
+const itensCurto = qty => Object.entries(qty).filter(([, q]) => q > 0).map(([id, q]) => `${q} ${CAT[id].nome.toLowerCase()}`).join(' · ');
+const medida = id => CAT[id].un.split(' ').slice(1).join(' ');
 
 SCREENS['v-alimentos'] = () => {
   const orgs = orgsComNecessidade();
@@ -557,20 +753,19 @@ SCREENS['v-alimentos'] = () => {
   const o = orgOf(S.food.orgId); const needs = S.needs[o.id];
   const tot = Object.values(S.food.qty).reduce((a, b) => a + b, 0);
   return {
-    title:'Quero doar alimentos',
-    body:`<p class="lede">Escolha a organização e o que você vai levar. A lista mostra o que cada uma ainda precisa arrecadar.</p>
-      <div class="chips x" role="group" aria-label="Organização">${orgs.map(x => `<button class="chip" aria-pressed="${x.id === o.id}" data-a="food-org" data-v="${x.id}">${esc(x.nome)}</button>`).join('')}</div>
-      <p class="small muted">${esc(o.sobre)}</p>
-      <div class="card"><div class="list">
+    title:'Doação de alimentos', steps:[1, 2], cls:'g24',
+    body:`<div class="head form"><p class="eyebrow step">Etapa 1 de 2</p><h2 class="h-lg">O que você vai levar?</h2><p class="muted">A lista mostra o que cada organização ainda precisa arrecadar.</p></div>
+      ${selectField({label:'Para qual organização?', bind:'food.orgId', options:orgs.map(x => [x.id, x.nome]), hint:esc(o.sobre)})}
+      <div class="rule-list">
         ${needs.map(n => { const c = CAT[n.id]; const q = S.food.qty[n.id] || 0; const falta = Math.max(0, n.meta - n.atual - n.prom);
-          return `<div class="need">
-            <div class="need-h"><span><b>${c.nome}</b><small>${c.un}</small></span>
-              <span class="stepper"><button data-a="qty" data-id="${n.id}" data-d="-1" aria-label="Menos ${c.nome}" ${q ? '' : 'disabled'}>${icon('minus',18)}</button><output aria-live="polite">${q}</output><button data-a="qty" data-id="${n.id}" data-d="1" aria-label="Mais ${c.nome}">${icon('plus',18)}</button></span></div>
-            ${prog(n.atual, n.meta, n.prom + q)}
+          return `<div class="need-r">
+            <div class="need-top"><span><b>${c.nome}</b><small>${c.un}</small></span>
+              <span class="stp${q ? ' on' : ''}"><button data-a="qty" data-id="${n.id}" data-d="-1" aria-label="Menos ${c.nome}" ${q ? '' : 'disabled'}>${icon('minus',18)}</button><output aria-live="polite">${q}</output><button data-a="qty" data-id="${n.id}" data-d="1" aria-label="Mais ${c.nome}">${icon('plus',18)}</button></span></div>
+            ${prog(n.atual, n.meta, n.prom + q, 'thin')}
             <small class="num">${n.atual} arrecadados${n.prom ? ` · ${n.prom} a caminho` : ''} · faltam ${falta} ${c.pl}</small>
           </div>`; }).join('')}
-      </div></div>`,
-    foot:`<button class="btn btn-primary btn-block" data-a="go" data-r="v-alimentos-entrega" ${tot ? '' : 'disabled'}>${tot ? `Continuar com ${plural(tot,'item','itens')}` : 'Escolha ao menos um item'}</button>`
+      </div>`,
+    foot:`<span class="hint${tot ? ' sel' : ''}">${tot ? itensCurto(S.food.qty) : 'Escolha a quantidade de cada item.'}</span><button class="btn btn-primary btn-block" data-a="go" data-r="v-alimentos-entrega" ${tot ? '' : 'disabled'}>${tot ? `Continuar com ${plural(tot,'item','itens')}` : 'Continuar'}</button>`
   };
 };
 
@@ -579,47 +774,79 @@ SCREENS['v-alimentos-entrega'] = () => {
   const evs = eventosVoluntario().filter(e => e.orgId === o.id);
   if (!S.food.entrega || (S.food.entrega !== 'sede' && !evs.some(e => e.id === S.food.entrega))) S.food.entrega = evs[0]?.id || 'sede';
   const itens = Object.entries(S.food.qty).filter(([, q]) => q > 0);
+  const tot = itens.reduce((a, [, q]) => a + q, 0);
+  const sel = S.food.entrega; const selEv = sel !== 'sede' ? evOf(sel) : null;
+  const row = (v, t, d, ic) => `<button type="button" class="rrow tall" role="radio" aria-checked="${sel === v}" data-a="pick" data-p="food.entrega" data-v="${v}"><span class="rd"></span><span class="rt"><span>${t}</span><small>${d}</small></span>${icon(ic,22)}</button>`;
   return {
-    title:'Entrega dos alimentos',
-    body:`<section class="sec"><h2 class="h-md">Você vai levar para ${esc(o.nome)}</h2>
-        <div class="card"><div class="list">${itens.map(([id, q]) => `<div class="li-plain"><span>${CAT[id].nome}<small>${CAT[id].un}</small></span><b class="num">${q}×</b></div>`).join('')}</div></div></section>
-      <section class="sec" role="radiogroup" aria-label="Onde entregar"><h2 class="h-md">Onde você vai entregar?</h2>
-        ${evs.map(e => optCard({ checked:S.food.entrega === e.id, action:'pick', data:`data-p="food.entrega" data-v="${e.id}"`, ic:'calendar', title:`No evento: ${esc(e.titulo)}`, sub:`${fmtCurta(e.data)} · ${e.inicio}–${e.fim} · ${esc(e.local)}` })).join('')}
-        ${optCard({ checked:S.food.entrega === 'sede', action:'pick', data:'data-p="food.entrega" data-v="sede"', ic:'org', title:'Na sede da organização', sub:`${esc(o.horario)} · ${esc(o.endereco)}` })}
-      </section>
-      <p class="hint">Confira a validade: a organização só aceita itens fechados e com pelo menos 30 dias até vencer.</p>`,
-    foot:`<button class="btn btn-primary btn-block" data-a="food-confirm">Confirmar doação</button>`
+    title:'Doação de alimentos', steps:[2, 2], cls:'g24',
+    body:`<div class="head form"><p class="eyebrow step">Etapa 2 de 2</p><h2 class="h-lg">Onde você vai entregar?</h2></div>
+      <div class="pay-sum col"><div class="pay-row"><span><b>${plural(tot,'item','itens')}</b><small>para ${esc(o.nome)}</small></span><button class="sec-link" data-a="back">Alterar</button></div>
+        <ul class="qty-lines">${itens.map(([id, q]) => `<li><b class="num">${q}×</b><span>${CAT[id].nome} · ${CAT[id].un}</span></li>`).join('')}</ul></div>
+      <div class="rows open" role="radiogroup" aria-label="Onde entregar">
+        ${evs.map(e => row(e.id, esc(e.titulo), `${cap(fmtCurta(e.data))} · ${e.inicio}–${e.fim} · ${esc(e.local)}${minhaInsc(e.id) ? '. Você está inscrito.' : ''}`, 'calendar-days')).join('')}
+        ${row('sede', 'Na sede da organização', `${esc(o.horario)} · ${esc(o.endereco)}`, 'house-heart')}
+      </div>
+      <p class="note-r">${icon('package-check',16)}<span>Confira a validade: a organização só aceita itens fechados e com pelo menos 30 dias até vencer.</span></p>`,
+    foot:`<span class="hint sel">${selEv ? `${esc(selEv.titulo)} · ${cap(fmtCurta(selEv.data))}` : 'Na sede da organização'}</span><button class="btn btn-primary btn-block" data-a="food-confirm">Confirmar doação</button>`
   };
 };
 
 SCREENS['v-alimentos-ok'] = () => {
   const d = S.doacoes[S.doacoes.length - 1]; const o = orgOf(d.orgId);
   const e = d.entrega !== 'sede' ? evOf(d.entrega) : null;
+  const it = Object.entries(d.itens); const tot = it.reduce((a, [, q]) => a + q, 0);
   return {
     top:`<div class="gingham" aria-hidden="true"></div>`,
-    body:`<div class="done">${seal()}<h2 class="h-xl">Doação combinada!</h2><p class="muted">${e ? `Leve os itens ao ${esc(e.local)} em ${fmtLonga(e.data)}, entre ${e.inicio} e ${e.fim}.` : `Leve os itens à sede da ${esc(o.nome)}: ${esc(o.endereco)}, ${esc(o.horario).toLowerCase()}.`} A organização confirma o recebimento na hora.</p></div>
-      <div class="card"><div class="list">${Object.entries(d.itens).map(([id, q]) => `<div class="li-plain"><span>${CAT[id].nome}</span><b class="num">${q}×</b></div>`).join('')}</div></div>`,
-    foot:`<div class="row"><button class="btn btn-ghost btn-grow" data-a="tab" data-r="v-doar">Doar de novo</button><button class="btn btn-primary btn-grow" data-a="tab" data-r="v-home">Início</button></div>`
+    cls:'success wide',
+    body:`<div class="done left">${seal()}<h2 class="h-xl">Doação combinada!</h2><p class="muted">${e ? 'Leve os itens no dia da ação. A organização confirma o recebimento na hora.' : 'Leve os itens à sede da organização. A equipe confirma o recebimento na hora.'}</p></div>
+      <section class="res-sum"><div class="info">
+        ${info('shopping-basket', `${plural(tot,'item','itens')} de alimento`, it.map(([id, q]) => `${q} ${CAT[id].nome.toLowerCase()} (${medida(id)})`).join(' · '))}
+        ${e ? info('calendar', cap(fmtLonga(e.data)), `${esc(e.titulo)} · ${e.inicio}–${e.fim}`) : info('clock-3', esc(o.horario), 'Horário da sede')}
+        ${e ? info('map-pin', esc(e.local), esc(e.endereco)) : info('map-pin', 'Sede da organização', esc(o.endereco))}
+        ${info('receipt', 'Recibo na entrega', 'Fica salvo em Suas doações.')}
+      </div>
+      ${e ? `<button class="link-ic start" data-a="ics" data-id="${e.id}">${icon('calendar-plus',18)}<span>Adicionar ao calendário do celular</span></button>` : ''}</section>`,
+    foot:`<button class="btn btn-primary btn-block" data-a="tab" data-r="v-doar">Ver minhas doações</button><button class="btn-text" data-a="tab" data-r="v-home">Voltar ao início</button>`
   };
 };
 
+const AJUDA_CURTA = { 'Trabalhar em eventos':'Eventos', 'Doar alimentos':'alimentos', 'Doar dinheiro':'dinheiro' };
+const ajudasCurto = arr => { const s = arr.map(a => AJUDA_CURTA[a] || a).join(', '); return s ? s.charAt(0).toUpperCase() + s.slice(1) : 'Nenhuma escolhida'; };
+const statusDot = (txt, ok) => `<span class="st${ok ? ' ok' : ''}"><i></i>${txt}</span>`;
+
 SCREENS['v-perfil'] = () => {
-  const u = S.user;
-  const agenda = S.inscricoes.map(i => ({ i, e: evOf(i.eventId) })).filter(x => x.e).sort((a, b) => byDate(a.e, b.e));
+  const u = S.user; const todas = S.perfilTudo || {};
+  const agenda = S.inscricoes.map(i => ({ i, e: evOf(i.eventId) })).filter(x => x.e && diff(x.e.data) >= 0).sort((a, b) => byDate(a.e, b.e));
+  const doacoes = S.doacoes.slice().reverse();
+  const mais = (k, n) => n > 2 && !todas[k] ? `<button class="sec-link" data-a="perfil-tudo" data-k="${k}">Ver todas</button>` : '';
   return {
-    title:'Perfil',
-    body:`<div class="ident"><span class="avatar lg">${initials(u.nome)}</span><span><b class="h-md">${esc(u.nome)}</b><span class="small muted">${esc(u.email)}</span>${u.status === 'aprovado' ? '<span class="badge">Cadastro aprovado</span>' : '<span class="badge y">Cadastro em validação</span>'}</span></div>
-      <section class="sec"><h2 class="h-md">Como quero ajudar</h2><div class="card stack"><div class="chips">${(u.ajudas || []).map(a => `<span class="badge n">${a}</span>`).join('')}</div><div class="pair"><span>Frequência</span><span>${esc(u.freq || '—')}</span></div></div></section>
-      <section class="sec"><h2 class="h-md">Minha agenda</h2>
-        ${agenda.length ? `<div class="card"><div class="list">${agenda.map(({ i, e }) => `<button class="li" data-a="go" data-r="v-evento" data-id="${e.id}"><span class="ic">${icon('calendar',20)}</span><span><b>${esc(e.titulo)}</b><small>${fmtCurta(e.data)} · ${e.turnos[i.turno]} · ${esc(e.postos[i.posto].nome)}</small></span>${icon('right',18)}</button>`).join('')}</div></div>` : `<p class="muted small">Você ainda não se inscreveu em nenhuma entrega. <button class="link start" data-a="tab" data-r="v-eventos">Ver entregas</button></p>`}
+    top:`<header class="page-h gut prof-h"><h1 class="h-lg">Perfil</h1>
+      <div class="prof"><span class="avatar lg">${initials(u.nome)}</span><span><b>${esc(u.nome)}</b><small>${esc(u.email)}</small>${u.status === 'aprovado' ? statusDot('Cadastro aprovado', true) : statusDot('Cadastro em validação')}</span></div></header>`,
+    cls:'perfil',
+    body:`<section class="sec tight">${secHead('Minha agenda', mais('agenda', agenda.length))}
+        ${agenda.length ? `<div class="rule-list">${(todas.agenda ? agenda : agenda.slice(0, 2)).map(({ i, e }) => eventRow(e, 'v-evento', i)).join('')}</div>` : `<p class="muted small">Você ainda não reservou nenhuma vaga. <button class="link" data-a="tab" data-r="v-eventos">Ver ações</button></p>`}
       </section>
-      <section class="sec"><h2 class="h-md">Minhas doações</h2>
-        ${S.doacoes.length ? `<div class="card"><div class="list">${S.doacoes.slice().reverse().map(doacaoLi).join("")}</div></div>` : `<p class="muted small">Nenhuma doação ainda.</p>`}
+      <section class="sec tight">${secHead('Minhas doações', mais('doacoes', doacoes.length))}
+        ${doacoes.length ? `<div class="rule-list">${(todas.doacoes ? doacoes : doacoes.slice(0, 2)).map(doacaoLi).join('')}</div>` : `<p class="muted small">Nenhuma doação ainda. <button class="link" data-a="tab" data-r="v-doar">Doar agora</button></p>`}
+      </section>
+      <section class="sec tight">${secHead('Como quero ajudar')}
+        <div class="rule-list">
+          <button class="set-r" data-a="ajuda-editar">${icon('hand-heart',20)}<span>Formas de ajudar</span><small>${ajudasCurto(u.ajudas || [])}</small>${icon('chevron-right',20)}</button>
+          <button class="set-r" data-a="ajuda-editar">${icon('repeat',20)}<span>Frequência</span><small>${esc(u.freq || 'Não informada')}</small>${icon('chevron-right',20)}</button>
+        </div>
       </section>
       ${protoBlock()}`,
     tabs:'vol', tabOn:'v-perfil'
   };
 };
+
+SCREENS['v-ajuda'] = () => ({
+  title:'Como quero ajudar', cls:'g24',
+  body:`<p class="lede">As organizações usam isso para te chamar para as ações certas.</p>
+    ${checkList({label:'Como você quer ajudar?', hint:'Escolha uma ou mais opções.', path:'ajudaDraft.ajudas', options:AJUDAS})}
+    ${radioList({label:'Com que frequência você quer ajudar?', hint:'Escolha uma opção.', path:'ajudaDraft.freq', options:FREQS})}`,
+  foot:`<button class="btn btn-primary btn-block" data-a="ajuda-salvar">Salvar</button>`
+});
 
 /* ---------- organização ---------- */
 function promessaLi(p) {
@@ -701,7 +928,7 @@ function eventoGestao(e, admin) {
       ${icon('clock',18)}<span>${e.inicio} às ${e.fim}<small>${e.turnos.length > 1 ? "Turnos " + e.turnos.join(" e ") : "Turno único"}</small></span>
       ${icon('pin',18)}<span>${esc(e.local)}${e.endereco && e.endereco !== e.local ? `<small>${esc(e.endereco)}</small>` : ''}</span>
     </div>
-    ${e.desc ? `<p>${esc(e.desc)}</p>` : ''}
+    ${e.desc ? `<p>${esc(e.desc)}${e.nota ? ' ' + esc(e.nota) : ''}</p>` : ''}
     <section class="sec"><div class="sec-h"><h2 class="h-md">Postos e inscritos</h2><span class="small muted num">${inscritosTotal(e)}/${vagasTotal(e)}</span></div>
       <div class="card"><div class="list">
       ${e.postos.map((p, i) => { const ns = nomesPosto(e, i); return `<div class="need"><div class="need-h"><b>${esc(p.nome)}</b><span class="num small">${p.inscritos}/${p.vagas}</span></div>${prog(p.inscritos, p.vagas, 0, 'g')}<small>${ns.length ? esc(ns.join(', ')) : 'Ninguém inscrito ainda'}</small></div>`; }).join('')}
@@ -800,14 +1027,14 @@ SCREENS.roteiro = () => ({
 
 /* ================= abas ================= */
 const TABS = {
-  vol:[['v-home','Início','home'],['v-eventos','Entregas','calendar'],['v-doar','Doar','heart'],['v-perfil','Perfil','user']],
+  vol:[['v-home','Início','house'],['v-eventos','Ações','calendar-days'],['v-doar','Doar','hand-heart'],['v-perfil','Perfil','circle-user-round']],
   org:[['o-painel','Painel','grid'],['o-novo-evento','Publicar','megaphone'],['o-perfil','Perfil','user']],
   admin:[['a-eventos','Agenda','calendar'],['a-validacoes','Validações','shield'],['a-perfil','Perfil','user']]
 };
 function tabsHtml(k, on) {
   return `<nav class="tabs gut" aria-label="Navegação principal">${TABS[k].map(([r, l, ic]) => {
     const n = r === 'a-validacoes' ? pendentesVol().length + pendentesOrg().length : 0;
-    return `<button class="tab${r === on ? ' on' : ''}" data-a="tab" data-r="${r}" ${r === on ? 'aria-current="page"' : ''}><span class="pill">${icon(ic,22)}</span>${l}${n ? `<span class="count">${n}</span>` : ''}</button>`;
+    return `<button class="tab${r === on ? ' on' : ''}" data-a="tab" data-r="${r}" ${r === on ? 'aria-current="page"' : ''}><span class="pill">${icon(ic,24)}${n ? `<span class="count">${n}</span>` : ''}</span>${l}</button>`;
   }).join('')}</nav>`;
 }
 
@@ -818,8 +1045,9 @@ function render(top) {
   const sc = (SCREENS[S.route] || SCREENS.welcome)();
   const old = $app.querySelector('.scroll');
   const prev = top || !old ? 0 : old.scrollTop;
-  const bar = sc.title != null ? `<header class="bar gut${S.stack.length ? '' : ' root'}">${S.stack.length ? `<button class="icon-btn" data-a="back" aria-label="Voltar">${icon('left',24)}</button>` : ''}<h1>${sc.title}</h1></header>` : '';
-  $app.innerHTML = `${bar}<main class="scroll${top ? ' enter' : ''}">${sc.top || ''}<div class="content gut">${sc.body}</div></main>${sc.foot ? `<footer class="foot gut">${sc.foot}</footer>` : ''}${sc.tabs ? tabsHtml(sc.tabs, sc.tabOn) : ''}`;
+  const steps = sc.steps ? `<div class="steps" role="progressbar" aria-label="Etapa ${sc.steps[0]} de ${sc.steps[1]}" aria-valuemin="1" aria-valuemax="${sc.steps[1]}" aria-valuenow="${sc.steps[0]}">${Array.from({ length:sc.steps[1] }, (_, i) => `<i${i < sc.steps[0] ? ' class="on"' : ''}></i>`).join('')}</div>` : '';
+  const bar = sc.title != null ? `<header class="bar gut${S.stack.length ? '' : ' root'}${steps ? ' has-steps' : ''}">${S.stack.length ? `<button class="icon-btn" data-a="back" aria-label="Voltar">${icon('arrow-left',24)}</button>` : ''}<h1>${sc.title}</h1>${steps}</header>` : '';
+  $app.innerHTML = `${bar}<main class="scroll${top ? ' enter' : ''}">${sc.top || ''}<div class="content gut${sc.cls ? ' ' + sc.cls : ''}">${sc.body}</div></main>${sc.foot ? `<footer class="foot gut">${sc.foot}</footer>` : ''}${sc.tabs ? tabsHtml(sc.tabs, sc.tabOn) : ''}`;
   $app.querySelector('.scroll').scrollTop = prev;
   document.body.classList.toggle('hero-top', !!sc.top && sc.title == null && sc.top.indexOf('class="hero') > -1);
   renderGuide();
@@ -830,24 +1058,22 @@ function render(top) {
   }
 }
 function renderGuide() {
-  $guide.innerHTML = `<div class="stack-sm"><div class="logo">meza</div><p class="slogan">“a mesa é de todos.”</p><p class="values">mobilização • empatia • zelo • alimentação</p></div>
-    <div class="guide-card stack"><span class="label">Ver o app como</span>${roleSeg()}<div class="guide-actions"><button class="link" data-a="home">Voltar para a tela de cadastro</button><span class="row" style="gap:var(--s-2)"><button class="btn btn-ghost btn-sm" data-a="theme">${isDark() ? icon('sun',18) + ' Tema claro' : icon('moon',18) + ' Tema escuro'}</button><button class="btn btn-ghost btn-sm" data-a="fullscreen">${document.fullscreenElement ? icon('shrink',18) + ' Sair da tela cheia' : icon('expand',18) + ' Tela cheia'}</button></span></div></div>
+  $guide.innerHTML = `<div class="stack-sm"><div class="logo">meza</div><p class="slogan">A mesa é de todos.</p><p class="values">Mobilização · Empatia · Zelo · Alimentação</p></div>
+    <div class="guide-card stack"><span class="label">Ver o app como</span>${roleSeg()}<div class="guide-actions"><button class="link" data-a="home">Voltar para a tela de cadastro</button><span class="row" style="gap:var(--s-2)"><button class="btn btn-ghost btn-sm" data-a="fullscreen">${document.fullscreenElement ? icon('shrink',18) + ' Sair da tela cheia' : icon('expand',18) + ' Tela cheia'}</button></span></div></div>
     <div class="guide-card sec"><h2 class="h-sm">Histórias de usuário (MoSCoW)</h2>${storiesHtml()}</div>
     <p class="hint">Protótipo funcional com dados de exemplo. Nenhum pagamento é processado e nada é enviado.</p>`;
 }
-/* Tema: segue o sistema até o primeiro toque no botão; depois fixa data-theme no <html> e guarda a escolha no navegador. */
-const THEME_KEY = 'meza-tema';
-try { const t = localStorage.getItem(THEME_KEY); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
-const sysDark = matchMedia('(prefers-color-scheme: dark)');
-function isDark() { const t = document.documentElement.dataset.theme; return t ? t === 'dark' : sysDark.matches; }
-sysDark.addEventListener('change', () => { if (!document.documentElement.dataset.theme) render(false); });
+/* Aparelho do computador: encolhe o celular inteiro quando a janela é baixa (868 = 844 da tela + 24 de moldura). */
+const fitPhone = () => document.documentElement.style.setProperty('--k', Math.max(.55, Math.min(1, (innerHeight - 48) / 868)).toFixed(3));
+addEventListener('resize', fitPhone); fitPhone();
+setInterval(() => { const t = document.getElementById('pix-timer'); if (t) t.textContent = pixRestante(); }, 1000);
 let toastT;
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2800); }
 
 /* ================= navegação ================= */
-function go(route, params = {}) { S.stack.push({ route:S.route, params:S.params }); S.route = route; S.params = params; S.errors = {}; S.confirm = null; render(true); }
-function back() { const p = S.stack.pop(); if (!p) return; S.route = p.route; S.params = p.params; S.errors = {}; S.confirm = null; render(true); }
-function tab(route) { S.stack = []; S.route = route; S.params = {}; S.errors = {}; S.confirm = null; if (route === 'o-novo-evento' && !S.evDraft) S.evDraft = blankEv(); render(true); }
+function go(route, params = {}) { S.stack.push({ route:S.route, params:S.params }); S.route = route; S.params = params; S.errors = {}; S.tried = false; S.confirm = null; render(true); }
+function back() { const p = S.stack.pop(); if (!p) return; S.route = p.route; S.params = p.params; S.errors = {}; S.tried = false; S.confirm = null; render(true); }
+function tab(route) { S.stack = []; S.route = route; S.params = {}; S.errors = {}; S.tried = false; S.confirm = null; if (route === 'o-novo-evento' && !S.evDraft) S.evDraft = blankEv(); render(true); }
 const HOME = { vol:'v-home', org:'o-painel', admin:'a-eventos' };
 function ensureDemoUser() {
   if (S.user) return;
@@ -866,9 +1092,9 @@ const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).trim());
 function valVol1(d) {
   const e = {};
   if (d.nome.trim().split(/\s+/).filter(Boolean).length < 2) e.nome = 'Digite nome e sobrenome.';
-  if (!emailOk(d.email)) e.email = 'Digite um e-mail válido, como nome@email.com.';
+  if (!emailOk(d.email)) e.email = /@[^\s@.]+$/.test(d.email.trim()) ? 'Falta o final do e-mail. Ex.: nome@email.com' : 'Digite um e-mail válido. Ex.: nome@email.com';
   if (d.telefone.replace(/\D/g, '').length < 10) e.telefone = 'Digite o telefone com DDD.';
-  if (!d.genero) e.genero = 'Selecione uma opção. Se preferir, escolha “Prefiro não informar”.';
+  if (!d.genero) e.genero = 'Escolha uma opção. Se preferir, marque “Prefiro não informar”.';
   if (!d.nascimento) e.nascimento = 'Informe sua data de nascimento.';
   else if (d.nascimento > iso(HOJE)) e.nascimento = 'A data de nascimento não pode estar no futuro.';
   if (d.endereco.trim().length < 8) e.endereco = 'Informe rua, número e bairro.';
@@ -894,6 +1120,15 @@ function valOrg(d) {
   if (!d.distribui.length) e.distribui = 'Escolha pelo menos uma opção.';
   return e;
 }
+function valCard(d) {
+  const e = {}; const n = d.num.replace(/\D/g, ''); const [mm, aa] = d.val.split('/').map(Number);
+  if (n.length < 13 || n.length > 19) e.num = 'Confira o número do cartão.';
+  if (d.nome.trim().split(/\s+/).filter(Boolean).length < 2) e.nome = 'Digite o nome como está no cartão.';
+  const fimMes = new Date(2000 + (aa || 0), mm || 0, 0);
+  if (!(mm >= 1 && mm <= 12) || !(aa >= 0) || d.val.length !== 5 || fimMes < HOJE) e.val = 'Use MM/AA, com uma data que ainda não passou.';
+  if (!/^\d{3,4}$/.test(d.cvv)) e.cvv = 'O CVV tem 3 ou 4 números.';
+  return e;
+}
 function valEv(d) {
   const e = {};
   if (d.titulo.trim().length < 4) e.titulo = 'Dê um título para a entrega.';
@@ -905,10 +1140,12 @@ function valEv(d) {
   if (!ps.length || ps.length !== d.postos.length) e.postos = 'Cada posto precisa de nome e de pelo menos 1 vaga.';
   return e;
 }
-function fail(errs) { S.errors = errs; S.focusErr = true; render(false); }
+function fail(errs) { S.errors = errs; S.tried = true; S.focusErr = true; render(false); }
 
 /* ================= máscaras ================= */
 const maskTel = v => { const d = v.replace(/\D/g, '').slice(0, 11); if (!d) return ''; if (d.length <= 2) return `(${d}`; if (d.length <= 6) return `(${d.slice(0,2)}) ${d.slice(2)}`; if (d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`; return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`; };
+const maskCard = v => v.replace(/\D/g, '').slice(0, 19).replace(/(\d{4})(?=\d)/g, '$1 ');
+const maskMMAA = v => { const d = v.replace(/\D/g, '').slice(0, 4); return d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d; };
 const maskCnpj = v => { const d = v.replace(/\D/g, '').slice(0, 14); let o = d.slice(0, 2); if (d.length > 2) o += '.' + d.slice(2, 5); if (d.length > 5) o += '.' + d.slice(5, 8); if (d.length > 8) o += '/' + d.slice(8, 12); if (d.length > 12) o += '-' + d.slice(12); return o; };
 
 /* ================= ações ================= */
@@ -916,12 +1153,6 @@ const A = {
   back, home() { S.role = null; S.stack = []; S.route = 'welcome'; S.params = {}; render(true); },
   go(d) { go(d.r, d.id ? { id:d.id } : {}); },
   tab(d) { tab(d.r); },
-  theme() {
-    const t = isDark() ? 'light' : 'dark';
-    document.documentElement.dataset.theme = t;
-    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
-    render(false);
-  },
   role(d) { setRole(d.r); S.route = HOME[d.r]; render(true); },
   'start-vol'() { go('vol-cad-1'); },
   'start-org'() { go('org-cad'); },
@@ -930,6 +1161,8 @@ const A = {
   'fill-org'() { Object.assign(S.orgDraft, { nome:'Cozinha Solidária do Gama', cnpj:'27.615.904/0001-58', tipo:'Coletivo comunitário', resp:'Dona Lourdes Pereira', email:'cozinhagama@email.com', tel:'(61) 99654-3210', endereco:'Setor Leste, Quadra 9, Gama', sobre:'Servimos 150 almoços por dia para trabalhadores informais e famílias do bairro.', distribui:['Refeições prontas'] }); S.errors = {}; render(false); },
   'fill-ev'() { Object.assign(S.evDraft, { tipo:'Distribuição de cestas', titulo:'Entrega de cestas de fim de mês', inicio:'08:00', fim:'12:00', desc:'Chegue 15 minutos antes. Use roupa confortável e sapato fechado. Água e lanche por nossa conta.', postos:[{ nome:'Recepção das famílias', vagas:4 }, { nome:'Entrega das cestas', vagas:8 }, { nome:'Carga e descarga', vagas:3 }], itens:['Arroz','Feijão','Óleo de soja'] }); S.errors = {}; render(false); },
   'vol-next'() { const e = valVol1(S.volDraft); Object.keys(e).length ? fail(e) : go('vol-cad-2'); },
+  'open-date'(d, el) { const i = el.closest('.inp').querySelector('input'); try { i.showPicker(); } catch (err) { i.focus(); } },
+  locate() { S.volDraft.endereco = DEMO_USER.endereco; delete S.errors.endereco; render(false); toast('Localização simulada: endereço preenchido.'); },
   'vol-finish'() {
     const e = valVol2(S.volDraft); if (Object.keys(e).length) return fail(e);
     S.user = { ...JSON.parse(JSON.stringify(S.volDraft)), status:'em_validacao' };
@@ -939,7 +1172,7 @@ const A = {
     S.pendVol.unshift({ id:'me', nome:S.user.nome, cidade:bairro || 'Brasília', quando:'agora', ajudas:S.user.ajudas, freq:S.user.freq, motivacao:S.user.motivacao, exp:S.user.exp, status:'pendente' });
     S.volDraft = blankVol(); S.stack = []; S.route = 'vol-cad-ok'; S.params = {}; render(true);
   },
-  'vol-explore'() { S.role = 'vol'; tab('v-home'); },
+  'vol-explore'(d) { S.role = 'vol'; tab(d.r || 'v-home'); },
   'org-submit'() {
     const e = valOrg(S.orgDraft); if (Object.keys(e).length) return fail(e);
     const d = S.orgDraft;
@@ -952,13 +1185,38 @@ const A = {
   pick(d) { setPath(d.p, d.n ? Number(d.v) : d.v); if (d.k) delete S.errors[d.k]; render(false); },
   toggle(d) { const arr = getPath(d.p); const i = arr.indexOf(d.v); i < 0 ? arr.push(d.v) : arr.splice(i, 1); if (d.k) delete S.errors[d.k]; render(false); },
   filtro(d) { S.filtro = d.v; render(false); },
+  'levar-insc'(d) { const ins = minhaInsc(d.id); if (!ins) return; ins.levar = !ins.levar; render(false); toast(ins.levar ? 'Avisamos a organização que você vai levar itens.' : 'Tiramos o aviso de que você vai levar itens.'); },
+  'perfil-tudo'(d) { S.perfilTudo = { ...(S.perfilTudo || {}), [d.k]:true }; render(false); },
+  'ajuda-editar'() { S.ajudaDraft = { ajudas:(S.user.ajudas || []).slice(), freq:S.user.freq || '' }; go('v-ajuda'); },
+  'ajuda-salvar'() {
+    const dr = S.ajudaDraft; const e = {};
+    if (!dr.ajudas.length) e.ajudas = 'Escolha pelo menos uma forma de ajudar.';
+    if (!dr.freq) e.freq = 'Escolha uma frequência.';
+    if (Object.keys(e).length) return fail(e);
+    S.user.ajudas = dr.ajudas.slice(); S.user.freq = dr.freq;
+    const me = S.pendVol.find(v => v.id === 'me'); if (me) { me.ajudas = S.user.ajudas.slice(); me.freq = S.user.freq; }
+    back(); toast('Preferências salvas.');
+  },
+  flip(d) { setPath(d.p, !getPath(d.p)); render(false); },
+  notif() { toast(S.user && S.user.status === 'em_validacao' ? 'Seu cadastro está em validação. Avisamos por e-mail quando sair o resultado.' : 'Nenhuma notificação nova.'); },
+  ics(d) {
+    const e = evOf(d.id); const ins = minhaInsc(e.id); const o = orgOf(e.orgId);
+    const [ini, fim] = (ins ? e.turnos[ins.turno] : e.inicio + '–' + e.fim).split('–');
+    const dt = h => e.data.replace(/-/g, '') + 'T' + h.replace(':', '') + '00';
+    const txt = s => String(s).replace(/[\\,;]/g, m => '\\' + m);
+    const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MEZA//Prototipo//PT-BR','BEGIN:VEVENT','UID:' + e.id + '@meza.demo','DTSTAMP:' + iso(HOJE).replace(/-/g, '') + 'T000000','DTSTART:' + dt(ini),'DTEND:' + dt(fim),'SUMMARY:' + txt(e.titulo + ' (MEZA)'),'LOCATION:' + txt(e.local + ', ' + e.endereco),'DESCRIPTION:' + txt(o.nome + (ins ? '. Posto: ' + e.postos[ins.posto].nome : '')),'END:VEVENT','END:VCALENDAR'].join('\r\n');
+    const url = URL.createObjectURL(new Blob([ics], { type:'text/calendar' }));
+    const link = document.createElement('a'); link.href = url; link.download = 'meza-' + e.id + '.ics'; document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('Arquivo de calendário baixado. Abra para adicionar o evento.');
+  },
   afiltro(d) { S.afiltro = d.v; render(false); },
   valtab(d) { S.valTab = d.v; S.confirm = null; render(false); },
   inscrever(d) {
     const e = evOf(d.id); const sel = S.sel[e.id];
     if (sel.posto === null || sel.turno === null) return;
     const p = e.postos[sel.posto]; if (p.inscritos >= p.vagas) { toast('Esse posto acabou de lotar. Escolha outro.'); return; }
-    p.inscritos++; S.inscricoes.push({ eventId:e.id, posto:sel.posto, turno:sel.turno }); S.sel[e.id] = { posto:null, turno:null };
+    p.inscritos++; S.inscricoes.push({ eventId:e.id, posto:sel.posto, turno:sel.turno, levar:!!sel.levar }); S.sel[e.id] = { posto:null, turno:null, levar:false };
     S.stack = [{ route:'v-eventos', params:{} }]; S.route = 'v-inscricao-ok'; S.params = { id:e.id }; render(true);
   },
   'cancel-insc'(d) {
@@ -976,10 +1234,14 @@ const A = {
   'copy-pix'() {
     const el = document.getElementById('pixcode'); const txt = el ? el.textContent : '';
     const fallback = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Código selecionado. Copie pelo menu do aparelho.'); };
-    try { navigator.clipboard.writeText(txt).then(() => toast('Código Pix copiado'), fallback); } catch (err) { fallback(); }
+    const ok = () => { S.don.copied = true; render(false); };
+    try { navigator.clipboard.writeText(txt).then(ok, fallback); } catch (err) { fallback(); }
   },
+  'don-edit'() { const i = S.stack.map(x => x.route).lastIndexOf('v-valor'); if (i < 0) return back(); S.stack = S.stack.slice(0, i); S.route = 'v-valor'; S.params = {}; S.errors = {}; S.tried = false; render(true); },
+  'cvv-help'() { toast('O CVV são os 3 números no verso do cartão (4 na frente, no American Express).'); },
   'don-confirm'() {
     const d = S.don; const o = orgOf(d.orgId);
+    if (d.metodo === 'cartao') { const e = valCard(d.card); if (Object.keys(e).length) return fail(e); }
     S.doacoes.push({ id:'d' + Date.now(), tipo:'dinheiro', orgId:d.orgId, cents:d.cents, metodo:d.metodo, eventId:d.metodo === 'dinheiro' ? d.eventId : null, data:iso(HOJE) });
     if (d.metodo !== 'dinheiro') o.arrecadado += d.cents;
     S.stack = []; S.route = 'v-doacao-ok'; S.params = {}; render(true);
@@ -1057,6 +1319,9 @@ document.addEventListener('input', e => {
   let v = el.value;
   if (el.dataset.mask === 'tel') { v = maskTel(v); el.value = v; }
   if (el.dataset.mask === 'cnpj') { v = maskCnpj(v); el.value = v; }
+  if (el.dataset.mask === 'card') { v = maskCard(v); el.value = v; }
+  if (el.dataset.mask === 'mmaa') { v = maskMMAA(v); el.value = v; }
+  if (el.dataset.mask === 'digits') { v = v.replace(/\D/g, '').slice(0, 4); el.value = v; }
   if (el.type === 'number') v = el.value === '' ? '' : Number(el.value);
   setPath(el.dataset.bind, v);
   const k = el.dataset.bind.split('.').pop();
@@ -1065,7 +1330,7 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('change', e => {
   const el = e.target; if (!el.dataset || !el.dataset.bind) return;
-  if (el.tagName === 'SELECT') { setPath(el.dataset.bind, el.value); delete S.errors[el.dataset.bind.split('.').pop()]; }
+  if (el.tagName === 'SELECT') { setPath(el.dataset.bind, el.value); delete S.errors[el.dataset.bind.split('.').pop()]; if (el.dataset.bind === 'food.orgId') { S.food.qty = {}; S.food.entrega = null; } }
   if (el.dataset.rerender) render(false);
 });
 
