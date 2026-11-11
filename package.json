@@ -1,0 +1,15 @@
+{
+  "name": "meza",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Protótipo funcional do MEZA, app de voluntariado que conecta voluntários a instituições parceiras.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node tests/smoke.mjs",
+    "test:build": "node scripts/build.mjs && node tests/smoke.mjs dist/meza.html"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}
