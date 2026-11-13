@@ -25,11 +25,14 @@ try {
   await passo('cadastro de voluntário aponta os campos vazios', async () => {
     await page.click('[data-a="start-vol"]');
     await page.click('[data-a="vol-next"]');
-    assert.equal(await page.locator('.msg-err').count(), 6);
-    assert.match(await page.locator('.err-sum').innerText(), /Revise os 6 campos/);
+    assert.equal(await page.locator('.msg-err').count(), 5, 'gênero é opcional; os outros cinco campos são obrigatórios');
+    assert.match(await page.locator('.err-sum').innerText(), /Revise os 5 campos/);
+    await page.fill('#f-volDraft-nascimento', new Date().toISOString().slice(0, 10).replace(/^d{4}/, y => y - 10));
+    await page.click('[data-a="vol-next"]');
+    assert.match(await page.locator('#e-nascimento').innerText(), /16 anos/, 'menores de 16 anos deveriam ser avisados');
     await page.click('[data-a="locate"]');
     assert.ok((await page.inputValue('#f-volDraft-endereco')).length > 8, 'o botão de localização deveria preencher o endereço');
-    assert.equal(await page.locator('.msg-err').count(), 5);
+    assert.equal(await page.locator('.msg-err').count(), 4);
   });
 
   await passo('cadastro de voluntário conclui', async () => {
@@ -48,9 +51,11 @@ try {
     org.on('pageerror', e => erros.push(e.message));
     await org.goto(url);
     await org.click('[data-a="start-org"]');
-    await org.click('[data-a="org-submit"]');
-    assert.match(await org.locator('.err-sum').innerText(), /para enviar/);
+    await org.click('[data-a="org-next"]');
+    assert.match(await org.locator('.err-sum').innerText(), /para continuar/);
     await org.click('[data-a="fill-org"]');
+    await org.click('[data-a="org-next"]');
+    assert.equal(await org.locator('.steps i.on').count(), 2, 'a segunda etapa deveria marcar 2 de 2');
     await org.click('[data-a="org-submit"]');
     assert.equal(texto(await org.locator('.done h2').innerText()), 'Cadastro enviado!');
     assert.equal(await org.locator('.tl-i').count(), 3);
@@ -246,6 +251,54 @@ try {
     assert.equal(await page.locator('.evr').count(), 7);
     await page.click('.ftab:has-text("Cestas")');
     assert.ok(await page.locator('.evr').count() < 7, 'o filtro Cestas deveria esconder as outras ações');
+  });
+
+  await passo('Voltar do navegador volta uma tela no app', async () => {
+    await page.click('.evr >> nth=0');
+    assert.equal(await page.locator('.bar h1').innerText(), 'Detalhes da ação');
+    await page.evaluate(() => history.back());
+    await page.waitForFunction(() => !document.querySelector('.bar h1'));
+    assert.equal(await page.locator('.ftabs').count(), 1, 'deveria voltar para a lista de ações sem sair da página');
+  });
+
+  await passo('cadastro recusado aparece como não aprovado', async () => {
+    const r = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    r.on('pageerror', e => erros.push(e.message));
+    await r.goto(url);
+    await r.click('[data-a="start-vol"]');
+    await r.click('[data-a="fill-vol1"]'); await r.click('[data-a="vol-next"]');
+    await r.click('[data-a="fill-vol2"]'); await r.click('[data-a="vol-finish"]');
+    await r.click('[data-a="vol-explore"]');
+    await r.click('.tab:has-text("Perfil")');
+    await r.click('.content [data-a="role"][data-r="admin"]');
+    await r.click('.tab:has-text("Validações")');
+    await r.click('[data-a="reject"][data-id="me"]');
+    await r.click('[data-a="reject"][data-id="me"]');
+    await r.click('.tab:has-text("Perfil")');
+    await r.click('.content [data-a="role"][data-r="vol"]');
+    assert.match(await r.locator('.content .notice').first().innerText(), /não aprovado/);
+    await r.click('.tab:has-text("Perfil")');
+    assert.match(await r.locator('.prof').innerText(), /Cadastro não aprovado/);
+    await r.close();
+  });
+
+  await passo('Pix expirado oferece um novo código', async () => {
+    const r = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    r.on('pageerror', e => erros.push(e.message));
+    await r.clock.install();
+    await r.goto(url);
+    await r.click('.content [data-a="role"][data-r="vol"]');
+    await r.click('.tab:has-text("Doar")');
+    await r.click('.path[data-a="don-start"]');
+    await r.click('.seg-amt [data-v="2500"]');
+    await r.click('.foot .btn-primary');
+    await r.click('.foot .btn-primary');
+    await r.clock.runFor(31 * 60 * 1000);
+    await r.waitForSelector('[data-a="pix-novo"]');
+    await r.click('[data-a="pix-novo"]');
+    assert.equal(await r.locator('.qr svg').count(), 1, 'o novo código deveria mostrar o QR Code');
+    assert.match(await r.locator('#pix-timer').innerText(), /Expira em 30:00/);
+    await r.close();
   });
 
   await passo('sem rolagem horizontal no celular', async () => {

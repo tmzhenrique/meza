@@ -164,7 +164,7 @@ const seedEvents = () => [
   {id:'e2', orgId:'o2', tipo:'Preparo de refeições', titulo:'Preparo de marmitas', data:emDias(4), inicio:'07:30', fim:'13:00', local:'Cozinha comunitária', endereco:'QNM 18, Ceilândia Sul', desc:'Preparo e embalagem de 400 marmitas para a rota da noite.', nota:'Cabelo preso e sapato fechado. Avental e touca ficam por nossa conta.', turnos:['07:30–10:00','10:00–13:00'], postos:[{nome:'Cozinha',vagas:8,inscritos:7},{nome:'Embalagem',vagas:6,inscritos:2},{nome:'Limpeza da cozinha',vagas:3,inscritos:3}], itens:['arroz','feijao','oleo']},
   {id:'e6', orgId:'o4', tipo:'Triagem de alimentos', titulo:'Separação de hortifrúti excedente', data:emDias(6), inicio:'18:00', fim:'20:00', local:'Mercado Bom Vizinho', endereco:'QE 40, Guará II', desc:'Separação de frutas e verduras que saem da gôndola no fim do dia. O próprio mercado leva tudo às organizações no dia seguinte.', turnos:['18:00–20:00'], postos:[{nome:'Separação',vagas:4,inscritos:0},{nome:'Higienização',vagas:2,inscritos:0}], itens:[]},
   {id:'e3', orgId:'o1', tipo:'Preparo de refeições', titulo:'Sopão comunitário', data:emDias(9), inicio:'14:00', fim:'17:00', local:'Cozinha do Banco de Alimentos', endereco:'SGAS 905, Asa Sul', desc:'Preparo de 300 porções de sopa com os legumes recebidos na semana. A equipe do banco leva as porções às famílias.', nota:'Cabelo preso e sapato fechado. Haverá café e água para a equipe.', turnos:['14:00–15:30','15:30–17:00'], postos:[{nome:'Corte de legumes',vagas:6,inscritos:1},{nome:'Cozinha',vagas:6,inscritos:3},{nome:'Porcionamento e embalagem',vagas:5,inscritos:0}], itens:['feijao','macarrao']},
-  {id:'e4', orgId:'o3', tipo:'Lanche e reforço', titulo:'Lanche no contraturno', data:emDias(12), inicio:'15:00', fim:'18:00', local:'Escola Classe 21', endereco:'QSA 21, Taguatinga Sul', desc:'Preparo e servimento do lanche da tarde para 90 crianças, seguido de uma roda de leitura.', turnos:['15:00–16:30','16:30–18:00'], postos:[{nome:'Preparo do lanche',vagas:5,inscritos:2},{nome:'Leitura com as crianças',vagas:6,inscritos:4},{nome:'Organização e limpeza',vagas:3,inscritos:1}], itens:['leite','biscoito','acucar']},
+  {id:'e4', orgId:'o3', tipo:'Lanche e reforço', titulo:'Lanche no contraturno', data:emDias(12), inicio:'15:00', fim:'18:00', local:'Escola Classe 21', endereco:'QSA 21, Taguatinga Sul', desc:'Preparo e distribuição do lanche da tarde para 90 crianças, seguido de uma roda de leitura.', turnos:['15:00–16:30','16:30–18:00'], postos:[{nome:'Preparo do lanche',vagas:5,inscritos:2},{nome:'Leitura com as crianças',vagas:6,inscritos:4},{nome:'Organização e limpeza',vagas:3,inscritos:1}], itens:['leite','biscoito','acucar']},
   {id:'e5', orgId:'o2', tipo:'Triagem de alimentos', titulo:'Triagem do hortifrúti da feira', data:emDias(17), inicio:'08:00', fim:'12:00', local:'Cozinha comunitária', endereco:'QNM 18, Ceilândia Sul', desc:'A equipe da cozinha traz o que sobrou da feira do Guará. Vamos lavar, separar e aproveitar o que der para as marmitas.', nota:'Traga garrafa de água. Avental e luvas ficam por nossa conta.', turnos:['08:00–10:00','10:00–12:00'], postos:[{nome:'Lavagem e higienização',vagas:6,inscritos:1},{nome:'Separação e pesagem',vagas:5,inscritos:1},{nome:'Pré-preparo dos legumes',vagas:4,inscritos:0}], itens:[]}
 ];
 /* Onde os alimentos são entregues: só a sede do MEZA e os pontos de coleta parceiros (comércios do DF). Nomes fictícios. */
@@ -326,7 +326,8 @@ function notifs() {
   const ns = [];
   if (S.role === 'vol' && S.user) {
     const u = S.user;
-    if (u.status === 'em_validacao') ns.push({ id:'cad-pend', ic:'hourglass', tom:'y', t:'Cadastro em validação', d:'Resultado em até 7 dias. Enquanto isso, você já pode reservar vagas e doar.', q:'hoje', ir:{ r:'v-perfil' } });
+    if (u.status === 'recusado') ns.push({ id:'cad-rec', ic:'circle-alert', tom:'t', t:'Cadastro não aprovado', d:REC_VOL, q:'agora', ir:{ r:'v-perfil' } });
+    else if (u.status === 'em_validacao') ns.push({ id:'cad-pend', ic:'hourglass', tom:'y', t:'Cadastro em validação', d:'Resultado em até 7 dias. Enquanto isso, você já pode reservar vagas e doar.', q:'hoje', ir:{ r:'v-perfil' } });
     else if (S.pendVol.some(v => v.id === 'me' && v.status === 'aprovado')) ns.push({ id:'cad-ok', ic:'badge-check', tom:'g', t:'Cadastro aprovado', d:'Boas-vindas à mesa! Seu perfil de voluntário já está ativo.', q:'agora', ir:{ r:'v-perfil' } });
     S.inscricoes.map(i => ({ i, e:evOf(i.eventId) })).filter(x => x.e && diff(x.e.data) >= 0).sort((a, b) => byDate(a.e, b.e)).forEach(({ i, e }) => {
       const quando = `${cap(fmtCurta(e.data))} · ${e.turnos[i.turno]} · ${esc(e.postos[i.posto].nome)}`;
@@ -345,7 +346,8 @@ function notifs() {
   }
   if (S.role === 'org' && myOrg()) {
     const o = myOrg();
-    if (o.status !== 'aprovada') ns.push({ id:'org-pend', ic:'hourglass', tom:'y', t:'Cadastro em validação', d:'Suas ações aparecem para os voluntários assim que a equipe MEZA aprovar a organização.', q:'hoje', ir:{ r:'o-perfil' } });
+    if (o.status === 'recusada') ns.push({ id:'org-rec', ic:'circle-alert', tom:'t', t:'Cadastro não aprovado', d:REC_ORG, q:'agora', ir:{ r:'o-perfil' } });
+    else if (o.status !== 'aprovada') ns.push({ id:'org-pend', ic:'hourglass', tom:'y', t:'Cadastro em validação', d:'Suas ações aparecem para os voluntários assim que a equipe MEZA aprovar a organização.', q:'hoje', ir:{ r:'o-perfil' } });
     else if (o.revisada) ns.push({ id:'org-ok', ic:'badge-check', tom:'g', t:'Organização aprovada', d:'Suas ações já aparecem para os voluntários.', q:'agora', ir:{ r:'o-perfil' } });
     S.promessas.filter(p => p.orgId === o.id).slice().reverse().forEach(p => {
       const e = evOf(p.eventId); const itens = Object.entries(p.itens).map(([id, q]) => `${q} ${CAT[id].nome.toLowerCase()}`).join(', ');
@@ -359,6 +361,9 @@ function notifs() {
   }
   return ns;
 }
+/* Textos de cadastro recusado: dizem o que aconteceu e o que fazer em seguida */
+const REC_VOL = 'Enviamos o motivo por e-mail. Responda a mensagem para pedir uma nova análise.';
+const REC_ORG = 'Suas ações ficam ocultas para os voluntários. Enviamos o motivo por e-mail; responda para pedir uma nova análise.';
 const naoLidas = ns => ns.filter(n => !S.lidas.includes(n.id)).length;
 function bellHtml() {
   const ns = notifs(), novas = naoLidas(ns);
@@ -440,7 +445,7 @@ const STORIES = [
   {m:'C', t:'Doação de alimentos', s:'Como voluntário, quero escolher qual alimento doar, e quanto, para o MEZA ou para uma ação específica.', k:'s-ali'},
   {m:'W', t:'Programa unificado', s:'Como dono do programa social, quero unir todo o programa de doação sem depender de outras organizações.', k:null}
 ];
-const MOS_LABEL = {M:'Must have', S:'Should have', C:'Could have', W:'Won’t have agora'};
+const MOS_LABEL = {M:'Essencial (M de Must have, no método MoSCoW)', S:'Importante (S de Should have, no método MoSCoW)', C:'Desejável (C de Could have, no método MoSCoW)', W:'Fora do escopo (W de Won’t have, no método MoSCoW)'};
 const MOS_NOME = {M:'Essencial', S:'Importante', C:'Desejável', W:'Fora do escopo'};
 const flagIc = st => st.g ? '' : `<span class="flag" title="Acrescentada no protótipo, prioridade a confirmar" aria-label="Acrescentada no protótipo">${icon('flag',16)}</span>`;
 /* Roteiro completo: histórias agrupadas por prioridade */
@@ -498,14 +503,15 @@ SCREENS.welcome = () => ({
     <button class="story-link start" data-a="go" data-r="roteiro">${icon('map',16)}<span>Ver roteiro das histórias de usuário</span></button>`
 });
 
-const FREQS = ['Toda semana','A cada 15 dias','Uma vez por mês','Quando eu puder'];
+const IDADE_MIN = 16; /* idade mínima para se voluntariar */
+const FREQS =['Toda semana','A cada 15 dias','Uma vez por mês','Quando eu puder'];
 const AJUDAS = [
   { v:'Cozinhar nas ações', ic:'cooking-pot', d:'Prepare refeições e monte cestas com a equipe da organização.' },
   { v:'Doar alimentos', ic:'shopping-basket', d:'Leve itens não perecíveis aos pontos de coleta.' },
   { v:'Doar dinheiro', ic:'hand-coins', d:'Contribua via Pix com as organizações.' }
 ];
 const prefill = a => `<button class="link-ic start" data-a="${a}">${icon('wand-sparkles',16)}<span>Preencher com dados de exemplo</span></button>`;
-const formHead = (step, title, sub) => `<div class="head form"><p class="eyebrow step">Etapa ${step} de 2</p><h2 class="h-lg">${title}</h2>${Object.keys(S.errors).length ? '' : `<p class="muted">${sub}</p>`}</div>${errSummary()}`;
+const formHead = (step, title, sub, verbo) => `<div class="head form"><p class="eyebrow step">Etapa ${step} de 2</p><h2 class="h-lg">${title}</h2>${Object.keys(S.errors).length ? '' : `<p class="muted">${sub}</p>`}</div>${errSummary(verbo)}`;
 
 SCREENS['vol-cad-1'] = () => ({
   title:'Cadastro de voluntário', steps:[1, 2],
@@ -514,8 +520,8 @@ SCREENS['vol-cad-1'] = () => ({
       ${field({label:'Nome completo', bind:'volDraft.nome', ph:'Ex.: Maria da Silva', auto:'name', check:true})}
       ${field({label:'E-mail', bind:'volDraft.email', type:'email', ph:'nome@email.com', auto:'email', mode:'email', check:true})}
       ${field({label:'Telefone', bind:'volDraft.telefone', type:'tel', ph:'(61) 99999-9999', auto:'tel', mask:'tel', mode:'tel', check:true, hint:'Com DDD. Usamos só para avisos sobre as ações.'})}
-      ${selectField({label:'Gênero', bind:'volDraft.genero', ph:'Selecione', options:['Feminino','Masculino','Não binário','Prefiro não informar']})}
-      ${field({label:'Data de nascimento', bind:'volDraft.nascimento', type:'date', max:iso(HOJE), check:true})}
+      ${field({label:'Data de nascimento', bind:'volDraft.nascimento', type:'date', max:iso(HOJE), check:true, hint:`Para confirmar que você tem ${IDADE_MIN} anos ou mais.`})}
+      ${selectField({label:'Gênero (opcional)', bind:'volDraft.genero', ph:'Selecione', options:['Feminino','Masculino','Não binário','Prefiro não informar']})}
       ${field({label:'Endereço', bind:'volDraft.endereco', ph:'Rua, número e bairro', auto:'street-address', hint:'Toque no ícone para usar sua localização atual.', action:{a:'locate', icon:'locate-fixed', label:'Usar minha localização atual'}})}
     </div>
     ${prefill('fill-vol1')}`,
@@ -530,7 +536,7 @@ SCREENS['vol-cad-2'] = () => ({
     ${radioList({label:'Com que frequência você quer ajudar?', hint:'Escolha uma opção.', path:'volDraft.freq', options:FREQS})}
     ${checkList({label:'Como você quer ajudar?', hint:'Escolha uma ou mais opções.', path:'volDraft.ajudas', options:AJUDAS})}
     ${prefill('fill-vol2')}`,
-  foot:`<button class="btn btn-primary btn-block" data-a="vol-finish">Finalizar cadastro</button>`
+  foot:`<button class="btn btn-primary btn-block" data-a="vol-finish">Enviar cadastro</button>`
 });
 
 SCREENS['vol-cad-ok'] = () => {
@@ -547,7 +553,6 @@ SCREENS['vol-cad-ok'] = () => {
         ${passo('next', 'Pronto para ajudar', 'Você passa a receber convites para ações perto de você.')}
       </ol>
       <section class="meanwhile"><h3 class="label-14">Enquanto isso, você já pode:</h3>
-        <button class="mw" data-a="vol-explore" data-r="v-eventos">${icon('calendar-days',20)}<span>Ver as próximas ações</span></button>
         <button class="mw" data-a="vol-explore" data-r="v-eventos">${icon('ticket',20)}<span>Reservar uma vaga em uma ação</span></button>
         <button class="mw" data-a="vol-explore" data-r="v-doar">${icon('hand-coins',20)}<span>Fazer uma doação</span></button>
       </section>`,
@@ -556,12 +561,9 @@ SCREENS['vol-cad-ok'] = () => {
 };
 
 const DISTRIBUI = ['Cestas básicas','Refeições prontas','Lanches','Hortifrúti'];
-SCREENS['org-cad'] = () => {
-  const d = S.orgDraft;
-  return {
-    title:'Cadastro de organização', cls:'g24',
-    body:`<div class="head form"><h2 class="h-lg">Dados da organização</h2><p class="muted">Nossa equipe confere as informações antes de liberar o perfil para os voluntários.</p></div>
-      ${errSummary('enviar')}
+SCREENS['org-cad'] = () => ({
+    title:'Cadastro de organização', steps:[1, 2], cls:'g24',
+    body:`${formHead(1, 'Dados da organização', 'Nossa equipe confere as informações antes de liberar o perfil para os voluntários.')}
       <section class="fsec"><h3 class="h-md">Sobre a organização</h3>
         ${field({label:'Nome da organização', bind:'orgDraft.nome', ph:'Ex.: Cozinha Solidária do Gama', auto:'organization', check:true})}
         ${field({label:'CNPJ', bind:'orgDraft.cnpj', ph:'00.000.000/0000-00', mask:'cnpj', mode:'numeric', hint:'Usamos só para confirmar que a organização existe.', check:true})}
@@ -573,13 +575,20 @@ SCREENS['org-cad'] = () => {
         ${field({label:'Telefone', bind:'orgDraft.tel', type:'tel', ph:'(61) 3333-3333', mask:'tel', mode:'tel', auto:'tel', check:true})}
         ${field({label:'Endereço da sede', bind:'orgDraft.endereco', ph:'Rua, número e bairro', hint:'A equipe do MEZA usa este endereço para levar as doações até vocês.', action:{ a:'org-locate', icon:'locate-fixed', label:'Usar minha localização' }, check:true})}
       </section>
-      <section class="fsec"><h3 class="h-md">O que vocês fazem</h3>
-        ${taField({label:'O que a organização faz e quem atende?', bind:'orgDraft.sobre', ph:'Ex.: servimos 200 refeições por dia para famílias do Gama.'})}
-        <div class="field grp${S.errors.distribui ? ' err' : ''}"><span class="grp-h"><span class="lbl" id="lbl-distribui">O que vocês distribuem?</span><span class="hint">Escolha uma ou mais opções.</span></span>
-          <div class="ck-grid" role="group" aria-labelledby="lbl-distribui">${DISTRIBUI.map(n => { const on = d.distribui.includes(n); return `<button type="button" class="ck" role="checkbox" aria-checked="${on}" data-a="toggle" data-p="orgDraft.distribui" data-v="${n}" data-k="distribui"><span class="cb">${on ? icon('check',16) : ''}</span><span>${n}</span></button>`; }).join('')}</div>
-          ${errMsg('distribui')}</div>
-        ${prefill('fill-org')}
-      </section>`,
+      ${prefill('fill-org')}`,
+    foot:`<button class="btn btn-primary btn-block" data-a="org-next">Continuar</button>`
+});
+
+SCREENS['org-cad-2'] = () => {
+  const d = S.orgDraft;
+  return {
+    title:'Cadastro de organização', steps:[2, 2], cls:'g24',
+    body:`${formHead(2, 'O que vocês fazem', 'Isso ajuda os voluntários a conhecerem o trabalho de vocês.', 'enviar')}
+      ${taField({label:'O que a organização faz e quem atende?', bind:'orgDraft.sobre', ph:'Ex.: servimos 200 refeições por dia para famílias do Gama.'})}
+      <div class="field grp${S.errors.distribui ? ' err' : ''}"><span class="grp-h"><span class="lbl" id="lbl-distribui">O que vocês distribuem?</span><span class="hint">Escolha uma ou mais opções.</span></span>
+        <div class="ck-grid" role="group" aria-labelledby="lbl-distribui">${DISTRIBUI.map(n => { const on = d.distribui.includes(n); return `<button type="button" class="ck" role="checkbox" aria-checked="${on}" data-a="toggle" data-p="orgDraft.distribui" data-v="${n}" data-k="distribui"><span class="cb">${on ? icon('check',16) : ''}</span><span>${n}</span></button>`; }).join('')}</div>
+        ${errMsg('distribui')}</div>
+      ${prefill('fill-org')}`,
     foot:`<button class="btn btn-primary btn-block" data-a="org-submit">Enviar cadastro</button>`
   };
 };
@@ -669,7 +678,7 @@ SCREENS['v-home'] = () => {
   needs.sort((a, b) => a.r - b.r);
   const needRow = ({ o, n, r }) => { const c = CAT[n.id]; const falta = Math.max(0, n.meta - n.atual - n.prom);
     return `<div class="need-r"><div class="need-top"><span><b>${c.nome}</b><small>${esc(o.nome)} · ${c.un}</small></span><button class="btn-2" data-a="food-start" data-org="${o.id}" data-item="${n.id}" aria-label="Doar ${c.nome.toLowerCase()} para ${esc(o.nome)}">Doar</button></div>${prog(n.atual + n.prom, n.meta, 0, 'thin')}<small class="num">${Math.round(r * 100)}% da meta · faltam ${falta} ${c.pl}</small></div>`; };
-  const pend = u.status === 'em_validacao';
+  const pend = u.status === 'em_validacao', rec = u.status === 'recusado';
   return {
     top:`<section class="hero home-hero">
       <div class="top"><span class="logo">meza</span>${bellHtml()}</div>
@@ -680,7 +689,8 @@ SCREENS['v-home'] = () => {
     </section><div class="gingham" aria-hidden="true"></div>`,
     cls:'home',
     body:`${pend ? `<div class="notice">${icon('hourglass',20)}<span><b>Cadastro em validação</b><span class="small">Resultado em até 7 dias. Enquanto isso, você já pode reservar vagas e doar.</span></span></div>` : ''}
-      ${needs.length ? `<section class="sec tight">${secHead('Quem mais precisa agora', '<button class="sec-link" data-a="food-start">Ver todas</button>')}<div class="rule-list">${needs.slice(0, 2).map(needRow).join('')}</div></section>` : ''}
+      ${rec ? `<div class="notice t">${icon('circle-alert',20)}<span><b>Cadastro não aprovado</b><span class="small">${REC_VOL} Você ainda pode doar alimentos e dinheiro.</span></span></div>` : ''}
+      ${needs.length ? `<section class="sec tight">${secHead('Quem mais precisa agora', '<button class="sec-link" data-a="food-start">Doar outros itens</button>')}<div class="rule-list">${needs.slice(0, 2).map(needRow).join('')}</div></section>` : ''}
       <section class="sec tight">${secHead('Próximas ações', '<button class="sec-link" data-a="tab" data-r="v-eventos">Ver todas</button>')}
         ${evs.length ? `<div class="rule-list">${evs.filter(e => e.id !== destId).slice(0, 2).map(e => eventRow(e)).join('')}</div>` : `<p class="muted">Nenhuma ação marcada por enquanto.</p>`}
       </section>`,
@@ -777,7 +787,7 @@ SCREENS['v-doar'] = () => {
         <button class="path t" data-a="food-start"><span class="tile">${icon('shopping-basket',24)}</span><span><b>Doar alimentos</b><small>Para o MEZA ou para uma ação. Escolha os itens e a quantidade.</small></span>${icon('chevron-right',22)}</button>
         <button class="path" data-a="don-start"><span class="tile">${icon('hand-coins',24)}</span><span><b>Doar dinheiro</b><small>Para o MEZA ou para uma ação. Por Pix, cartão ou em mãos.</small></span>${icon('chevron-right',22)}</button>
       </div>
-      ${hist.length ? `<section class="sec tight">${secHead('Suas doações', '<button class="sec-link" data-a="tab" data-r="v-perfil">Ver todas</button>')}<div class="rule-list">${hist.map(doacaoLi).join('')}</div></section>` : ''}`,
+      ${hist.length ? `<section class="sec tight">${secHead('Minhas doações', '<button class="sec-link" data-a="tab" data-r="v-perfil">Ver todas</button>')}<div class="rule-list">${hist.map(doacaoLi).join('')}</div></section>` : ''}`,
     tabs:'vol', tabOn:'v-doar'
   };
 };
@@ -840,24 +850,34 @@ SCREENS['v-metodo'] = () => {
 };
 
 const PIX_MIN = 30;
-const pixRestante = () => { const s = Math.max(0, PIX_MIN * 60 - Math.floor((Date.now() - (S.don.pixAt || Date.now())) / 1000)); return s ? `Expira em ${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}` : 'Código expirado'; };
+const pixSeg = () => Math.max(0, PIX_MIN * 60 - Math.floor((Date.now() - (S.don.pixAt || Date.now())) / 1000));
+const pixRestante = () => { const s = pixSeg(); return s ? `Expira em ${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}` : 'Código expirado'; };
 
 SCREENS['v-checkout'] = () => {
   const dest = S.don.dest; const c = S.don.cents; const m = S.don.metodo;
   if (m === 'pix') {
     if (!S.don.pixAt) S.don.pixAt = Date.now();
     const code = pixCode(c, { id:dest }); const ok = S.don.copied;
+    /* S.don.pixExp marca que a tela já foi redesenhada como expirada (o relógio chama render uma vez só) */
+    const exp = S.don.pixExp = !pixSeg();
+    if (exp) return {
+      title:'Doação em dinheiro', steps:[3, 3], cls:'g24',
+      body:`${donHead(3, 'Pague com Pix')}
+        ${paySum(`<span class="timer">${icon('timer',16)}<span id="pix-timer">${pixRestante()}</span></span>`)}
+        <div class="notice t">${icon('circle-alert',20)}<span><b>O código Pix expirou</b><span class="small">Por segurança, cada código vale ${PIX_MIN} minutos. Gere um novo para pagar. Se você já pagou, nada é cobrado de novo.</span></span></div>`,
+      foot:`<button class="btn btn-primary btn-block" data-a="pix-novo">Gerar novo código</button><button class="btn-text" data-a="don-confirm">Já paguei antes de expirar</button>`
+    };
     return {
       title:'Doação em dinheiro', steps:[3, 3], cls:'g24',
       body:`${donHead(3, 'Pague com Pix', 'Escaneie o QR Code com o app do seu banco.')}
         ${paySum(`<span class="timer">${icon('timer',16)}<span id="pix-timer">${pixRestante()}</span></span>`)}
-        <div class="qr-panel"><div class="qr">${qrSvg(dest + c)}</div></div>
-        <div class="field"><span class="lbl">Ou use o Pix Copia e Cola</span>
+        <div class="qr-panel"><div class="qr">${qrSvg(dest + c + (S.don.pixAt || ''))}</div></div>
+        <div class="field"><span class="lbl">Ou use o código copia e cola</span>
           <button class="inp copy-f${ok ? ' ok' : ''}" data-a="copy-pix" aria-label="Copiar código Pix"><span class="cf-v" id="pixcode">${code}</span>${icon(ok ? 'check' : 'copy',20)}</button>
           ${ok ? `<span class="msg-ok">${icon('circle-check',16)}<span>Código copiado. Cole no app do seu banco.</span></span>` : '<span class="hint">Toque no campo para copiar o código.</span>'}
         </div>
         <p class="note-r">${icon('info',16)}<span>Protótipo: o QR Code e o código são ilustrativos e não geram cobrança.</span></p>`,
-      foot:`<span class="hint">Assim que o pagamento cair, avisamos aqui.</span><button class="btn btn-primary btn-block" data-a="don-confirm">Já fiz o pagamento</button>`
+      foot:`<span class="hint">Depois de pagar no app do banco, toque abaixo.</span><button class="btn btn-primary btn-block" data-a="don-confirm">Já fiz o pagamento</button>`
     };
   }
   if (m === 'cartao') {
@@ -871,8 +891,9 @@ SCREENS['v-checkout'] = () => {
           ${field({label:'Nome impresso no cartão', bind:'don.card.nome', key:'nome', auto:'cc-name'})}
           <div class="grid2">
             ${field({label:'Validade', bind:'don.card.val', key:'val', ph:'MM/AA', mode:'numeric', mask:'mmaa', auto:'cc-exp'})}
-            ${field({label:'CVV', bind:'don.card.cvv', key:'cvv', mode:'numeric', mask:'digits', auto:'cc-csc', action:{a:'cvv-help', icon:'circle-help', label:'O que é o CVV?'}})}
+            ${field({label:'CVV', bind:'don.card.cvv', key:'cvv', mode:'numeric', mask:'digits', auto:'cc-csc', action:{a:'cvv-help', icon:'circle-help', label:S.don.cvvHelp ? 'Esconder a explicação do CVV' : 'O que é o CVV?'}})}
           </div>
+          ${S.don.cvvHelp ? `<p class="note-r" id="cvv-help" role="status">${icon('circle-help',16)}<span>O CVV são os 3 números no verso do cartão. No American Express, são 4 números na frente.</span></p>` : ''}
         </div>
         <p class="note-r">${icon('lock',16)}<span>Ambiente de teste: o pagamento é simulado. No app final, os dados do cartão ficam com o provedor de pagamento, não com o MEZA.</span></p>`,
       foot:`<button class="btn btn-primary btn-block" data-a="don-confirm">Pagar ${brl(c)}</button>`
@@ -887,7 +908,7 @@ SCREENS['v-checkout'] = () => {
       <div class="info">
         ${info('map-pin', esc(sede.nome), esc(sede.endereco))}
         ${info('clock-3', esc(sede.horario), 'Horário de atendimento')}
-        ${info('receipt', 'Recibo na entrega', 'Fica salvo em Suas doações.')}
+        ${info('receipt', 'Recibo na entrega', 'Fica salvo no seu perfil.')}
       </div>`,
     foot:`<span class="hint sel">${esc(sede.nome)} · ${esc(sede.endereco.split(' – ').pop())}</span><button class="btn btn-primary btn-block" data-a="don-confirm">Confirmar doação</button>`
   };
@@ -903,9 +924,9 @@ SCREENS['v-doacao-ok'] = () => {
     ? `${info('banknote', `${brl(d.cents)} em espécie`, para)}
        ${info('map-pin', esc(sede.nome), esc(sede.endereco))}
        ${info('clock-3', esc(sede.horario), 'Horário de atendimento')}
-       ${info('receipt', 'Recibo na entrega', 'Fica salvo em Suas doações.')}`
+       ${info('receipt', 'Recibo na entrega', 'Fica salvo no seu perfil.')}`
     : `${info(m.ic, `${brl(d.cents)} ${m.txt}`, para)}
-       ${info('receipt', 'Comprovante', 'Fica salvo em Suas doações.')}`;
+       ${info('receipt', 'Comprovante', 'Fica salvo no seu perfil.')}`;
   return {
     top:`<div class="gingham" aria-hidden="true"></div>`,
     cls:'success wide',
@@ -977,7 +998,7 @@ SCREENS['v-alimentos-ok'] = () => {
         ${info('hand-heart', destE ? esc(destE.titulo) : 'MEZA', destE ? `Para esta ação · ${esc(o.nome)}` : 'A equipe decide para onde vai')}
         ${info('map-pin', esc(pt.nome), esc(pt.endereco))}
         ${info('clock-3', esc(pt.horario), 'Horário de funcionamento')}
-        ${info('receipt', 'Recibo na entrega', 'Fica salvo em Suas doações.')}
+        ${info('receipt', 'Recibo na entrega', 'Fica salvo no seu perfil.')}
       </div></section>`,
     foot:`<button class="btn btn-primary btn-block" data-a="tab" data-r="v-doar">Ver minhas doações</button><button class="btn-text" data-a="tab" data-r="v-home">Voltar ao início</button>`
   };
@@ -994,7 +1015,7 @@ SCREENS['v-perfil'] = () => {
   const mais = (k, n) => n > 2 && !todas[k] ? `<button class="sec-link" data-a="perfil-tudo" data-k="${k}">Ver todas</button>` : '';
   return {
     top:`<header class="page-h gut prof-h"><h1 class="h-lg">Perfil</h1>
-      <div class="prof"><span class="avatar lg">${initials(u.nome)}</span><span><b>${esc(u.nome)}</b><small>${esc(u.email)}</small>${u.status === 'aprovado' ? statusDot('Cadastro aprovado', true) : statusDot('Cadastro em validação')}</span></div></header>`,
+      <div class="prof"><span class="avatar lg">${initials(u.nome)}</span><span><b>${esc(u.nome)}</b><small>${esc(u.email)}</small>${u.status === 'aprovado' ? statusDot('Cadastro aprovado', true) : u.status === 'recusado' ? statusDot('Cadastro não aprovado') : statusDot('Cadastro em validação')}</span></div></header>`,
     cls:'perfil',
     body:`<section class="sec tight">${secHead('Minha agenda', mais('agenda', agenda.length))}
         ${agenda.length ? `<div class="rule-list">${(todas.agenda ? agenda : agenda.slice(0, 2)).map(({ i, e }) => eventRow(e, 'v-evento', i)).join('')}</div>` : `<p class="muted small">Você ainda não reservou nenhuma vaga. <button class="link" data-a="tab" data-r="v-eventos">Ver ações</button></p>`}
@@ -1028,7 +1049,9 @@ function promessaLi(p, comAcao = true) {
   const onde = esc(evOf(p.eventId)?.titulo || 'ação');
   return `<div class="don-r">${icon('shopping-basket',20)}<span><b>${esc(p.nome)}</b><small>${tot}${comAcao ? ` · ${onde}` : ''}</small>${statusDot('A caminho')}</span></div>`;
 }
-const orgStatus = (o, cls = 'org-st') => o.status === 'aprovada' ? `<span class="${cls}">${icon('badge-check',16)}Parceiro aprovado</span>` : `<span class="${cls} pend">${icon('hourglass',16)}Cadastro em validação</span>`;
+const orgStatus = (o, cls = 'org-st') => o.status === 'aprovada' ? `<span class="${cls}">${icon('badge-check',16)}Parceiro aprovado</span>`
+  : o.status === 'recusada' ? `<span class="${cls} pend">${icon('circle-alert',16)}Cadastro não aprovado</span>`
+  : `<span class="${cls} pend">${icon('hourglass',16)}Cadastro em validação</span>`;
 SCREENS['o-painel'] = () => {
   const o = myOrg(); const evs = futuros().filter(e => e.orgId === o.id);
   const insc = evs.reduce((s, e) => s + inscritosTotal(e), 0);
@@ -1045,9 +1068,10 @@ SCREENS['o-painel'] = () => {
       </div>
     </section><div class="gingham" aria-hidden="true"></div>`,
     cls:'home',
-    body:`${o.status !== 'aprovada' ? `<div class="notice">${icon('hourglass',20)}<span><b>Cadastro em validação</b><span class="small">Você já pode publicar ações. Elas aparecem para os voluntários assim que a equipe MEZA aprovar a organização.</span></span></div>` : ''}
-      <section class="sec tight">${secHead('Suas próximas ações', `<button class="sec-link ic" data-a="tab" data-r="o-novo-evento">${icon('plus',16)}Nova ação</button>`)}
-        ${evs.length ? `<div class="rule-list">${evs.map(e => eventRow(e, 'o-evento', null, 'org')).join('')}</div>` : `<p class="muted small">Nenhuma ação publicada. <button class="link" data-a="tab" data-r="o-novo-evento">Publicar a próxima</button></p>`}
+    body:`${o.status === 'recusada' ? `<div class="notice t">${icon('circle-alert',20)}<span><b>Cadastro não aprovado</b><span class="small">${REC_ORG}</span></span></div>`
+        : o.status !== 'aprovada' ? `<div class="notice">${icon('hourglass',20)}<span><b>Cadastro em validação</b><span class="small">Você já pode publicar ações. Elas aparecem para os voluntários assim que a equipe MEZA aprovar a organização.</span></span></div>` : ''}
+      <section class="sec tight">${secHead('Suas próximas ações', `<button class="sec-link ic" data-a="tab" data-r="o-novo-evento">${icon('plus',16)}Publicar ação</button>`)}
+        ${evs.length ? `<div class="rule-list">${evs.map(e => eventRow(e, 'o-evento', null, 'org')).join('')}</div>` : `<p class="muted small">Nenhuma ação publicada. <button class="link" data-a="tab" data-r="o-novo-evento">Publicar ação</button></p>`}
       </section>
       <section class="sec tight">${secHead('Alimentos a caminho', proms.length > 2 && !todos ? '<button class="sec-link" data-a="painel-tudo">Ver todos</button>' : '')}
         ${proms.length ? `<div class="rule-list">${(todos ? proms : proms.slice(0, 2)).map(p => promessaLi(p)).join('')}</div>` : '<p class="muted small">Nenhuma doação de alimentos combinada ainda.</p>'}
@@ -1318,13 +1342,14 @@ function render(top) {
   $app.querySelector('.scroll').scrollTop = prev;
   document.body.classList.toggle('hero-top', !!sc.top && sc.title == null && sc.top.indexOf('class="hero') > -1);
   renderGuide();
+  if (S.stack.length || S.notif) armaGuarda();
   if (S.focusErr) {
     S.focusErr = false;
     const f = $app.querySelector('.field.err input, .field.err textarea, .field.err select, .field.err button');
     if (f) { f.focus({ preventScroll:true }); f.scrollIntoView({ block:'center', behavior:'smooth' }); }
   }
 }
-const ROTA_NOME = { welcome:'Boas-vindas', 'vol-cad-1':'Cadastro de voluntário, etapa 1', 'vol-cad-2':'Cadastro de voluntário, etapa 2', 'vol-cad-ok':'Cadastro enviado', 'org-cad':'Cadastro de organização', 'org-cad-ok':'Cadastro de organização enviado',
+const ROTA_NOME = { welcome:'Boas-vindas', 'vol-cad-1':'Cadastro de voluntário, etapa 1', 'vol-cad-2':'Cadastro de voluntário, etapa 2', 'vol-cad-ok':'Cadastro enviado', 'org-cad':'Cadastro de organização, etapa 1', 'org-cad-2':'Cadastro de organização, etapa 2','org-cad-ok':'Cadastro de organização enviado',
   'v-home':'Início do voluntário', 'v-eventos':'Próximas ações', 'v-evento':'Detalhes da ação', 'v-inscricao-ok':'Vaga reservada', 'v-doar':'Doar', 'v-valor':'Valor da doação', 'v-metodo':'Forma de pagamento', 'v-checkout':'Pagamento', 'v-entrega':'Entrega em mãos', 'v-doacao-ok':'Doação concluída', 'v-alimentos':'Doar alimentos', 'v-alimentos-entrega':'Entrega dos alimentos', 'v-alimentos-ok':'Doação combinada', 'v-perfil':'Perfil do voluntário', 'v-ajuda':'Como quero ajudar',
   'o-painel':'Painel da organização', 'o-novo-evento':'Publicar ação', 'o-evento':'Detalhes da ação', 'o-perfil':'Perfil da organização', 'o-perfil-editar':'Editar contato',
   'a-eventos':'Agenda dos parceiros', 'a-evento':'Detalhes da ação', 'a-org':'Perfil do parceiro', 'a-validacoes':'Validações', 'a-perfil':'Perfil do administrador', roteiro:'Roteiro do protótipo' };
@@ -1334,7 +1359,7 @@ function renderGuide() {
   $guide.innerHTML = `<div class="g-brand"><div class="logo">meza</div><p class="slogan">A mesa é de todos.</p><p class="values">Mobilização · Empatia · Zelo · Alimentação</p></div>
     <section class="g-sec"><span class="label-14">Ver o app como</span>${roleSeg(true)}
       <p class="note-r">${icon('smartphone',16)}<span>Tela atual: ${nome}. ${S.route === 'welcome' ? 'Escolha um perfil para explorar sem cadastro.' : 'Os dados são de exemplo.'}</span></p>
-      <div class="g-links"><button class="link-ic" data-a="home">${icon('rotate-ccw',16)}<span>Recomeçar pelo cadastro</span></button><button class="link-ic" data-a="fullscreen">${icon(fs ? 'minimize' : 'maximize',16)}<span>${fs ? 'Sair da tela cheia' : 'Tela cheia'}</span></button></div>
+      <div class="g-links"><button class="link-ic" data-a="home">${icon('rotate-ccw',16)}<span>Voltar às boas-vindas</span></button><button class="link-ic" data-a="fullscreen">${icon(fs ? 'minimize' : 'maximize',16)}<span>${fs ? 'Sair da tela cheia' : 'Tela cheia'}</span></button></div>
     </section>
     <section class="g-sec tight">${secHead('Histórias de usuário', `<button class="sec-link ic" data-a="go" data-r="roteiro">Ver roteiro completo${icon('arrow-right',16)}</button>`)}${storiesMini()}
       <p class="note-r flagged">${icon('flag',16)}<span>Acrescentada no protótipo, prioridade a confirmar</span></p></section>`;
@@ -1342,11 +1367,24 @@ function renderGuide() {
 /* Aparelho do computador: encolhe o celular inteiro quando a janela é baixa (868 = 844 da tela + 24 de moldura). */
 const fitPhone = () => document.documentElement.style.setProperty('--k', Math.max(.55, Math.min(1, (innerHeight - 48) / 868)).toFixed(3));
 addEventListener('resize', fitPhone); fitPhone();
-setInterval(() => { const t = document.getElementById('pix-timer'); if (t) t.textContent = pixRestante(); }, 1000);
+setInterval(() => {
+  const t = document.getElementById('pix-timer'); if (!t) return;
+  t.textContent = pixRestante();
+  if (!pixSeg() && !S.don.pixExp) render(false); /* quando o código expira, a tela troca para "Gerar novo código" */
+}, 1000);
 let toastT;
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2800); }
 
 /* ================= navegação ================= */
+/* Botão Voltar do navegador e do celular: uma entrada "guarda" no histórico faz o Voltar do sistema
+   desempilhar a navegação do app em vez de sair da página. Sem nada para voltar, o próximo Voltar sai normalmente. */
+let guarda = false;
+function armaGuarda() { if (guarda) return; try { history.pushState({ meza:1 }, ''); guarda = true; } catch (err) { /* sem histórico disponível */ } }
+addEventListener('popstate', () => {
+  guarda = false;
+  if (S.notif) { S.notif = false; render(false); return; }
+  if (S.stack.length) back();
+});
 function go(route, params = {}) { S.notif = false; S.stack.push({ route:S.route, params:S.params }); S.route = route; S.params = params; S.errors = {}; S.tried = false; S.confirm = null; render(true); }
 function back() { S.notif = false; const p = S.stack.pop(); if (!p) return; S.route = p.route; S.params = p.params; S.errors = {}; S.tried = false; S.confirm = null; render(true); }
 function tab(route) { S.notif = false; S.stack = []; S.route = route; S.params = {}; S.errors = {}; S.tried = false; S.confirm = null; if (route === 'o-novo-evento' && !S.evDraft) S.evDraft = blankEv(); render(true); }
@@ -1370,9 +1408,11 @@ function valVol1(d) {
   if (d.nome.trim().split(/\s+/).filter(Boolean).length < 2) e.nome = 'Digite nome e sobrenome.';
   if (!emailOk(d.email)) e.email = /@[^\s@.]+$/.test(d.email.trim()) ? 'Falta o final do e-mail. Ex.: nome@email.com' : 'Digite um e-mail válido. Ex.: nome@email.com';
   if (d.telefone.replace(/\D/g, '').length < 10) e.telefone = 'Digite o telefone com DDD.';
-  if (!d.genero) e.genero = 'Escolha uma opção. Se preferir, marque “Prefiro não informar”.';
+  /* gênero é opcional */
+  const limite = new Date(HOJE); limite.setFullYear(limite.getFullYear() - IDADE_MIN);
   if (!d.nascimento) e.nascimento = 'Informe sua data de nascimento.';
   else if (d.nascimento > iso(HOJE)) e.nascimento = 'A data de nascimento não pode estar no futuro.';
+  else if (d.nascimento > iso(limite)) e.nascimento = `É preciso ter ${IDADE_MIN} anos ou mais para se voluntariar.`;
   if (d.endereco.trim().length < 8) e.endereco = 'Informe rua, número e bairro.';
   return e;
 }
@@ -1383,7 +1423,8 @@ function valVol2(d) {
   if (!d.ajudas.length) e.ajudas = 'Escolha pelo menos uma forma de ajudar.';
   return e;
 }
-function valOrg(d) {
+/* Cadastro de organização em duas etapas: dados e contato, depois o que fazem */
+function valOrg1(d) {
   const e = {};
   if (d.nome.trim().length < 3) e.nome = 'Digite o nome da organização.';
   if (d.cnpj.replace(/\D/g, '').length !== 14) e.cnpj = 'O CNPJ tem 14 números.';
@@ -1392,6 +1433,10 @@ function valOrg(d) {
   if (!emailOk(d.email)) e.email = 'Digite um e-mail válido.';
   if (d.tel.replace(/\D/g, '').length < 10) e.tel = 'Digite o telefone com DDD.';
   if (d.endereco.trim().length < 8) e.endereco = 'Informe o endereço completo da sede.';
+  return e;
+}
+function valOrg2(d) {
+  const e = {};
   if (d.sobre.trim().length < 10) e.sobre = 'Conte em uma frase o que vocês fazem.';
   if (!d.distribui.length) e.distribui = 'Escolha pelo menos uma opção.';
   return e;
@@ -1460,8 +1505,9 @@ const A = {
     S.volDraft = blankVol(); S.stack = []; S.route = 'vol-cad-ok'; S.params = {}; render(true);
   },
   'vol-explore'(d) { S.role = 'vol'; tab(d.r || 'v-home'); },
+  'org-next'() { const e = valOrg1(S.orgDraft); Object.keys(e).length ? fail(e) : go('org-cad-2'); },
   'org-submit'() {
-    const e = valOrg(S.orgDraft); if (Object.keys(e).length) return fail(e);
+    const e = valOrg2(S.orgDraft); if (Object.keys(e).length) return fail(e);
     const d = S.orgDraft;
     S.orgs = S.orgs.filter(o => o.id !== 'o-me'); S.events = S.events.filter(x => x.orgId !== 'o-me');
     S.orgs.push({ id:'o-me', nome:d.nome.trim(), tipo:d.tipo, endereco:d.endereco.trim(), resp:d.resp.trim(), tel:d.tel, email:d.email.trim(), status:'pendente', sobre:d.sobre.trim(), distribui:d.distribui.slice(), arrecadado:0, horario:'Seg a sex · 09:00–17:00', cnpj:d.cnpj, enviado:'agora' });
@@ -1556,7 +1602,8 @@ const A = {
     try { navigator.clipboard.writeText(txt).then(ok, fallback); } catch (err) { fallback(); }
   },
   'don-edit'() { const i = S.stack.map(x => x.route).lastIndexOf('v-valor'); if (i < 0) return back(); S.stack = S.stack.slice(0, i); S.route = 'v-valor'; S.params = {}; S.errors = {}; S.tried = false; render(true); },
-  'cvv-help'() { toast('O CVV são os 3 números no verso do cartão (4 na frente, no American Express).'); },
+  'cvv-help'() { S.don.cvvHelp = !S.don.cvvHelp; render(false); document.querySelector('[data-a="cvv-help"]')?.focus({ preventScroll:true }); },
+  'pix-novo'() { S.don.pixAt = Date.now(); S.don.pixExp = false; S.don.copied = false; render(false); toast(`Novo código gerado. Ele vale ${PIX_MIN} minutos.`); },
   'don-confirm'() {
     const d = S.don; const e = destEv(d.dest);
     if (d.metodo === 'cartao') { const er = valCard(d.card); if (Object.keys(er).length) return fail(er); }
