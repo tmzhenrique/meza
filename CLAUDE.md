@@ -21,6 +21,7 @@ Escreva textos de interface, mensagens de commit e respostas em português do Br
 | `index.html` | Casca da página: fontes, CSS, marcação do palco (`aside.guide` + `.phone > .device > #app` + `#toast`, com barra de status, ilha e indicador de início que só aparecem no computador) e o script |
 | `src/styles.css` | Tokens de design no `:root` e todos os estilos |
 | `src/app.js` | O app inteiro: estado, dados de exemplo, telas e ações |
+| `src/favicon.svg` | Ícone da aba: “m” creme sobre o verde, com a faixa xadrez terracota. O build o embute como `data:` URI |
 | `scripts/build.mjs` | Gera `dist/meza.html` embutindo CSS e JS |
 | `tests/smoke.mjs` | Percorre os fluxos principais no Chromium e falha se houver erro de JavaScript |
 | `docs/referencias/` | Fotos do protótipo de papel (doação em dinheiro) e da folha de user stories |

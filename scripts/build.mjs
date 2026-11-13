@@ -13,6 +13,7 @@ const trocar = (de, para) => {
 };
 
 trocar('<link rel="stylesheet" href="src/styles.css">', `<style>\n${ler('src/styles.css')}</style>`);
+trocar('<link rel="icon" type="image/svg+xml" href="src/favicon.svg">', `<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,${encodeURIComponent(ler('src/favicon.svg').trim())}">`);
 trocar('<script src="src/app.js"></script>', `<script>\n${ler('src/app.js')}</script>`);
 
 mkdirSync(resolve(root, 'dist'), { recursive: true });
