@@ -77,8 +77,7 @@ try {
     await page.click('.rrow[data-p$=".posto"]:not([disabled]) >> nth=0');
     await page.click('.rrow[data-p$=".turno"] >> nth=0');
     assert.match(await page.locator('.foot .hint').innerText(), /·/, 'o rodapé deveria resumir posto e turno escolhidos');
-    await page.click('[data-a="flip"]');
-    assert.equal(await page.locator('.crow[aria-checked="true"]').count(), 1);
+    assert.equal(await page.locator('.crow[data-a="food-start"]').count(), 1, 'a ação deveria oferecer "Doar estes itens"');
     await page.click('[data-a="inscrever"]');
     assert.equal(await titulo(), 'Vaga reservada!');
     const [baixado] = await Promise.all([page.waitForEvent('download'), page.click('[data-a="ics"]')]);
@@ -87,6 +86,10 @@ try {
 
   await passo('doação em dinheiro por Pix', async () => {
     await page.click('.foot [data-r="v-home"]');
+    await page.click('.next-tog');
+    assert.equal(await page.locator('.next .next-link').count(), 0, 'minimizado, o destaque não deveria mostrar o link');
+    await page.click('.next-tog');
+    assert.equal(await page.locator('.next .next-link').count(), 1, 'maximizado, o destaque deveria voltar a mostrar o link');
     await aba('Doar');
     await page.click('.path[data-a="don-start"]');
     assert.ok(await page.locator('.foot .btn-primary').isDisabled(), 'sem valor o Continuar deveria ficar desabilitado');
@@ -119,12 +122,71 @@ try {
     await page.click('.path[data-a="food-start"]');
     await page.click('[data-a="qty"][data-d="1"] >> nth=1');
     await page.click('.foot .btn-primary');
+    const locais = await page.locator('.rrow[data-p="food.entrega"]').evaluateAll(els => els.map(e => e.dataset.v));
+    assert.equal(locais[0], 'sede', 'a sede do MEZA deveria vir primeiro');
+    assert.ok(locais.length > 1 && locais.slice(1).every(v => v.startsWith('pc')), 'só sede do MEZA e pontos de coleta, sem ações nem sedes de parceiros');
+    await page.click('.rrow[data-v="pc1"]');
     await page.click('[data-a="food-confirm"]');
     assert.equal(await titulo(), 'Doação combinada!');
+    assert.match(await page.locator('.res-sum').innerText(), /MEZA/, 'sem escolher, a doação vai para o MEZA');
+    assert.match(await page.locator('.res-sum').innerText(), /CLN 214/, 'o resumo deveria mostrar o endereço do ponto de coleta');
+  });
+
+  await passo('doação para uma ação específica', async () => {
+    await page.click('.foot [data-r="v-doar"]');
+    await page.click('.path[data-a="don-start"]');
+    await page.click('#f-don-dest');
+    assert.equal(await page.getAttribute('#f-don-dest', 'aria-expanded'), 'true', 'o menu de destino deveria abrir');
+    await page.click('#f-don-dest-list [data-v="e1"]');
+    assert.equal(await page.locator('#f-don-dest-list').isHidden(), true, 'o menu deveria fechar depois da escolha');
+    assert.match(await page.locator('.field .hint').first().innerText(), /Banco de Alimentos/);
+    await page.click('.seg-amt [data-v="1000"]');
+    await page.click('.foot .btn-primary');
+    assert.match(await page.locator('.pay-sum').innerText(), /para Montagem de cestas/);
+    await page.click('.rrow[data-v="dinheiro"]');
+    await page.click('.foot .btn-primary');
+    assert.equal(await page.locator('.rrow').count(), 0, 'em mãos não há escolha de local');
+    assert.match(await page.locator('.content .info').innerText(), /Sede do MEZA/, 'em mãos, a entrega é só na sede do MEZA');
+    await page.click('[data-a="don-confirm"]');
+    assert.equal(await titulo(), 'Doação combinada!');
+    await page.click('.foot [data-r="v-doar"]');
+    await page.click('.path[data-a="food-start"]');
+    await page.focus('#f-food-dest');
+    await page.keyboard.press('ArrowDown');
+    assert.equal(await page.evaluate(() => document.activeElement.getAttribute('role')), 'option', 'a seta deveria abrir o menu e focar uma opção');
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('#f-food-dest-list').isHidden(), true, 'Esc deveria fechar o menu');
+    await page.click('#f-food-dest');
+    await page.click('#f-food-dest-list [data-v="e1"]');
+    assert.equal(await page.locator('.need-r').count(), 4, 'a lista deveria mostrar só os itens da ação');
+    await page.click('[data-a="qty"][data-d="1"] >> nth=0');
+    await page.click('.foot .btn-primary');
+    await page.click('[data-a="food-confirm"]');
+    assert.match(await page.locator('.res-sum').innerText(), /Montagem de cestas/);
+  });
+
+  await passo('menu de notificações', async () => {
+    await page.click('.foot [data-r="v-home"]');
+    assert.ok(await page.locator('.bell .badge-n').isVisible(), 'o sino deveria mostrar quantas notificações são novas');
+    await page.click('.bell');
+    assert.equal(await page.getAttribute('.bell', 'aria-expanded'), 'true');
+    assert.ok(await page.locator('.np-i').count() >= 3, 'o menu deveria listar as notificações');
+    assert.match(await page.locator('.notif-pop').innerText(), /Vaga reservada|Sua ação é/, 'deveria avisar da vaga reservada');
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('.notif-pop').count(), 0, 'Esc deveria fechar o menu');
+    await page.click('.bell');
+    await page.click('.content', { position: { x: 10, y: 400 } });
+    assert.equal(await page.locator('.notif-pop').count(), 0, 'tocar fora deveria fechar o menu');
+    await page.click('.bell');
+    await page.click('[data-a="notif-lidas"]');
+    assert.equal(await page.locator('.np-i.new').count(), 0, 'todas deveriam ficar lidas');
+    assert.equal(await page.locator('.bell .badge-n').count(), 0, 'o sino não deveria mostrar o contador');
+    await page.click('.np-i[data-r="v-evento"] >> nth=0');
+    assert.equal(await page.locator('.bar h1').innerText(), 'Detalhes da ação', 'a notificação deveria abrir a ação');
+    await page.click('[data-a="back"]');
   });
 
   await passo('organização publica uma ação', async () => {
-    await page.click('.foot [data-r="v-home"]');
     await aba('Perfil');
     assert.ok(await page.locator('.content .evr').count() >= 1, 'a agenda do perfil deveria mostrar a vaga reservada');
     await page.click('.set-r[data-a="ajuda-editar"] >> nth=0');
@@ -134,6 +196,9 @@ try {
     await page.click('.content [data-a="role"][data-r="org"]');
     assert.equal(await page.locator('.hstat').count(), 3, 'o painel deveria mostrar os três números');
     assert.ok(await page.locator('.content .evr').count() >= 1, 'o painel deveria listar as próximas ações');
+    await page.click('.bell');
+    assert.match(await page.locator('.notif-pop').innerText(), /vai levar alimentos/, 'a organização deveria ser avisada dos alimentos a caminho');
+    await page.click('.bell');
     await aba('Publicar');
     await page.click('[data-a="ev-publish"]');
     assert.match(await page.locator('.err-sum').innerText(), /para publicar/);
