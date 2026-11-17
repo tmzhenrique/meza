@@ -103,6 +103,7 @@ const LU = {
   'carrot':'<path d="M2.27 21.7s9.87-3.5 12.73-6.36a4.5 4.5 0 0 0-6.36-6.37C5.77 11.84 2.27 21.7 2.27 21.7zM8.64 14l-2.05-2.04M15.34 15l-2.46-2.46"/><path d="M22 9s-1.33-2-3.5-2C16.86 7 15 9 15 9s1.33 2 3.5 2S22 9 22 9z"/><path d="M15 2s-2 1.33-2 3.5S15 9 15 9s2-1.84 2-3.5C17 3.33 15 2 15 2z"/>',
   'flag':'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
   'smartphone':'<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>',
+  'monitor':'<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
   'maximize':'<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
   'minimize':'<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>',
   'sandwich':'<path d="m2.37 11.223 8.372-6.777a2 2 0 0 1 2.516 0l8.371 6.777"/><path d="M21 15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5.25"/><path d="M3 15a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h9"/><path d="m6.67 15 6.13 4.6a2 2 0 0 0 2.8-.4l3.15-4.2"/><rect width="20" height="4" x="2" y="11" rx="1"/>'
@@ -486,7 +487,7 @@ SCREENS.welcome = () => ({
       <p class="slogan">A mesa é de todos.</p>
       <p class="values">Mobilização · Empatia · Zelo · Alimentação</p>
     </section><div class="gingham" aria-hidden="true"></div>`,
-  cls:'wide',
+  cls:'wide', dk:'landing',
   body:`<div class="head"><h2 class="h-lg">Como você quer participar?</h2><p class="muted">O MEZA conecta quem quer ajudar a organizações que levam comida a quem precisa.</p></div>
     <div class="paths">
       <button class="path" data-a="start-vol"><span class="tile">${icon('hand-heart',24)}</span><span><b>Quero me voluntariar</b><small>Doe alimentos, dinheiro ou seu tempo em ações perto de você.</small></span>${icon('chevron-right',22)}</button>
@@ -514,9 +515,9 @@ const prefill = a => `<button class="link-ic start" data-a="${a}">${icon('wand-s
 const formHead = (step, title, sub, verbo) => `<div class="head form"><p class="eyebrow step">Etapa ${step} de 2</p><h2 class="h-lg">${title}</h2>${Object.keys(S.errors).length ? '' : `<p class="muted">${sub}</p>`}</div>${errSummary(verbo)}`;
 
 SCREENS['vol-cad-1'] = () => ({
-  title:'Cadastro de voluntário', steps:[1, 2],
+  title:'Cadastro de voluntário', steps:[1, 2], dk:'mid',
   body:`${formHead(1, 'Informações básicas', 'Usamos esses dados para te avisar sobre ações perto de você.')}
-    <div class="fields">
+    <div class="fields dk-grid">
       ${field({label:'Nome completo', bind:'volDraft.nome', ph:'Ex.: Maria da Silva', auto:'name', check:true})}
       ${field({label:'E-mail', bind:'volDraft.email', type:'email', ph:'nome@email.com', auto:'email', mode:'email', check:true})}
       ${field({label:'Telefone', bind:'volDraft.telefone', type:'tel', ph:'(61) 99999-9999', auto:'tel', mask:'tel', mode:'tel', check:true, hint:'Com DDD. Usamos só para avisos sobre as ações.'})}
@@ -529,12 +530,12 @@ SCREENS['vol-cad-1'] = () => ({
 });
 
 SCREENS['vol-cad-2'] = () => ({
-  title:'Cadastro de voluntário', steps:[2, 2],
+  title:'Cadastro de voluntário', steps:[2, 2], dk:'mid',
   body:`${formHead(2, 'Sobre seu voluntariado', 'Isso ajuda as organizações a te chamarem para as ações certas.')}
-    ${taField({label:'Já fez voluntariado antes? Onde?', bind:'volDraft.exp', ph:'Ex.: mutirões na escola, campanha do agasalho…', hint:'Se for sua primeira vez, tudo bem. Conte para a gente.'})}
+    ${cols(`${taField({label:'Já fez voluntariado antes? Onde?', bind:'volDraft.exp', ph:'Ex.: mutirões na escola, campanha do agasalho…', hint:'Se for sua primeira vez, tudo bem. Conte para a gente.'})}
     ${taField({label:'O que te motivou a se voluntariar?', bind:'volDraft.motivacao', ph:'Conte em poucas palavras'})}
-    ${radioList({label:'Com que frequência você quer ajudar?', hint:'Escolha uma opção.', path:'volDraft.freq', options:FREQS})}
-    ${checkList({label:'Como você quer ajudar?', hint:'Escolha uma ou mais opções.', path:'volDraft.ajudas', options:AJUDAS})}
+    ${radioList({label:'Com que frequência você quer ajudar?', hint:'Escolha uma opção.', path:'volDraft.freq', options:FREQS})}`,
+    checkList({label:'Como você quer ajudar?', hint:'Escolha uma ou mais opções.', path:'volDraft.ajudas', options:AJUDAS}))}
     ${prefill('fill-vol2')}`,
   foot:`<button class="btn btn-primary btn-block" data-a="vol-finish">Enviar cadastro</button>`
 });
@@ -562,19 +563,19 @@ SCREENS['vol-cad-ok'] = () => {
 
 const DISTRIBUI = ['Cestas básicas','Refeições prontas','Lanches','Hortifrúti'];
 SCREENS['org-cad'] = () => ({
-    title:'Cadastro de organização', steps:[1, 2], cls:'g24',
+    title:'Cadastro de organização', steps:[1, 2], cls:'g24', dk:'mid',
     body:`${formHead(1, 'Dados da organização', 'Nossa equipe confere as informações antes de liberar o perfil para os voluntários.')}
-      <section class="fsec"><h3 class="h-md">Sobre a organização</h3>
+      ${cols(`<section class="fsec"><h3 class="h-md">Sobre a organização</h3>
         ${field({label:'Nome da organização', bind:'orgDraft.nome', ph:'Ex.: Cozinha Solidária do Gama', auto:'organization', check:true})}
         ${field({label:'CNPJ', bind:'orgDraft.cnpj', ph:'00.000.000/0000-00', mask:'cnpj', mode:'numeric', hint:'Usamos só para confirmar que a organização existe.', check:true})}
         ${radioList({label:'Tipo de organização', path:'orgDraft.tipo', options:['ONG','Empresa','Coletivo comunitário','Outro']})}
-      </section>
-      <section class="fsec"><h3 class="h-md">Contato</h3>
+      </section>`,
+      `<section class="fsec"><h3 class="h-md">Contato</h3>
         ${field({label:'Nome do responsável', bind:'orgDraft.resp', ph:'Quem responde pela organização', auto:'name', check:true})}
         ${field({label:'E-mail de contato', bind:'orgDraft.email', type:'email', ph:'contato@organizacao.org', mode:'email', auto:'email', check:true})}
         ${field({label:'Telefone', bind:'orgDraft.tel', type:'tel', ph:'(61) 3333-3333', mask:'tel', mode:'tel', auto:'tel', check:true})}
         ${field({label:'Endereço da sede', bind:'orgDraft.endereco', ph:'Rua, número e bairro', hint:'A equipe do MEZA usa este endereço para levar as doações até vocês.', action:{ a:'org-locate', icon:'locate-fixed', label:'Usar minha localização' }, check:true})}
-      </section>
+      </section>`)}
       ${prefill('fill-org')}`,
     foot:`<button class="btn btn-primary btn-block" data-a="org-next">Continuar</button>`
 });
@@ -652,6 +653,9 @@ function turnosResumo(e) {
   return ds.every(x => x === ds[0]) ? `${e.turnos.length === 2 ? 'Dois' : e.turnos.length} turnos de ${ds[0]}` : `Turnos ${listaNomes(e.turnos)}`;
 }
 const secHead = (t, link) => `<div class="sec-h"><h2 class="h-md">${t}</h2>${link || ''}</div>`;
+/* Duas colunas no computador. No celular os invólucros somem (display: contents) e os blocos seguem na ordem do HTML.
+   'rev' põe a primeira coluna à direita; 'estreita' deixa a coluna da direita mais estreita. */
+const cols = (a, b, cls = '') => !b.trim() ? a : !a.trim() ? b : `<div class="dk-cols${cls ? ' ' + cls : ''}"><div class="dk-col">${a}</div><div class="dk-col">${b}</div></div>`;
 
 /* Destaque da próxima ação no início do voluntário; S.nextMin minimiza (só o rótulo e o título) */
 function nextBox(eb, titulo, meta, id, link) {
@@ -690,10 +694,10 @@ SCREENS['v-home'] = () => {
     cls:'home',
     body:`${pend ? `<div class="notice">${icon('hourglass',20)}<span><b>Cadastro em validação</b><span class="small">Resultado em até 7 dias. Enquanto isso, você já pode reservar vagas e doar.</span></span></div>` : ''}
       ${rec ? `<div class="notice t">${icon('circle-alert',20)}<span><b>Cadastro não aprovado</b><span class="small">${REC_VOL} Você ainda pode doar alimentos e dinheiro.</span></span></div>` : ''}
-      ${needs.length ? `<section class="sec tight">${secHead('Quem mais precisa agora', '<button class="sec-link" data-a="food-start">Doar outros itens</button>')}<div class="rule-list">${needs.slice(0, 2).map(needRow).join('')}</div></section>` : ''}
-      <section class="sec tight">${secHead('Próximas ações', '<button class="sec-link" data-a="tab" data-r="v-eventos">Ver todas</button>')}
-        ${evs.length ? `<div class="rule-list">${evs.filter(e => e.id !== destId).slice(0, 2).map(e => eventRow(e)).join('')}</div>` : `<p class="muted">Nenhuma ação marcada por enquanto.</p>`}
-      </section>`,
+      ${cols(needs.length ? `<section class="sec tight">${secHead('Quem mais precisa agora', '<button class="sec-link" data-a="food-start">Doar outros itens</button>')}<div class="rule-list">${needs.slice(0, desk() ? 3 : 2).map(needRow).join('')}</div></section>` : '',
+      `<section class="sec tight">${secHead('Próximas ações', '<button class="sec-link" data-a="tab" data-r="v-eventos">Ver todas</button>')}
+        ${evs.length ? `<div class="rule-list">${evs.filter(e => e.id !== destId).slice(0, desk() ? 4 : 2).map(e => eventRow(e)).join('')}</div>` : `<p class="muted">Nenhuma ação marcada por enquanto.</p>`}
+      </section>`, 'rev estreita')}`,
     tabs:'vol', tabOn:'v-home'
   };
 };
@@ -742,8 +746,8 @@ SCREENS['v-evento'] = () => {
   }
   const confTxt = !conf ? 'Seja a primeira pessoa a confirmar' : ins ? (conf === 1 ? 'Só você confirmou até agora' : `${conf} pessoas confirmadas, incluindo você`) : plural(conf, 'pessoa já confirmou', 'pessoas já confirmaram');
   return {
-    title:'Detalhes da ação',
-    body:`<div class="head form"><p class="eyebrow step">${esc(o.nome)}</p><h2 class="h-lg">${esc(e.titulo)}</h2></div>
+    title:'Detalhes da ação', dk:'mid',
+    body:cols(`<div class="head form"><p class="eyebrow step">${esc(o.nome)}</p><h2 class="h-lg">${esc(e.titulo)}</h2></div>
       ${aviso}
       <div class="info">
         ${info('calendar', cap(fmtLonga(e.data)), cap(rel(e.data)))}
@@ -751,9 +755,9 @@ SCREENS['v-evento'] = () => {
         ${info('map-pin', esc(e.local), e.endereco !== e.local ? esc(e.endereco) : '')}
         ${info('users', livres ? `${plural(livres,'vaga livre','vagas livres')} de ${vagasTotal(e)}` : 'Todas as vagas preenchidas', confTxt)}
       </div>
-      <div class="about"><p>${esc(e.desc)}</p>${e.nota ? `<p class="note">${icon('info',16)}<span>${esc(e.nota)}</span></p>` : ''}</div>
-      ${escolha}
-      ${itens}`,
+      <div class="about"><p>${esc(e.desc)}</p>${e.nota ? `<p class="note">${icon('info',16)}<span>${esc(e.nota)}</span></p>` : ''}</div>`,
+      `${escolha}
+      ${itens}`),
     foot
   };
 };
@@ -817,18 +821,19 @@ SCREENS['v-valor'] = () => {
   const reais = brl(c).replace(/^R\$\s?/, '');
   const hint = !c ? '<span class="hint">Escolha ou digite um valor para continuar.</span>' : c < 100 ? '<span class="hint">O valor mínimo é R$ 1,00.</span>' : `<span class="hint sel">${brl(c)} ${destPara(S.don.dest)}</span>`;
   return {
-    title:'Doação em dinheiro', steps:[1, 3], cls:'g24',
+    title:'Doação em dinheiro', steps:[1, 3], cls:'g24', dk:'mid',
     body:`${donHead(1, 'Quanto você quer doar?')}
-      ${selectField({label:'Para onde vai a doação?', bind:'don.dest', key:'dest', options:destOpcoes(evs), hint:destHint(S.don.dest)})}
+      ${cols(`${selectField({label:'Para onde vai a doação?', bind:'don.dest', key:'dest', options:destOpcoes(evs), hint:destHint(S.don.dest)})}
       <div class="amt">
         <span class="label-14">Valor da doação</span>
         <p class="amt-v${c ? '' : ' zero'}" aria-live="polite"><span class="cur">R$</span><span class="num">${reais}</span></p>
         <div class="seg-amt" role="group" aria-label="Valores sugeridos">${[1000, 2500, 5000, 10000].map(v => `<button aria-pressed="${c === v}" data-a="quick" data-v="${v}">${brl(v).replace(',00','')}</button>`).join('')}</div>
       </div>
-      <div class="pad" role="group" aria-label="Teclado numérico">
+      <p class="note-r dk-only">${icon('info',16)}<span>No computador, você também pode digitar o valor no teclado. Enter continua.</span></p>`,
+      `<div class="pad" role="group" aria-label="Teclado numérico">
         ${[1,2,3,4,5,6,7,8,9].map(n => `<button data-a="key" data-k="${n}">${n}</button>`).join('')}
         <span></span><button data-a="key" data-k="0">0</button><button data-a="key" data-k="b" aria-label="Apagar">${icon('delete',26)}</button>
-      </div>`,
+      </div>`, 'estreita')}`,
     foot:`${hint}<button class="btn btn-primary btn-block" data-a="go" data-r="v-metodo" ${c >= 100 ? '' : 'disabled'}>Continuar</button>`
   };
 };
@@ -1035,10 +1040,10 @@ SCREENS['v-perfil'] = () => {
 };
 
 SCREENS['v-ajuda'] = () => ({
-  title:'Como quero ajudar', cls:'g24',
+  title:'Como quero ajudar', cls:'g24', dk:'mid',
   body:`<p class="lede">As organizações usam isso para te chamar para as ações certas.</p>
-    ${checkList({label:'Como você quer ajudar?', hint:'Escolha uma ou mais opções.', path:'ajudaDraft.ajudas', options:AJUDAS})}
-    ${radioList({label:'Com que frequência você quer ajudar?', hint:'Escolha uma opção.', path:'ajudaDraft.freq', options:FREQS})}`,
+    ${cols(checkList({label:'Como você quer ajudar?', hint:'Escolha uma ou mais opções.', path:'ajudaDraft.ajudas', options:AJUDAS}),
+    radioList({label:'Com que frequência você quer ajudar?', hint:'Escolha uma opção.', path:'ajudaDraft.freq', options:FREQS}))}`,
   foot:`<button class="btn btn-primary btn-block" data-a="ajuda-salvar">Salvar</button>`
 });
 
@@ -1070,12 +1075,12 @@ SCREENS['o-painel'] = () => {
     cls:'home',
     body:`${o.status === 'recusada' ? `<div class="notice t">${icon('circle-alert',20)}<span><b>Cadastro não aprovado</b><span class="small">${REC_ORG}</span></span></div>`
         : o.status !== 'aprovada' ? `<div class="notice">${icon('hourglass',20)}<span><b>Cadastro em validação</b><span class="small">Você já pode publicar ações. Elas aparecem para os voluntários assim que a equipe MEZA aprovar a organização.</span></span></div>` : ''}
-      <section class="sec tight">${secHead('Suas próximas ações', `<button class="sec-link ic" data-a="tab" data-r="o-novo-evento">${icon('plus',16)}Publicar ação</button>`)}
+      ${cols(`<section class="sec tight">${secHead('Suas próximas ações', `<button class="sec-link ic" data-a="tab" data-r="o-novo-evento">${icon('plus',16)}Publicar ação</button>`)}
         ${evs.length ? `<div class="rule-list">${evs.map(e => eventRow(e, 'o-evento', null, 'org')).join('')}</div>` : `<p class="muted small">Nenhuma ação publicada. <button class="link" data-a="tab" data-r="o-novo-evento">Publicar ação</button></p>`}
-      </section>
-      <section class="sec tight">${secHead('Alimentos a caminho', proms.length > 2 && !todos ? '<button class="sec-link" data-a="painel-tudo">Ver todos</button>' : '')}
-        ${proms.length ? `<div class="rule-list">${(todos ? proms : proms.slice(0, 2)).map(p => promessaLi(p)).join('')}</div>` : '<p class="muted small">Nenhuma doação de alimentos combinada ainda.</p>'}
       </section>`,
+      `<section class="sec tight">${secHead('Alimentos a caminho', proms.length > 2 && !todos ? '<button class="sec-link" data-a="painel-tudo">Ver todos</button>' : '')}
+        ${proms.length ? `<div class="rule-list">${(todos ? proms : proms.slice(0, 2)).map(p => promessaLi(p)).join('')}</div>` : '<p class="muted small">Nenhuma doação de alimentos combinada ainda.</p>'}
+      </section>`, 'estreita')}`,
     tabs:'org', tabOn:'o-painel'
   };
 };
@@ -1095,7 +1100,7 @@ SCREENS['o-novo-evento'] = () => {
     top:`<header class="page-h gut"><div class="head form"><h1 class="h-lg">Publicar ação</h1><p class="muted">Os voluntários veem a data, o horário e os postos assim que você publicar.</p></div></header>`,
     cls:'g24 form-top',
     body:`${errSummary('publicar')}
-      <div class="field grp"><span class="grp-h"><span class="lbl" id="lbl-tipo">Tipo de ação</span></span>
+      ${cols(`<div class="field grp"><span class="grp-h"><span class="lbl" id="lbl-tipo">Tipo de ação</span></span>
         <div class="rows" role="radiogroup" aria-labelledby="lbl-tipo">${TIPOS_EV.map(t => `<button type="button" class="rrow tall" role="radio" aria-checked="${d.tipo === t}" data-a="pick" data-p="evDraft.tipo" data-v="${t}"><span class="rd"></span><span class="rt"><span>${t}</span></span>${icon(TIPO_IC[t],22)}</button>`).join('')}</div></div>
       ${field({ label:'Título', bind:'evDraft.titulo', ph:'Ex.: Montagem de cestas de dezembro' })}
       ${field({ label:'Data', bind:'evDraft.data', type:'date', min:iso(HOJE) })}
@@ -1104,8 +1109,8 @@ SCREENS['o-novo-evento'] = () => {
         ${S.errors.fim || S.errors.inicio || !turnos.length ? '' : `<p class="note-r">${icon('info',16)}<span>${turnos.length > 1 ? `Os voluntários escolhem entre dois turnos: ${turnos.join(' e ')}.` : `Turno único: ${turnos[0]}.`}</span></p>`}
       </div>
       ${field({ label:'Endereço', bind:'evDraft.local', ph:'Onde os voluntários se encontram', action:{ a:'ev-locate', icon:'locate-fixed', label:'Usar o endereço da organização' } })}
-      ${taField({ label:'Orientações para os voluntários', bind:'evDraft.desc', ph:'O que levar, roupa adequada, ponto de encontro…' })}
-      <div class="field grp${S.errors.postos ? ' err' : ''}"><span class="grp-h"><span class="lbl">Postos e vagas</span><span class="hint">Cada voluntário escolhe um posto ao se inscrever.</span></span>
+      ${taField({ label:'Orientações para os voluntários', bind:'evDraft.desc', ph:'O que levar, roupa adequada, ponto de encontro…' })}`,
+      `<div class="field grp${S.errors.postos ? ' err' : ''}"><span class="grp-h"><span class="lbl">Postos e vagas</span><span class="hint">Cada voluntário escolhe um posto ao se inscrever.</span></span>
         <div class="stack-sm">
           <div class="posto-head" aria-hidden="true"><span>Posto</span><span>Vagas</span></div>
           ${d.postos.map((p, i) => `<div class="posto-row"><div class="inp"><input data-bind="evDraft.postos.${i}.nome" value="${esc(p.nome)}" placeholder="Nome do posto" aria-label="Nome do posto ${i + 1}"></div><div class="inp"><input type="number" min="1" max="99" inputmode="numeric" data-bind="evDraft.postos.${i}.vagas" value="${esc(p.vagas)}" aria-label="Vagas do posto ${i + 1}"></div><button type="button" class="icon-btn" data-a="ev-del-posto" data-i="${i}" aria-label="Remover posto ${i + 1}" ${d.postos.length < 2 ? 'disabled' : ''}>${icon('trash-2',18)}</button></div>`).join('')}
@@ -1114,7 +1119,7 @@ SCREENS['o-novo-evento'] = () => {
         ${errMsg('postos')}
       </div>
       <div class="field grp"><span class="grp-h"><span class="lbl" id="lbl-itens">Itens que a ação precisa</span><span class="hint">Aparecem para quem quer doar alimentos.</span></span>
-        <div class="ck-grid" role="group" aria-labelledby="lbl-itens">${nomes.map(n => { const on = d.itens.includes(n); return `<button type="button" class="ck" role="checkbox" aria-checked="${on}" data-a="toggle" data-p="evDraft.itens" data-v="${esc(n)}"><span class="cb">${on ? icon('check',16) : ''}</span><span>${esc(n)}</span></button>`; }).join('')}</div></div>
+        <div class="ck-grid" role="group" aria-labelledby="lbl-itens">${nomes.map(n => { const on = d.itens.includes(n); return `<button type="button" class="ck" role="checkbox" aria-checked="${on}" data-a="toggle" data-p="evDraft.itens" data-v="${esc(n)}"><span class="cb">${on ? icon('check',16) : ''}</span><span>${esc(n)}</span></button>`; }).join('')}</div></div>`)}
       ${prefill('fill-ev')}`,
     foot:`<button class="btn btn-primary btn-block" data-a="ev-publish">Publicar ação</button>`,
     tabs:'org', tabOn:'o-novo-evento'
@@ -1140,15 +1145,15 @@ function eventoGestao(e, admin, novo) {
       : `<div class="notice g">${icon('circle-check',20)}<span><b>Ação publicada</b><span class="small">Os voluntários já podem se inscrever. Você recebe um aviso a cada nova inscrição.</span></span></div>`)
     : pend ? `<div class="notice">${icon('hourglass',20)}<span><b>Parceiro em validação</b><span class="small">Esta ação fica oculta aos voluntários até a aprovação da organização.</span></span></div>` : '';
   const nomesItens = e.itens.map(i => CAT[i].nome.toLowerCase());
-  return `<div class="head form"><p class="eyebrow step">${esc(admin ? o.nome : e.tipo)}</p><h2 class="h-lg">${esc(e.titulo)}</h2></div>
+  return cols(`<div class="head form"><p class="eyebrow step">${esc(admin ? o.nome : e.tipo)}</p><h2 class="h-lg">${esc(e.titulo)}</h2></div>
     ${aviso}
     <div class="info">
       ${info('calendar', cap(fmtLonga(e.data)), cap(rel(e.data)))}
       ${info('clock-3', `${e.inicio}–${e.fim}`, e.turnos.length > 1 ? 'Turnos ' + listaNomes(e.turnos) : 'Turno único')}
       ${info('map-pin', esc(e.local), e.endereco && e.endereco !== e.local ? esc(e.endereco) : '')}
       ${info('users', `${ins} de ${plural(tot,'vaga preenchida','vagas preenchidas')}`, livres ? plural(livres,'vaga livre','vagas livres') : 'Todas as vagas preenchidas')}
-    </div>
-    <section class="sec tight">${secHead('Postos e inscritos', `<span class="sec-meta num">${ins} de ${tot}</span>`)}
+    </div>`,
+    `<section class="sec tight">${secHead('Postos e inscritos', `<span class="sec-meta num">${ins} de ${tot}</span>`)}
       <div class="rule-list">${e.postos.map((p, i) => { const ns = nomesPosto(e, i); return `<div class="posto-r"><div class="posto-t"><b>${esc(p.nome)}</b><span class="num${p.inscritos < p.vagas && p.inscritos / p.vagas >= .8 ? ' warn' : ''}">${p.inscritos} de ${p.vagas}</span></div>${prog(p.inscritos, p.vagas, 0, 'thin g')}<small>${ns.length ? esc(ns.join(', ')) : 'Ninguém inscrito ainda'}</small></div>`; }).join('')}</div>
     </section>
     ${e.itens.length ? `<section class="sec tight">${secHead('Itens a caminho')}<p class="hint">Pedidos nesta ação: ${listaNomes(nomesItens)}.</p>
@@ -1159,9 +1164,9 @@ function eventoGestao(e, admin, novo) {
         ${info('user', esc(o.resp), 'Responsável')}
         ${info('phone', `<span class="selectable">${esc(o.tel)}</span>`, 'Telefone')}
         ${info('mail', `<span class="selectable">${esc(o.email)}</span>`, 'E-mail')}
-      </div></div></section>` : ''}`;
+      </div></div></section>` : ''}`);
 }
-SCREENS['o-evento'] = () => { const e = evOf(S.params.id); return { title:'Detalhes da ação', body:eventoGestao(e, false, S.params.novo) }; };
+SCREENS['o-evento'] = () => { const e = evOf(S.params.id); return { title:'Detalhes da ação', dk:'mid', body:eventoGestao(e, false, S.params.novo) }; };
 
 SCREENS['o-perfil'] = () => {
   const o = myOrg();
@@ -1206,13 +1211,13 @@ SCREENS['a-eventos'] = () => {
   const nOrgs = new Set(evs.map(e => e.orgId)).size;
   return {
     top:`<header class="page-h gut"><div class="head form"><h1 class="h-lg">Agenda dos parceiros</h1><p class="muted">${plural(evs.length,'ação','ações')} nas próximas semanas, com ${plural(livres,'vaga livre','vagas livres')} em ${plural(nOrgs,'parceiro','parceiros')}.</p></div></header>`,
-    cls:'form-top',
+    cls:'form-top agenda',
     body:`${selectField({ label:'Parceiro', bind:'afiltro', options:[['todos','Todos os parceiros'], ...orgsAg.map(o => [o.id, o.nome])] })}
       ${grupos.map(([g, f]) => { const l = evs.filter(f); return l.length ? `<section class="grp-ev"><h2 class="grp-l">${g}</h2><div class="rule-list open">${l.map(e => eventRow(e, 'a-evento', null, 'admin')).join('')}</div></section>` : ''; }).join('') || '<p class="muted">Nenhuma ação marcada nas próximas semanas.</p>'}`,
     tabs:'admin', tabOn:'a-eventos'
   };
 };
-SCREENS['a-evento'] = () => { const e = evOf(S.params.id); return { title:'Detalhes da ação', body:eventoGestao(e, true) }; };
+SCREENS['a-evento'] = () => { const e = evOf(S.params.id); return { title:'Detalhes da ação', dk:'mid', body:eventoGestao(e, true) }; };
 
 /* Perfil de um parceiro visto pelo administrador */
 function orgHead(o) {
@@ -1231,11 +1236,11 @@ function orgContato(o) {
 SCREENS['a-org'] = () => {
   const o = orgOf(S.params.id); const evs = futuros().filter(e => e.orgId === o.id);
   return {
-    title:'Perfil do parceiro', cls:'g32',
-    body:`<div class="prof-h stack-sm">${orgHead(o)}</div>
-      <section class="sec tight">${secHead('Contato')}${orgContato(o)}</section>
-      <section class="sec tight">${secHead('Ações na agenda')}
-        ${evs.length ? `<div class="rule-list">${evs.map(e => eventRow(e, 'a-evento', null, 'admin')).join('')}</div>` : '<p class="muted small">Nenhuma ação marcada.</p>'}</section>`
+    title:'Perfil do parceiro', cls:'g32', dk:'mid',
+    body:cols(`<div class="prof-h stack-sm">${orgHead(o)}</div>
+      <section class="sec tight">${secHead('Contato')}${orgContato(o)}</section>`,
+      `<section class="sec tight">${secHead('Ações na agenda')}
+        ${evs.length ? `<div class="rule-list">${evs.map(e => eventRow(e, 'a-evento', null, 'admin')).join('')}</div>` : '<p class="muted small">Nenhuma ação marcada.</p>'}</section>`)
   };
 };
 
@@ -1309,10 +1314,10 @@ SCREENS['a-perfil'] = () => {
 };
 
 SCREENS.roteiro = () => ({
-  title:'Roteiro do protótipo', cls:'g32',
+  title:'Roteiro do protótipo', cls:'g32', dk:'mid',
   body:`<div class="head form"><h2 class="h-lg">Histórias de usuário</h2><p class="muted">Cada história abre a tela que a atende. As quatro histórias da folha do grupo mantêm a prioridade definida lá.</p>
       <p class="note-r flagged">${icon('flag',16)}<span>Acrescentada no protótipo: a prioridade ainda precisa ser confirmada pelo grupo.</span></p></div>
-    ${storiesHtml()}
+    <div class="st-grid">${storiesHtml()}</div>
     ${S.role ? '' : `<section class="sec tight">${secHead('Ver o app como')}${roleSeg()}</section>`}`
 });
 
@@ -1329,16 +1334,57 @@ function tabsHtml(k, on) {
   }).join('')}</nav>`;
 }
 
+/* ================= formato computador ================= */
+/* No computador o protótipo abre em dois formatos: 'celular' (o aparelho ao lado do roteiro) e 'computador'
+   (o app ocupa a janela, com barra lateral no lugar das abas e conteúdo em colunas). O formato fica no endereço
+   (#computador), fora do estado: recomeçar a demonstração não o altera. Abaixo de 980 px vale sempre o layout de celular. */
+let modo = location.hash === '#computador' ? 'computador' : 'celular';
+const mqDesk = matchMedia('(min-width:980px)');
+const desk = () => modo === 'computador' && mqDesk.matches;
+const PAPEL = { vol:'Voluntário', org:'Organização', admin:'Administrador' };
+const PERFIL_ROTA = { vol:'v-perfil', org:'o-perfil', admin:'a-perfil' };
+function sideHtml(sc) {
+  const r = S.role; const lista = r ? TABS[r] : [];
+  const naLista = rt => lista.some(t => t[0] === rt);
+  const rot = S.route === 'roteiro';
+  const on = rot ? '' : sc.tabOn || (naLista(S.route) ? S.route : (S.stack.map(x => x.route).find(naLista) || ''));
+  const item = ([rt, l, ic]) => {
+    const n = rt === 'a-validacoes' ? pendentesVol().length + pendentesOrg().length : 0;
+    return `<button class="side-i${rt === on ? ' on' : ''}" data-a="tab" data-r="${rt}"${rt === on ? ' aria-current="page"' : ''}>${icon(ic,22)}<span>${l}</span>${n ? `<span class="side-n num">${n}<span class="sr"> pendentes</span></span>` : ''}</button>`;
+  };
+  const o = r === 'org' ? myOrg() : null;
+  const quem = r === 'vol' && S.user ? [initials(S.user.nome), esc(S.user.nome), 'Voluntário']
+    : o ? [initials(o.nome), esc(o.nome), 'Organização parceira']
+    : r === 'admin' ? [icon('shield-check',20), 'Equipe MEZA', 'Administração'] : null;
+  return `<aside class="side${r ? '' : ' intro'}" aria-label="MEZA">
+      <div class="side-brand"><button class="logo" data-a="home" aria-label="meza, voltar às boas-vindas">meza</button>${r ? '' : `<p class="slogan">A mesa é de todos.</p><p class="values">Mobilização · Empatia · Zelo · Alimentação</p>`}</div>
+      ${lista.length ? `<nav class="side-nav" aria-label="Navegação principal">${lista.map(item).join('')}</nav>` : ''}
+      <div class="side-foot">
+        ${quem ? `<button class="side-who" data-a="tab" data-r="${PERFIL_ROTA[r]}"><span class="avatar">${quem[0]}</span><span><b>${quem[1]}</b><small>${quem[2]}</small></span></button>` : ''}
+        <div class="side-tools"><span class="side-l" id="side-l">${r ? `Vendo como ${PAPEL[r].toLowerCase()}` : 'Explorar sem cadastro'}</span>
+          <div class="side-roles" role="group" aria-labelledby="side-l">${Object.keys(PAPEL).map(k => `<button data-a="role" data-r="${k}" aria-pressed="${r === k}" aria-label="${PAPEL[k]}" title="${PAPEL[k]}">${icon(ROLE_IC[k],20)}</button>`).join('')}</div>
+          <button class="side-t${rot ? ' on' : ''}" data-a="go" data-r="roteiro"${rot ? ' aria-current="page"' : ''}>${icon('map',18)}<span>Roteiro das histórias</span></button>
+          <button class="side-t" data-a="view" data-v="celular">${icon('smartphone',18)}<span>Ver no celular</span></button>
+        </div>
+      </div>
+    </aside><div class="gingham v" aria-hidden="true"></div>`;
+}
+
 /* ================= render ================= */
 const $app = document.getElementById('app');
 const $guide = document.getElementById('guide');
 function render(top) {
   const sc = (SCREENS[S.route] || SCREENS.welcome)();
+  const dk = desk();
   const old = $app.querySelector('.scroll');
   const prev = top || !old ? 0 : old.scrollTop;
   const steps = sc.steps ? `<div class="steps" role="progressbar" aria-label="Etapa ${sc.steps[0]} de ${sc.steps[1]}" aria-valuemin="1" aria-valuemax="${sc.steps[1]}" aria-valuenow="${sc.steps[0]}">${Array.from({ length:sc.steps[1] }, (_, i) => `<i${i < sc.steps[0] ? ' class="on"' : ''}></i>`).join('')}</div>` : '';
   const bar = sc.title != null ? `<header class="bar gut${S.stack.length ? '' : ' root'}${steps ? ' has-steps' : ''}">${S.stack.length ? `<button class="icon-btn" data-a="back" aria-label="Voltar">${icon('arrow-left',24)}</button>` : ''}<h1>${sc.title}</h1>${steps}</header>` : '';
-  $app.innerHTML = `${bar}<main class="scroll${top ? ' enter' : ''}">${sc.top || ''}<div class="content gut${sc.cls ? ' ' + sc.cls : ''}">${sc.body}</div></main>${sc.foot ? `<footer class="foot gut">${sc.foot}</footer>` : ''}${sc.tabs ? tabsHtml(sc.tabs, sc.tabOn) : ''}`;
+  const main = `${bar}<main class="scroll${top ? ' enter' : ''}">${sc.top || ''}<div class="content gut${sc.cls ? ' ' + sc.cls : ''}">${sc.body}</div></main>${sc.foot ? `<footer class="foot gut">${sc.foot}</footer>` : ''}`;
+  /* largura do conteúdo no computador: telas com abas usam a coluna larga; fluxos e formulários, uma coluna média ou estreita */
+  $app.innerHTML = dk ? `${sideHtml(sc)}<div class="main w-${sc.dk || (sc.tabs ? 'wide' : 'form')}">${main}</div>` : `${main}${sc.tabs ? tabsHtml(sc.tabs, sc.tabOn) : ''}`;
+  $app.classList.toggle('has-side', dk);
+  document.body.classList.toggle('desk', dk);
   $app.querySelector('.scroll').scrollTop = prev;
   document.body.classList.toggle('hero-top', !!sc.top && sc.title == null && sc.top.indexOf('class="hero') > -1);
   renderGuide();
@@ -1358,6 +1404,7 @@ function renderGuide() {
   const fs = document.fullscreenElement;
   $guide.innerHTML = `<div class="g-brand"><div class="logo">meza</div><p class="slogan">A mesa é de todos.</p><p class="values">Mobilização · Empatia · Zelo · Alimentação</p></div>
     <section class="g-sec"><span class="label-14">Ver o app como</span>${roleSeg(true)}
+      <button class="btn btn-primary btn-block" data-a="view" data-v="computador">${icon('monitor',20)}Abrir versão para computador</button>
       <p class="note-r">${icon('smartphone',16)}<span>Tela atual: ${nome}. ${S.route === 'welcome' ? 'Escolha um perfil para explorar sem cadastro.' : 'Os dados são de exemplo.'}</span></p>
       <div class="g-links"><button class="link-ic" data-a="home">${icon('rotate-ccw',16)}<span>Voltar às boas-vindas</span></button><button class="link-ic" data-a="fullscreen">${icon(fs ? 'minimize' : 'maximize',16)}<span>${fs ? 'Sair da tela cheia' : 'Tela cheia'}</span></button></div>
     </section>
@@ -1367,6 +1414,8 @@ function renderGuide() {
 /* Aparelho do computador: encolhe o celular inteiro quando a janela é baixa (868 = 844 da tela + 24 de moldura). */
 const fitPhone = () => document.documentElement.style.setProperty('--k', Math.max(.55, Math.min(1, (innerHeight - 48) / 868)).toFixed(3));
 addEventListener('resize', fitPhone); fitPhone();
+/* A janela cruzou os 980 px: no formato computador, troca entre barra lateral e abas */
+mqDesk.addEventListener('change', () => { if (modo === 'computador') render(false); });
 setInterval(() => {
   const t = document.getElementById('pix-timer'); if (!t) return;
   t.textContent = pixRestante();
@@ -1664,6 +1713,12 @@ const A = {
     }
     render(true);
   },
+  view(d) {
+    modo = d.v === 'computador' ? 'computador' : 'celular';
+    try { history.replaceState(history.state, '', modo === 'computador' ? '#computador' : location.pathname + location.search); } catch (err) { /* endereço fixo */ }
+    S.notif = false; render(true);
+    if (modo === 'computador' && !mqDesk.matches) toast('Janela estreita: o formato computador aparece a partir de 980 px de largura.');
+  },
   fullscreen() {
     const el = document.documentElement;
     try {
@@ -1708,6 +1763,12 @@ document.addEventListener('change', e => {
 /* Teclado do menu de escolha: setas, Home/End, Enter/Espaço, Esc, Tab e busca pela primeira letra */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && S.notif) { e.preventDefault(); S.notif = false; render(false); $app.querySelector('.bell')?.focus(); return; }
+  /* Valor da doação pelo teclado físico: números, Backspace apaga e Enter continua */
+  if (S.route === 'v-valor' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.target.closest?.('input, textarea, .dd')) {
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); A.key({ k:e.key }); return; }
+    if (e.key === 'Backspace') { e.preventDefault(); A.key({ k:'b' }); return; }
+    if (e.key === 'Enter' && S.don.cents >= 100 && !e.target.closest?.('button')) { e.preventDefault(); go('v-metodo'); return; }
+  }
   const btn = e.target.closest?.('.dd-btn');
   if (btn) {
     if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) { e.preventDefault(); ddOpen(btn); }

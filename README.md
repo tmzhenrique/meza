@@ -10,6 +10,8 @@ Dê dois cliques em `index.html`. Funciona sem instalar nada.
 
 No computador, o botão **Tela cheia** fica no painel ao lado do aparelho (ou use F11).
 
+O protótipo tem dois formatos no computador: **Celular** (o aparelho ao lado do roteiro, padrão) e **Computador** (o app ocupa a janela, com barra lateral e conteúdo em colunas). Use o botão **Abrir versão para computador**, no painel, ou abra o endereço com `#computador` no fim (ex.: `index.html#computador`). Abaixo de 980 px de largura vale sempre o layout de celular.
+
 ## Desenvolvimento
 
 ```bash

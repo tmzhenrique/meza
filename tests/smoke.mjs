@@ -352,6 +352,46 @@ try {
     await desk.close();
   });
 
+  await passo('formato computador: barra lateral, colunas e volta ao celular', async () => {
+    const pc = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    pc.on('pageerror', e => erros.push(e.message));
+    await pc.goto(url);
+    await pc.click('.guide [data-a="view"][data-v="computador"]');
+    assert.ok(await pc.locator('body.desk .side').isVisible(), 'a barra lateral deveria aparecer');
+    assert.equal(await pc.locator('.guide').isVisible(), false, 'o painel do protótipo some no formato computador');
+    assert.match(await pc.evaluate(() => location.hash), /#computador/);
+    const largura = await pc.locator('.device').evaluate(el => el.getBoundingClientRect().width);
+    assert.ok(largura > 1400, `o app deveria ocupar a janela (veio ${largura}px)`);
+    await pc.click('.side-roles [data-r="vol"]');
+    assert.equal(await pc.locator('.tabs').count(), 0, 'no computador as abas viram barra lateral');
+    assert.equal(await pc.locator('.side-i').count(), 4);
+    await pc.click('.side-i[data-r="v-eventos"]');
+    assert.equal(await pc.locator('.side-i.on').innerText(), 'Ações');
+    await pc.click('.evr >> nth=0');
+    assert.equal(await pc.locator('.side-i.on').innerText(), 'Ações', 'o detalhe mantém a seção de origem marcada');
+    const [a, b] = await pc.locator('.dk-col').evaluateAll(els => els.map(el => el.getBoundingClientRect().left));
+    assert.ok(b - a > 300, 'o detalhe da ação deveria ficar em duas colunas');
+    await pc.click('.side-i[data-r="v-doar"]');
+    await pc.click('.path[data-a="don-start"]');
+    await pc.keyboard.type('25');
+    await pc.keyboard.press('Backspace');
+    await pc.keyboard.type('00');
+    assert.match(texto(await pc.locator('.amt-v').innerText()), /R\$\s*2,00/, 'o valor deveria aceitar o teclado físico');
+    await pc.keyboard.press('Enter');
+    assert.equal(texto(await pc.locator('.head h2').innerText()), 'Como você quer pagar?');
+    assert.equal(await pc.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    await pc.setViewportSize({ width: 900, height: 800 });
+    await pc.waitForFunction(() => !document.querySelector('.side'), null, { timeout: 2000 }).catch(() => {});
+    assert.equal(await pc.locator('.side').count(), 0, 'abaixo de 980px volta o layout de celular');
+    assert.equal(await pc.evaluate(() => document.body.classList.contains('desk')), false);
+    await pc.setViewportSize({ width: 1440, height: 900 });
+    await pc.waitForSelector('.side', { timeout: 2000 });
+    await pc.click('.side [data-a="view"][data-v="celular"]');
+    assert.ok(await pc.locator('.guide').isVisible(), 'de volta ao celular, o painel do protótipo reaparece');
+    assert.equal(await pc.locator('.side').count(), 0);
+    await pc.close();
+  });
+
   assert.deepEqual(erros, [], 'a página teve erros de JavaScript');
   console.log(`\n${ok} verificações passaram em ${alvo}`);
 } catch (e) {
